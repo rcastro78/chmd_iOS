@@ -14,6 +14,9 @@ class CircularTableViewCell: UITableViewCell {
     @IBOutlet weak var lblEncabezado: UILabel!
     @IBOutlet weak var lblTitulo: UILabel!
     @IBOutlet weak var lblFecha: UILabel!
+    var favMetodo:String="favCircular.php"
+    var delMetodo:String="eliminarCircular.php"
+    var urlBase:String="https://www.chmd.edu.mx/WebAdminCirculares/ws/"
     
     override func awakeFromNib() {
         super.awakeFromNib()

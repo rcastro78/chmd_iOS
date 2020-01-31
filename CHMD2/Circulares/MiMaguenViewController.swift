@@ -13,9 +13,21 @@ class MiMaguenViewController: UIViewController {
     @IBOutlet weak var webView: WKWebView!
     override func viewDidLoad() {
         super.viewDidLoad()
-        let url=URL(string: "https://www.chmd.edu.mx/pruebascd/icloud/")
-        let req = URLRequest(url: url!)
-        webView.load(req)
+        
+         
+        if(ConexionRed.isConnectedToNetwork()){
+            let url=URL(string: "https://www.chmd.edu.mx/pruebascd/icloud/")
+            let req = URLRequest(url: url!)
+            webView.load(req)
+        }else{
+            var alert = UIAlertView(title: "No está conectado a Internet", message: "Para acceder al sitio debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
+            alert.show()
+        }
+        
+            
+
+        
+        
         
     }
     

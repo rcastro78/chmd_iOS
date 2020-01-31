@@ -15,14 +15,15 @@ class CircularTodas: NSObject {
     var id:Int=0;
     var imagen:UIImage
     var estado:Int
-    init(id:Int,imagen:UIImage,encabezado:String,nombre:String,fecha:String,estado:Int) {
+    var contenido:String
+    init(id:Int,imagen:UIImage,encabezado:String,nombre:String,fecha:String,estado:Int,contenido:String) {
         self.id=id
         self.nombre=nombre
         self.encabezado = encabezado
         self.fecha = fecha
         self.imagen = imagen
         self.estado = estado
-    
+        self.contenido = contenido
     }
     
 }

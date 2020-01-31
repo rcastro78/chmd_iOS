@@ -14,10 +14,19 @@ class CircularesLeidasTableViewController: UITableViewController {
      var circulares = [Circular]()
     override func viewDidLoad() {
         super.viewDidLoad()
-       
+        let idUsuario:String = UserDefaults.standard.string(forKey: "idUsuario") ?? "0"
         circulares.removeAll()
-        let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesLeidas.php?usuario_id=5"
-        obtenerCirculares(uri:address)
+        
+
+        if(ConexionRed.isConnectedToNetwork()){
+            let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesLeidas.php?usuario_id=\(idUsuario)"
+              obtenerCirculares(uri:address)
+        }else{
+            var alert = UIAlertView(title: "No está conectado a Internet", message: "Se muestran las últimas circulares registradas", delegate: nil, cancelButtonTitle: "Aceptar")
+                       alert.show()
+        }
+        
+       
     
     }
 
@@ -125,7 +134,7 @@ class CircularesLeidasTableViewController: UITableViewController {
                         }
                         
                         
-                        self.circulares.append(Circular(id:Int(id)!,encabezado: "",nombre: titulo,fecha: fecha))
+                        self.circulares.append(Circular(id:Int(id)!,encabezado: "",nombre: titulo,fecha: fecha,contenido:""))
                         
                         
                     }
@@ -155,7 +164,7 @@ class CircularesLeidasTableViewController: UITableViewController {
                         let fecha = obj["updated_at"] as! String
                         
                         
-                        self.circulares.append(Circular(id:Int(id)!,encabezado: "",nombre: titulo,fecha: fecha))
+                        self.circulares.append(Circular(id:Int(id)!,encabezado: "",nombre: titulo,fecha: fecha,contenido:""))
                         
                     }
                 }

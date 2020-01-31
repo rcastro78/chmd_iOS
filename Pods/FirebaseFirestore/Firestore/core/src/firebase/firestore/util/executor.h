@@ -19,6 +19,7 @@
 
 #include <chrono>  // NOLINT(build/c++11)
 #include <functional>
+#include <memory>
 #include <string>
 #include <utility>
 
@@ -61,8 +62,6 @@ class DelayedOperation {
   std::function<void()> cancel_func_;
 };
 
-namespace internal {
-
 // An interface to a platform-specific executor of asynchronous operations
 // (called tasks on other platforms).
 //
@@ -91,6 +90,12 @@ class Executor {
     Tag tag = 0;
     Operation operation;
   };
+
+  // Creates a new serial Executor of the platform-appropriate type, and gives
+  // it the given label, if the implementation supports it.
+  //
+  // Note that this method has multiple definitions, depending on the platform.
+  static std::unique_ptr<Executor> CreateSerial(const char* label);
 
   virtual ~Executor() {
   }
@@ -132,7 +137,6 @@ class Executor {
   virtual absl::optional<TaggedOperation> PopFromSchedule() = 0;
 };
 
-}  // namespace internal
 }  // namespace util
 }  // namespace firestore
 }  // namespace firebase

@@ -53,7 +53,25 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
     @IBOutlet weak var signInButton: GIDSignInButton!
     override func viewDidLoad() {
         super.viewDidLoad()
-        GIDSignIn.sharedInstance().uiDelegate = self
+        
+        
+         if ConexionRed.isConnectedToNetwork() == true {
+             GIDSignIn.sharedInstance().uiDelegate = self
+         }else{
+            let cuentaValida:Int = UserDefaults.standard.integer(forKey: "valida") ?? 0
+            if(cuentaValida==1){
+                print("Valida")
+                self.performSegue(withIdentifier: "validarSinInternetSegue", sender: self)
+            }else{
+                
+            }
+        }
+        
+       
+        
+        
+        
+        
         let urlVideo = Bundle.main.url(forResource: "video_app", withExtension: "mp4")
         
         avPlayer = AVPlayer(url: urlVideo!)
@@ -66,10 +84,10 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
         view.backgroundColor = UIColor.clear;
         view.layer.insertSublayer(avPlayerLayer, at: 0)
         
-        NotificationCenter.default.addObserver(self,
+        /*NotificationCenter.default.addObserver(self,
                                                selector: Selector("playerItemDidReachEnd:"),
                                                name: NSNotification.Name.AVPlayerItemDidPlayToEndTime,
-                                               object: avPlayer.currentItem)
+                                               object: avPlayer.currentItem)*/
         
         //Crear el archivo para la base de datos cuando
         //no haya conexión a internet
@@ -82,7 +100,7 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
             print("Error en la base de datos")
         }
         
-        let crearTablaCirculares = "CREATE TABLE IF NOT EXISTS appCircular(idCircular INTEGER, idUsuario INTEGER, nombre TEXT, textoCircular TEXT, no_leida INTEGER, leida INTEGER, favorita INTEGER, compartida INTEGER, eliminada INTEGER)"
+        let crearTablaCirculares = "CREATE TABLE IF NOT EXISTS appCircular(idCircular INTEGER, idUsuario INTEGER, nombre TEXT, textoCircular TEXT, no_leida INTEGER, leida INTEGER, favorita INTEGER, compartida INTEGER, eliminada INTEGER, created_at TEXT, updated_at TEXT)"
         if sqlite3_exec(db, crearTablaCirculares, nil, nil, nil) != SQLITE_OK {
             print("Error creando la tabla de las circulares")
         }
@@ -92,6 +110,21 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
         
        
     }
+    
+    func signIn(signIn: GIDSignIn!, didSignInForUser user: GIDGoogleUser!, withError error: NSError!){
+        if (error != nil){
+            let nombre:String = user.profile.givenName
+            let email:String = user.profile.email
+            
+            print(nombre)
+            print(email)
+            UserDefaults.standard.set(1,forKey: "autenticado")
+            UserDefaults.standard.set(nombre, forKey: "nombre")
+            UserDefaults.standard.set(email, forKey: "email")
+            
+        }
+    }
+    
     
     func signIn(signIn: GIDSignIn!,
                 presentViewController viewController: UIViewController!) {

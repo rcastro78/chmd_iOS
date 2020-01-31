@@ -23,7 +23,6 @@
 namespace firebase {
 namespace firestore {
 namespace util {
-namespace internal {
 
 namespace {
 
@@ -45,6 +44,8 @@ absl::string_view GetCurrentQueueLabel() {
 }
 
 }  // namespace
+
+namespace internal {
 
 void DispatchAsync(const dispatch_queue_t queue, std::function<void()>&& work) {
   // Dynamically allocate the function to make sure the object is valid by the
@@ -71,7 +72,12 @@ void DispatchSync(const dispatch_queue_t queue, std::function<void()> work) {
   });
 }
 
+}  // namespace internal
+
 namespace {
+
+using internal::DispatchAsync;
+using internal::DispatchSync;
 
 template <typename Work>
 void RunSynchronized(const ExecutorLibdispatch* const executor, Work&& work) {
@@ -83,6 +89,8 @@ void RunSynchronized(const ExecutorLibdispatch* const executor, Work&& work) {
 }
 
 }  // namespace
+
+// MARK: - TimeSlot
 
 // Represents a "busy" time slot on the schedule.
 //
@@ -191,7 +199,7 @@ void TimeSlot::RemoveFromSchedule() {
   executor_->RemoveFromSchedule(this);
 }
 
-// ExecutorLibdispatch
+// MARK: - ExecutorLibdispatch
 
 ExecutorLibdispatch::ExecutorLibdispatch(const dispatch_queue_t dispatch_queue)
     : dispatch_queue_{dispatch_queue} {
@@ -297,7 +305,13 @@ ExecutorLibdispatch::PopFromSchedule() {
   return result;
 }
 
-}  // namespace internal
+// MARK: - Executor
+
+std::unique_ptr<Executor> Executor::CreateSerial(const char* label) {
+  dispatch_queue_t queue = dispatch_queue_create(label, DISPATCH_QUEUE_SERIAL);
+  return absl::make_unique<ExecutorLibdispatch>(queue);
+}
+
 }  // namespace util
 }  // namespace firestore
 }  // namespace firebase

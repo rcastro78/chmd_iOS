@@ -117,13 +117,13 @@ class CircularesCompTableViewController: UITableViewController {
                             return
                         }
                         
-                        guard let fecha = diccionario["updated_at"] as? String else {
+                        guard let fecha = diccionario["created_at"] as? String else {
                             print("No se pudo obtener la fecha")
                             return
                         }
                         
                         
-                        self.circulares.append(Circular(id:Int(id)!,encabezado: "",nombre: titulo,fecha: fecha))
+                        self.circulares.append(Circular(id:Int(id)!,encabezado: "",nombre: titulo,fecha: fecha,contenido:""))
                         
                         
                     }

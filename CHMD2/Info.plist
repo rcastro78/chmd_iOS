@@ -23,7 +23,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.86111131270-ta30j73ocq6s6rrpl8dao7hsg3a78nne</string>
+				<string>com.googleusercontent.apps.465701420614-006480utbh9mvsubvmv398qrt0hbee1i</string>
 			</array>
 		</dict>
 	</array>
@@ -46,6 +46,8 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSCalendarsUsageDescription</key>
+	<string>La aplicación necesita permiso para acceder al calendario y crear eventos del colegio</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>GothamRoundedMedium_21022.ttf</string>

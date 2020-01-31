@@ -10,20 +10,76 @@ import UIKit
 import GoogleSignIn
 import Firebase
 import  UserNotifications
+import Network
+//import BitlySDK
+import FirebaseInstanceID
+import FirebaseMessaging
+
+
+extension Data {
+    var hexString: String {
+        let hexString = map { String(format: "%02.2hhx", $0) }.joined()
+        return hexString
+    }
+}
+
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate,GIDSignInDelegate,UNUserNotificationCenterDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate,GIDSignInDelegate,UNUserNotificationCenterDelegate {
 
     var window: UIWindow?
 
+    
+    func registerForPushNotifications() {
+      UNUserNotificationCenter.current() // 1
+        .requestAuthorization(options: [.alert, .sound, .badge]) {
+          granted, error in
+          print("Permission granted: \(granted)")
+            self.registerForPushNotifications()
+      }
+    }
+    
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        GIDSignIn.sharedInstance().clientID = "86111131270-ta30j73ocq6s6rrpl8dao7hsg3a78nne.apps.googleusercontent.com"
-        GIDSignIn.sharedInstance().delegate = self
+   func getNotificationSettings() {
+      UNUserNotificationCenter.current().getNotificationSettings { settings in
+        print("Notification settings: \(settings)")
+        guard settings.authorizationStatus == .authorized else { return }
+        DispatchQueue.main.async {
+          UIApplication.shared.registerForRemoteNotifications()
+        }
         
-       
-        let pushManager = PushNotificationManager(userID: "currently_logged_in_user_id")
-        pushManager.registerForPushNotifications()
-        FirebaseApp.configure()
+      }
+    }
+    
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        
+        
+        
+        /*Bitly.initialize("e8bb7ba58c708d041c59b1ba04616b0668bdf53b", supportedDomains:["chmd.edu.mx","chmd.edu.mx"], supportedSchemes:["chmd"]) { response, error in
+              // response provides a BitlyResponse object which contains the full URL information
+              // response includes a status code
+              // error provides any errors in retrieving information about the URL
+              // Your custom logic goes here...
+          }
+        
+        Bitly.initialize("9bd1d4e87ce38e38044ff0c7c60c07c90483e2a4")*/
+        
+        
+        if ConexionRed.isConnectedToNetwork() == true {
+            GIDSignIn.sharedInstance().clientID = "465701420614-006480utbh9mvsubvmv398qrt0hbee1i.apps.googleusercontent.com"
+                       GIDSignIn.sharedInstance().delegate = self
+
+        }else{
+            
+        }
+        
+      
+          
+            
+        
+        
+        
+        
+        
         /*NotificationCenter.currentNotificationCenter().delegate = self
         
         let authOptions: AuthorizationOptions = [.alert, .badge, .sound]
@@ -38,10 +94,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate,GIDSignInDelegate,UNUserNo
     
     application.registerForRemoteNotifications()*/
         
-       
+        //UIApplication.shared.registerForRemoteNotifications()
+        FirebaseApp.configure()
+        Messaging.messaging().delegate = self
+        if #available(iOS 10.0, *) {
+          // For iOS 10 display notification (sent via APNS)
+          UNUserNotificationCenter.current().delegate = self
+
+          let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
+          UNUserNotificationCenter.current().requestAuthorization(
+            options: authOptions,
+            completionHandler: {_, _ in })
+        } else {
+          let settings: UIUserNotificationSettings =
+          UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil)
+          application.registerUserNotificationSettings(settings)
+        }
+        UIApplication.shared.registerForRemoteNotifications()
+        
         return true
     }
     
+   
+        
     /*func getNotificationSettings() {
         UNUserNotificationCenter.current().getNotificationSettings { settings in
             print("Notification settings: \(settings)")
@@ -156,6 +231,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate,GIDSignInDelegate,UNUserNo
     }
     
     
+    func application(
+      _ application: UIApplication,
+      didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
+    ) {
+      let tokenParts = deviceToken.map { data in String(format: "%02.2hhx", data) }
+      let token = tokenParts.joined()
+        let deviceTokenString = deviceToken.hexString
+        let token1 = deviceToken.reduce("", {$0 + String(format: "%02X", $1)})
+        print("Hex Token: \(deviceTokenString)")
+        print("Device Token: \(deviceToken)")
+       print("Reduced Token: \(token1)")
+        
+       
+        
+        
+       //Este es el token para utilizar en las notificaciones push
+        UserDefaults.standard.set(deviceTokenString, forKey: "deviceToken")
+        
+    }
+    
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        print("Fallo: \(error.localizedDescription)")
+    }
+
     
     
     

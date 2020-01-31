@@ -6,7 +6,8 @@ target 'CHMD2' do
   use_frameworks!
 
   # Pods for CHMD2
-pod 'GoogleSignIn'
+pod 'GoogleSignIn', '~> 4.4.0'
+pod 'Firebase'
 pod 'Firebase/Core'
 pod 'Firebase/Auth'
 pod 'Firebase/Database'
@@ -16,4 +17,5 @@ pod 'Firebase/Firestore'
 pod 'Alamofire'
 pod 'FMDB'
 pod 'SDWebImage'
+
 end

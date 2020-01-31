@@ -10,16 +10,46 @@ import UIKit
 import Alamofire
 import SQLite3
 
+
 class CircularTableViewController: UITableViewController {
     @IBOutlet var tableViewCirculares: UITableView!
     var circulares = [CircularTodas]()
     var db: OpaquePointer?
+    var idUsuario:String=""
+    var urlBase:String="https://www.chmd.edu.mx/WebAdminCirculares/ws/"
+    var noleerMetodo:String="noleerCircular.php"
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         circulares.removeAll()
-        let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCirculares.php?usuario_id=5"
-        let _url = URL(string: address);
-        obtenerCirculares(uri:address)
+        idUsuario = UserDefaults.standard.string(forKey: "idUsuario") ?? "0"
+        //idUsuario="1944"
+         
+        if ConexionRed.isConnectedToNetwork() == true {
+            let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesUsuarios.php?usuario_id=\(self.idUsuario)"
+              let _url = URL(string: address);
+            self.obtenerCirculares(uri:address)
+            
+        } else {
+            var alert = UIAlertView(title: "No está conectado a Internet", message: "Se muestran las últimas circulares registradas", delegate: nil, cancelButtonTitle: "Aceptar")
+            alert.show()
+            
+            print("Leer desde la base")
+            self.leerCirculares()
+            
+        }
+        
+        
+      
+        
+        
+        //self.limpiarCirculares()
+        
+        //self.guardarCirculares(idCircular: 1, idUsuario: 1944, nombre: "TEST...", textoCircular: "<p>Este es el texto de la circular<p>", no_leida: 0, leida: 0, favorita: 0, compartida: 0, eliminada: 0)
+        
+         //self.guardarCirculares(idCircular: 2, idUsuario: 1944, nombre: "TEST 2...", textoCircular: "<p>Este es el texto de la circular número 2<p>", no_leida: 0, leida: 0, favorita: 0, compartida: 0, eliminada: 0)
+        
+        
         setupLongPressGesture()
         
         
@@ -39,13 +69,15 @@ class CircularTableViewController: UITableViewController {
             if let indexPath = self.tableViewCirculares.indexPathForRow(at: touchPoint) {
                 let cell = tableView.dequeueReusableCell(withIdentifier: "celda", for: indexPath)
                     as! CircularTableViewCell
-                
+                let c = circulares[indexPath.row]
                 if cell.isSelected
                 {
                     cell.isSelected = false
                     if cell.accessoryType == UITableViewCell.AccessoryType.none
                     {
                         cell.accessoryType = UITableViewCell.AccessoryType.checkmark
+                        print(c.id)
+                        
                     }
                     else
                     {
@@ -80,7 +112,7 @@ class CircularTableViewController: UITableViewController {
         
         
         cell.lblEncabezado.text? = "Circular No. \(c.id)"
-        cell.lblTitulo.text? = c.nombre
+        cell.lblTitulo.text? = c.nombre.uppercased()
         cell.lblFecha.text? = c.fecha
         cell.imgCircular.image = c.imagen
         
@@ -108,6 +140,90 @@ class CircularTableViewController: UITableViewController {
         
     }
     
+    
+    //Función para manejar el swipe
+    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let favAction = self.contextualFavAction(forRowAtIndexPath: indexPath)
+        let eliminaAction = self.contextualDelAction(forRowAtIndexPath: indexPath)
+        let noleerAction = self.contextualUnreadAction(forRowAtIndexPath: indexPath)
+        let swipeConfig = UISwipeActionsConfiguration(actions: [eliminaAction,noleerAction,favAction])
+        return swipeConfig
+    }
+    
+    func contextualFavAction(forRowAtIndexPath indexPath: IndexPath) -> UIContextualAction {
+        // 1
+        let circular = circulares[indexPath.row]
+        // 2
+        let action = UIContextualAction(style: .normal,
+                                        title: "Favorita") { (contextAction: UIContextualAction, sourceView: UIView, completionHandler: (Bool) -> Void) in
+                                            let idCircular:String = "\(circular.id)"
+                                            
+                                            self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: idCircular)
+                                            
+                                            //self.tableViewCirculares.reloadRows(at: [indexPath], with: .none)
+                                           let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesUsuarios.php?usuario_id=\(self.idUsuario)"
+                                              let _url = URL(string: address);
+                                            self.obtenerCirculares(uri:address)
+                                            
+            
+        }
+        // 7
+        action.image = UIImage(named: "favIcon")
+        action.backgroundColor = UIColor.blue
+        
+        return action
+    }
+    
+    
+    
+    func contextualUnreadAction(forRowAtIndexPath indexPath: IndexPath) -> UIContextualAction {
+           // 1
+           let circular = circulares[indexPath.row]
+           // 2
+           let action = UIContextualAction(style: .normal,
+                                           title: "Compartida") { (contextAction: UIContextualAction, sourceView: UIView, completionHandler: (Bool) -> Void) in
+                                                let idCircular:String = "\(circular.id)"
+                                                                                         
+                                            self.noleerCircular(direccion: self.urlBase+self.noleerMetodo, usuario_id: self.idUsuario, circular_id: idCircular)
+                                                let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesUsuarios.php?usuario_id=\(self.idUsuario)"
+                                               let _url = URL(string: address);
+                                               self.obtenerCirculares(uri:address)
+                                               
+               
+           }
+           // 7
+           action.image = UIImage(named: "unreadIcon")
+        action.backgroundColor = UIColor.green
+           
+           return action
+       }
+    
+    func contextualDelAction(forRowAtIndexPath indexPath: IndexPath) -> UIContextualAction {
+        // 1
+        let circular = circulares[indexPath.row]
+        // 2
+        let action = UIContextualAction(style: .normal,
+                                        title: "Eliminada") { (contextAction: UIContextualAction, sourceView: UIView, completionHandler: (Bool) -> Void) in
+                                            let idCircular:String = "\(circular.id)"
+                                            
+                                            self.delCircular(direccion: self.urlBase+"eliminarCircular.php", usuario_id: self.idUsuario, circular_id: idCircular)
+                                            
+                                            let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesUsuarios.php?usuario_id=\(self.idUsuario)"
+                                              let _url = URL(string: address);
+                                           
+                                            self.obtenerCirculares(uri:address)
+                                            
+            
+        }
+        // 7
+        action.image = UIImage(named: "delIcon")
+        action.backgroundColor = UIColor.red
+        
+        return action
+    }
+
+    
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         let c = circulares[indexPath.row]
@@ -115,6 +231,8 @@ class CircularTableViewController: UITableViewController {
         
             UserDefaults.standard.set(c.id,forKey:"id")
             UserDefaults.standard.set(c.nombre,forKey:"nombre")
+            UserDefaults.standard.set(c.fecha,forKey:"fecha")
+            UserDefaults.standard.set(c.contenido,forKey:"contenido")
             performSegue(withIdentifier: "TcircularSegue", sender:self)
              
     }
@@ -123,7 +241,104 @@ class CircularTableViewController: UITableViewController {
      let crearTablaCirculares = "CREATE TABLE IF NOT EXISTS appCircular(idCircular INTEGER, idUsuario INTEGER, nombre TEXT, textoCircular TEXT, no_leida INTEGER, leida INTEGER, favorita INTEGER, compartida INTEGER, eliminada INTEGER)"
      */
     
-    func guardarCirculares(idCircular:Int,idUsuario:Int,nombre:String, textoCircular:String,no_leida:Int, leida:Int,favorita:Int,compartida:Int,eliminada:Int){
+    //Leer las circulares cuando no haya internet
+    func leerCirculares(){
+        
+        let fileUrl = try!
+                   FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd.sqlite")
+        
+        if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
+            print("error opening database")
+        }
+        
+           let consulta = "SELECT * FROM appCircular WHERE idUsuario=\(self.idUsuario);"
+           var queryStatement: OpaquePointer? = nil
+        var imagen:UIImage
+        imagen = UIImage.init(named: "appmenu05")!
+        
+        if sqlite3_prepare_v2(db, consulta, -1, &queryStatement, nil) == SQLITE_OK {
+       
+            
+            
+             while(sqlite3_step(queryStatement) == SQLITE_ROW) {
+                     let id = sqlite3_column_int(queryStatement, 0)
+                        var titulo:String="";
+                
+                       if let name = sqlite3_column_text(queryStatement, 2) {
+                           titulo = String(cString: name).uppercased()
+                          } else {
+                           print("name not found")
+                       }
+                
+                
+                        var cont:String="";
+                
+                       if let contenido = sqlite3_column_text(queryStatement, 3) {
+                           cont = String(cString: contenido)
+                          } else {
+                           print("name not found")
+                       }
+                
+                        let leida = sqlite3_column_int(queryStatement, 5)
+                        let favorita = sqlite3_column_int(queryStatement, 6)
+                        let eliminada = sqlite3_column_int(queryStatement, 8)
+                        if(Int(leida)>0){
+                           imagen = UIImage.init(named: "leidas_azul")!
+                         }
+                        
+                        
+                        if(Int(favorita)>0 && Int(leida) == 1){
+                           imagen = UIImage.init(named: "appmenu06")!
+                          }
+                        var noLeida:Int = 0
+                        if(Int(leida) == 0){
+                            noLeida = 1
+                            imagen = UIImage.init(named: "noleidas_celeste")!
+                           }
+                var fechaCircular="";
+                if let fecha = sqlite3_column_text(queryStatement, 9) {
+                    fechaCircular = String(cString: fecha).uppercased()
+                   } else {
+                    print("name not found")
+                }
+                
+                self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo,fecha: fechaCircular,estado: 0,contenido:cont))
+              }
+            
+            self.tableViewCirculares.reloadData()
+
+             }
+            else {
+             print("SELECT statement could not be prepared")
+           }
+
+           sqlite3_finalize(queryStatement)
+       }
+   
+    
+    //Esta función se utiliza para limpiar la base de datos cuando se abra al tener conexión a internet
+    func limpiarCirculares(){
+        let fileUrl = try!
+                   FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd.sqlite")
+               
+               if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
+                   print("Error en la base de datos")
+               }else{
+                        var statement:OpaquePointer?
+                let query = "DELETE FROM appCircular";
+                if sqlite3_prepare(db,query,-1,&statement,nil) != SQLITE_OK {
+                    print("Error")
+                }
+                if sqlite3_step(statement) == SQLITE_DONE {
+                    print("Tabla borrada")
+                }
+                
+                
+        }
+    }
+    
+    
+    func guardarCirculares(idCircular:Int,idUsuario:Int,nombre:String, textoCircular:String,no_leida:Int, leida:Int,favorita:Int,compartida:Int,eliminada:Int,fecha:String){
         
         //Abrir la base
         let fileUrl = try!
@@ -134,7 +349,7 @@ class CircularTableViewController: UITableViewController {
         }else{
             //La base de datos abrió correctamente
             var statement:OpaquePointer?
-            let query = "INSERT INTO appCircular(idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,compartida,eliminada) VALUES(?,?,?,?,?,?,?,?,?)"
+            let query = "INSERT INTO appCircular(idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,compartida,eliminada,created_at) VALUES(?,?,?,?,?,?,?,?,?,?)"
             if sqlite3_prepare(db,query,-1,&statement,nil) != SQLITE_OK {
                 print("Error")
             }
@@ -188,6 +403,7 @@ class CircularTableViewController: UITableViewController {
     
     
     func obtenerCirculares(uri:String){
+        self.circulares.removeAll()
         Alamofire.request(uri)
             .responseJSON { response in
                 // check for errors
@@ -203,19 +419,20 @@ class CircularTableViewController: UITableViewController {
                 
                 if let diccionarios = response.result.value as? [Dictionary<String,AnyObject>]{
                     for diccionario in diccionarios{
-                        print(diccionario)//print each of the dictionaries
+                        //print(diccionario)
                         
                         guard let id = diccionario["id"] as? String else {
                             print("No se pudo obtener el id")
                             return
                         }
+                        print(id)
                         
                         guard let titulo = diccionario["titulo"] as? String else {
                             print("No se pudo obtener el titulo")
                             return
                         }
                         
-                        guard let fecha = diccionario["updated_at"] as? String else {
+                        guard let fecha = diccionario["created_at"] as? String else {
                             print("No se pudo obtener la fecha")
                             return
                         }
@@ -232,10 +449,12 @@ class CircularTableViewController: UITableViewController {
                             return
                         }
                         
-                        guard let compartida = diccionario["compartida"] as? String else {
+                        
+                        guard let eliminada = diccionario["eliminado"] as? String else {
                             return
                         }
-                        guard let eliminada = diccionario["eliminado"] as? String else {
+                        
+                        guard let texto = diccionario["contenido"] as? String else {
                             return
                         }
                         
@@ -250,20 +469,14 @@ class CircularTableViewController: UITableViewController {
                         if(Int(favorito)!>0){
                             imagen = UIImage.init(named: "appmenu06")!
                         }
-                        
-                        if(Int(compartida)!>0){
-                            imagen = UIImage.init(named: "appmenu08")!
-                        }
-                        
-                       
                         var noLeida:Int = 0
                         if(Int(leido)! == 0){
                             noLeida = 1
                         }
                         
-                         self.circulares.append(CircularTodas(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo,fecha: fecha,estado: 0))
+                        self.circulares.append(CircularTodas(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo.uppercased(),fecha: fecha,estado: 0,contenido:""))
                         //Guardar las circulares
-                        /*self.guardarCirculares(idCircular: Int(id)!, idUsuario: 1660, nombre: titulo, textoCircular: "", no_leida: noLeida, leida: Int(leido)!, favorita: Int(favorito)!, compartida: Int(compartida)!, eliminada: Int(eliminada)!)*/
+                        self.guardarCirculares(idCircular: Int(id)!, idUsuario: Int(self.idUsuario)!, nombre: titulo.uppercased(), textoCircular: texto, no_leida: noLeida, leida: Int(leido)!, favorita: Int(favorito)!, compartida: 0, eliminada: Int(eliminada)!,fecha: fecha)
                     }
                     
                     self.tableViewCirculares.reloadData()
@@ -277,6 +490,45 @@ class CircularTableViewController: UITableViewController {
     }
     
 
- 
+    //Operaciones con las circulares
+    func favCircular(direccion:String, usuario_id:String, circular_id:String){
+        let parameters: Parameters = ["usuario_id": usuario_id, "circular_id": circular_id]      //This will be your parameter
+         Alamofire.request(direccion, method: .post, parameters: parameters).responseJSON { response in
+            switch (response.result) {
+            case .success:
+                print(response)
+                break
+            case .failure:
+                print(Error.self)
+            }
+        }
+    }
+    
+    
+    func noleerCircular(direccion:String, usuario_id:String, circular_id:String){
+           let parameters: Parameters = ["usuario_id": usuario_id, "circular_id": circular_id]      //This will be your parameter
+           Alamofire.request(direccion, method: .post, parameters: parameters).responseJSON { response in
+               switch (response.result) {
+               case .success:
+                   print(response)
+                   break
+               case .failure:
+                   print(Error.self)
+               }
+           }
+       }
+    
+ func delCircular(direccion:String, usuario_id:String, circular_id:String){
+     let parameters: Parameters = ["usuario_id": usuario_id, "circular_id": circular_id]      //This will be your parameter
+     Alamofire.request(direccion, method: .post, parameters: parameters).responseJSON { response in
+         switch (response.result) {
+         case .success:
+             print(response)
+             break
+         case .failure:
+             print(Error.self)
+         }
+     }
+ }
 
 }

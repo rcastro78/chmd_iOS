@@ -9,6 +9,7 @@
 import UIKit
 import Alamofire
 import Firebase
+import Network
 
 extension OperatingSystemVersion {
     func getFullVersion(separator: String = ".") -> String {
@@ -17,40 +18,58 @@ extension OperatingSystemVersion {
 }
 
 class ValidarCorreoViewController: UIViewController {
-    var email:String="jacozon@gmail.com"
+    var email:String=""
     var so:String=""
     var deviceToken = ""
     
     @IBOutlet weak var lblMensaje: UILabel!
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        email = UserDefaults.standard.string(forKey: "email") ?? ""
 
         // Do any additional setup after loading the view.
      }
     
     override func viewDidAppear(_ animated: Bool) {
         print(email)
-        let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/validarEmail.php?correo=\(email)"
-        let _url = URL(string: address)!
-        validarEmail(url: _url)
+                
+        if(ConexionRed.isConnectedToNetwork()){
+            let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/validarEmail.php?correo=\(self.email)"
+            let _url = URL(string: address)!
+            validarEmail(url: _url)
+        }else{
+            var existe:String = UserDefaults.standard.string(forKey: "valida") ?? "0"
+            let valida = Int(existe) ?? 0
+            if(valida==1){
+                performSegue(withIdentifier: "validarSegue", sender: self)
+            }else{
+               
+            }
+                
+           
+            
+        }
         
-       
-        
-        
+               
+  
     }
+        
+     
     
     
     func validarEmail(url:URL){
         var valida:Int=0
+        
         URLSession.shared.dataTask(with: url) {
             (data, response, error) in
             if let datos = try? JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String:Any]] {
                 
                     let obj = datos[0] as! [String : AnyObject]
                     let existe = obj["existe"] as! String
+                    print("existe: "+existe)
                     valida = Int(existe) ?? 0
-                
+                    print("valida: \(valida)")
+                    UserDefaults.standard.set(existe, forKey: "valida")
                 
             }
             
@@ -58,17 +77,11 @@ class ValidarCorreoViewController: UIViewController {
         print(valida)
         //if (valida==1){
         //TODO: Cuando pase a produccion
-        if (valida==0 || valida==1){
+        if (valida==1 || valida==0){
              lblMensaje.text="Cuenta de correo validada"
             
             
-            //Registrar dispositivo
-            email = UserDefaults.standard.string(forKey: "email") ?? ""
-            let os = ProcessInfo().operatingSystemVersion
-            so = "iOS \(os.getFullVersion())"
-            deviceToken = Messaging.messaging().fcmToken ?? ""
-            
-            registrarDispositivo(direccion: "https://www.chmd.edu.mx/pruebascd/app/webservices/registrarDispositivo.php", correo: email, device_id: deviceToken, so: so)
+           
             
             
              performSegue(withIdentifier: "validarSegue", sender: self)
@@ -88,18 +101,7 @@ class ValidarCorreoViewController: UIViewController {
     
     
     
-    func registrarDispositivo(direccion:String, correo:String, device_id:String, so:String){
-        let parameters: Parameters = ["correo": correo, "device_token": device_id,"plataforma":so]      //This will be your parameter
-        Alamofire.request(direccion, method: .post, parameters: parameters).responseJSON { response in
-            switch (response.result) {
-            case .success:
-                print(response)
-                break
-            case .failure:
-                print(Error.self)
-            }
-        }
-    }
+    
     
 
 }

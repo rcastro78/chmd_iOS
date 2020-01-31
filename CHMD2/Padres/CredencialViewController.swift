@@ -51,7 +51,7 @@ class CredencialViewController: UIViewController {
           response in
 
           let status = response.response?.statusCode
-            if(status!>200){
+            if(status!>=200){
                 let imagen = self.generarQR(from: self.urlFotos+"sinfoto.png")
                 let imageURL = URL(string: self.urlFotos+"sinfoto.png")!
                 self.imgFotoPadre.sd_setImage(with: imageURL)

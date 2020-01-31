@@ -13,11 +13,13 @@ class Circular: NSObject {
     var encabezado:String
     var fecha:String
     var id:Int=0;
+    var contenido:String
     
-    init(id:Int,encabezado:String,nombre:String,fecha:String) {
+    init(id:Int,encabezado:String,nombre:String,fecha:String,contenido:String) {
         self.id=id
         self.nombre=nombre
         self.encabezado = encabezado
         self.fecha = fecha
+        self.contenido = contenido
       }
 }

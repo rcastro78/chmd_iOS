@@ -11,7 +11,7 @@ import AVKit
 import AVFoundation
 import GoogleSignIn
 import Alamofire
-
+import Firebase
 
 extension Collection where Indices.Iterator.Element == Index {
     subscript (safe index: Index) -> Iterator.Element? {
@@ -25,6 +25,11 @@ class PrincipalTableViewController: UITableViewController {
     //var avPlayerLayer:AVPlayerLayer!
     //var paused:Bool = false
     
+      var avPlayer:AVPlayer!
+      var avPlayerLayer:AVPlayerLayer!
+      var paused:Bool = false
+    
+    
     @IBOutlet var tableViewMenu: UITableView!
     
     var menu = [MenuPrincipal]()
@@ -36,7 +41,7 @@ class PrincipalTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         //
-        email="jacozon@gmail.com";
+        email=UserDefaults.standard.string(forKey: "email") ?? ""
         //email = UserDefaults.standard.string(forKey: "email") ?? ""
         print("correo:"+email)
         
@@ -46,10 +51,10 @@ class PrincipalTableViewController: UITableViewController {
         let CREDENCIAL=4
  
             
-            menu.append(MenuPrincipal(id: INICIO, nombre: "Circulares", imagen:UIImage.init(named: "circulares")!))
-            menu.append(MenuPrincipal(id: MAGUEN, nombre: "Mi Maguén", imagen:UIImage.init(named: "mi_maguen")!))
-            menu.append(MenuPrincipal(id: CREDENCIAL, nombre: "Mi Credencial", imagen:UIImage.init(named: "credencial01")!))
-            menu.append(MenuPrincipal(id: SIGN_OUT, nombre: "Cerrar Sesión", imagen:UIImage.init(named: "appmenu07")!))
+            menu.append(MenuPrincipal(id: INICIO, nombre: "Circulares", imagen:UIImage.init(named: "circulares2")!))
+            menu.append(MenuPrincipal(id: MAGUEN, nombre: "Mi Maguén", imagen:UIImage.init(named: "maguen2")!))
+            menu.append(MenuPrincipal(id: CREDENCIAL, nombre: "Mi Credencial", imagen:UIImage.init(named: "credencial2")!))
+            menu.append(MenuPrincipal(id: SIGN_OUT, nombre: "Cerrar Sesión", imagen:UIImage.init(named: "cerrar2")!))
         
     
         /*let urlVideo = Bundle.main.url(forResource: "video_app", withExtension: "mp4")
@@ -75,6 +80,8 @@ class PrincipalTableViewController: UITableViewController {
         obtenerDatosUsuario(uri:base_url+get_usuario+"?correo="+email)
         
     
+        
+        
     }
 
     /*@objc func playerItemDidReachEnd(notification: NSNotification) {
@@ -138,6 +145,12 @@ class PrincipalTableViewController: UITableViewController {
                                            return
                     }
                     
+                    
+                    guard let correo = diccionario["correo"] as? String else {
+                                           print("No se pudo obtener el correo")
+                                           return
+                    }
+                    
                     var foto:String = ""
                     
                     if(fotografia.count>5){
@@ -160,9 +173,27 @@ class PrincipalTableViewController: UITableViewController {
                     UserDefaults.standard.set(familia, forKey: "familia")
                     UserDefaults.standard.set(fotoUrl, forKey: "fotoUrl")
                     UserDefaults.standard.set(responsable, forKey: "responsable")
-                  
+                    UserDefaults.standard.set(correo, forKey: "correo")
                     
                     
+                    //Registrar dispositivo
+                             
+                               let os = ProcessInfo().operatingSystemVersion
+                               let so = "iOS \(os.getFullVersion())"
+                               
+                    
+                    InstanceID.instanceID().instanceID { (result, error) in
+                      if let error = error {
+                        print("Error fetching remote instance ID: \(error)")
+                      } else if let result = result {
+                        print("Remote instance ID token: \(result.token)")
+                        self.registrarDispositivo(direccion: "https://www.chmd.edu.mx/WebAdminCirculares/ws/registrarDispositivo.php", correo: correo, device_id: result.token, so: so,id:id)
+                                           
+                      }
+                    }
+                    
+                    
+                      
                     }
                 }
                 
@@ -170,6 +201,21 @@ class PrincipalTableViewController: UITableViewController {
         
     
     }
+    
+    
+    func registrarDispositivo(direccion:String, correo:String, device_id:String, so:String,id:String){
+        let parameters: Parameters = ["correo": correo, "device_token": device_id,"plataforma":so,"id_usuario":id]      //This will be your parameter
+        Alamofire.request(direccion, method: .post, parameters: parameters).responseJSON { response in
+            switch (response.result) {
+            case .success:
+                print(response)
+                break
+            case .failure:
+                print(Error.self)
+            }
+        }
+    }
+    
     
     /*
     
@@ -276,7 +322,7 @@ class PrincipalTableViewController: UITableViewController {
             as! PrincipalTableViewCell
         let m = menu[indexPath.row]
         cell.lblMenu.text?=m.nombre
-        //cell.lblMenu.font = UIFont(name: "Avenir-Light", size: 15.0)
+        cell.lblMenu.font = UIFont(name: "Gotham Rounded", size: 17.0)
         cell.imgMenu.image=m.imagen
         
         return cell
@@ -293,10 +339,13 @@ class PrincipalTableViewController: UITableViewController {
             performSegue(withIdentifier: "webSegue", sender: self)
         }
         if(valor.id==3){
-            if GIDSignIn.sharedInstance()?.currentUser != nil {
+           
                 GIDSignIn.sharedInstance()?.signOut()
                 performSegue(withIdentifier: "unwindSegueToVC1", sender: self)
-            }
+                UserDefaults.standard.set(0,forKey: "autenticado")
+                UserDefaults.standard.set(0,forKey: "cuentaValida")
+                UserDefaults.standard.set("", forKey: "nombre")
+                UserDefaults.standard.set("", forKey: "email")
         }
         
         if (valor.id==4){
@@ -309,16 +358,40 @@ class PrincipalTableViewController: UITableViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        //avPlayer.play()
-        //paused = false
+        
+        
+        let urlVideo = Bundle.main.url(forResource: "video_app", withExtension: "mp4")
+        
+        avPlayer = AVPlayer(url: urlVideo!)
+        avPlayerLayer = AVPlayerLayer(player: avPlayer)
+        avPlayerLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
+        avPlayer.volume = 0
+        avPlayer.actionAtItemEnd = AVPlayer.ActionAtItemEnd.none
+        
+        avPlayerLayer.frame = view.layer.bounds
+        view.backgroundColor = UIColor.clear;
+        view.layer.insertSublayer(avPlayerLayer, at: 0)
+        avPlayer.seek(to: CMTime.zero)
+        avPlayer.play()
+        paused = false
+        /*NotificationCenter.default.addObserver(self,
+                                               selector: Selector("playerItemDidReachEnd:"),
+                                               name: NSNotification.Name.AVPlayerItemDidPlayToEndTime,
+                                               object: avPlayer.currentItem)
+        */
         
     }
+    
+    func playerItemDidReachEnd() {
+        avPlayer!.seek(to: CMTime.zero)
+        avPlayer!.play()
+       }
     
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        //avPlayer.pause()
-        //paused = true
+        avPlayer.pause()
+        paused = true
     }
     
     

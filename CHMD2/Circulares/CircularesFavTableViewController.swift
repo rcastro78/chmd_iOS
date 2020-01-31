@@ -8,17 +8,28 @@
 
 import UIKit
 import Alamofire
+import SQLite3
+
 class CircularesFavTableViewController: UITableViewController {
 
     @IBOutlet var tableCirculares: UITableView!
-    
-    
+     var db: OpaquePointer?
+    var idUsuario:String=""
     var circulares = [Circular]()
     override func viewDidLoad() {
         super.viewDidLoad()
         circulares.removeAll()
-        let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesFavoritas.php?usuario_id=5"
-        obtenerCirculares(uri: address)
+         idUsuario = UserDefaults.standard.string(forKey: "idUsuario") ?? "0"
+        if(ConexionRed.isConnectedToNetwork()){
+            let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesFavoritas.php?usuario_id=\(idUsuario)"
+             self.obtenerCirculares(uri: address)
+        }else{
+           //Circulares favoritas guardadas
+            self.leerCirculares()
+        }
+        
+       
+  
         
     }
     
@@ -40,7 +51,7 @@ class CircularesFavTableViewController: UITableViewController {
             as! CircularFavoritaTableViewCell
         let c = circulares[indexPath.row]
         cell.lblEncabezado.text? = "Circular No. \(c.id)"
-        cell.lblTitulo.text? = c.nombre
+        cell.lblTitulo.text? = c.nombre.uppercased()
         cell.lblFecha.text? = c.fecha
         
         return cell
@@ -93,52 +104,127 @@ class CircularesFavTableViewController: UITableViewController {
      }
      */
     
-    func obtenerCirculares(uri:String){
-        Alamofire.request(uri)
-            .responseJSON { response in
-                // check for errors
-                guard response.result.error == nil else {
-                    // got an error in getting the data, need to handle it
-                    print("error en la consulta")
-                    print(response.result.error!)
-                    return
+    
+    func leerCirculares(){
+           
+           let fileUrl = try!
+                      FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd.sqlite")
+           
+           if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
+               print("error opening database")
+           }
+           
+              let consulta = "SELECT * FROM appCircular WHERE idUsuario=\(self.idUsuario) AND favorita=1;"
+              var queryStatement: OpaquePointer? = nil
+           var imagen:UIImage
+           imagen = UIImage.init(named: "appmenu05")!
+           
+           if sqlite3_prepare_v2(db, consulta, -1, &queryStatement, nil) == SQLITE_OK {
+          
+               
+               
+                while(sqlite3_step(queryStatement) == SQLITE_ROW) {
+                        let id = sqlite3_column_int(queryStatement, 0)
+                           var titulo:String="";
+                   
+                          if let name = sqlite3_column_text(queryStatement, 2) {
+                              titulo = String(cString: name).uppercased()
+                             } else {
+                              print("name not found")
+                          }
+                   
+                   
+                           var cont:String="";
+                   
+                          if let contenido = sqlite3_column_text(queryStatement, 3) {
+                              cont = String(cString: contenido)
+                             } else {
+                              print("name not found")
+                          }
+                   
+                           let leida = sqlite3_column_int(queryStatement, 5)
+                           let favorita = sqlite3_column_int(queryStatement, 6)
+                           let eliminada = sqlite3_column_int(queryStatement, 8)
+                           if(Int(leida)>0){
+                              imagen = UIImage.init(named: "leidas_azul")!
+                            }
+                            //No leídas
+                            if(Int(leida)==0){
+                               imagen = UIImage.init(named: "noleidas_celeste")!
+                             }
+                           if(Int(favorita)>0){
+                              imagen = UIImage.init(named: "appmenu06")!
+                             }
+                           var noLeida:Int = 0
+                           if(Int(leida) == 0){
+                               noLeida = 1
+                              }
+                   var fechaCircular="";
+                   if let fecha = sqlite3_column_text(queryStatement, 9) {
+                       fechaCircular = String(cString: fecha).uppercased()
+                      } else {
+                       print("name not found")
+                   }
+                   
+                    self.circulares.append(Circular(id:Int(id),encabezado: "",nombre: titulo,fecha: fechaCircular,contenido:cont))
+                 }
+               
+               self.tableCirculares.reloadData()
+
                 }
-                
-                
-                if let diccionarios = response.result.value as? [Dictionary<String,AnyObject>]{
-                    for diccionario in diccionarios{
-                        print(diccionario)//print each of the dictionaries
-                        
-                        guard let id = diccionario["id"] as? String else {
-                            print("No se pudo obtener el id")
-                            return
-                        }
-                        
-                        guard let titulo = diccionario["titulo"] as? String else {
-                            print("No se pudo obtener el titulo")
-                            return
-                        }
-                        
-                        guard let fecha = diccionario["updated_at"] as? String else {
-                            print("No se pudo obtener la fecha")
-                            return
-                        }
-                        
-                        
-                        self.circulares.append(Circular(id:Int(id)!,encabezado: "",nombre: titulo,fecha: fecha))
-                        
-                        
-                    }
-                    
-                    self.tableCirculares.reloadData()
-                }
-                
-                
-        }
-        
-    }
+               else {
+                print("SELECT statement could not be prepared")
+              }
+
+              sqlite3_finalize(queryStatement)
+          }
     
     
+    
+   func obtenerCirculares(uri:String){
+          Alamofire.request(uri)
+              .responseJSON { response in
+                  // check for errors
+                  guard response.result.error == nil else {
+                      // got an error in getting the data, need to handle it
+                      print("error en la consulta")
+                      print(response.result.error!)
+                      return
+                  }
+                  
+                  
+                  if let diccionarios = response.result.value as? [Dictionary<String,AnyObject>]{
+                      for diccionario in diccionarios{
+                          print(diccionario)//print each of the dictionaries
+                          
+                          guard let id = diccionario["id"] as? String else {
+                              print("No se pudo obtener el id")
+                              return
+                          }
+                          
+                          guard let titulo = diccionario["titulo"] as? String else {
+                              print("No se pudo obtener el titulo")
+                              return
+                          }
+                          
+                          guard let fecha = diccionario["created_at"] as? String else {
+                              print("No se pudo obtener la fecha")
+                              return
+                          }
+                          
+                          
+                        self.circulares.append(Circular(id:Int(id)!,encabezado: "",nombre: titulo,fecha: fecha,contenido: ""))
+                          
+                          
+                      }
+                      
+                      self.tableCirculares.reloadData()
+                  }
+                  
+                  
+          }
+          
+      }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
@@ -146,6 +232,7 @@ class CircularesFavTableViewController: UITableViewController {
         
         UserDefaults.standard.set(c.id,forKey:"id")
         UserDefaults.standard.set(c.nombre,forKey:"nombre")
+        UserDefaults.standard.set(c.contenido,forKey:"contenido")
         performSegue(withIdentifier: "FcircularSegue", sender:self)
         
     }
