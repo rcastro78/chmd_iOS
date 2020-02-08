@@ -27,7 +27,7 @@ extension Data {
 class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate,GIDSignInDelegate,UNUserNotificationCenterDelegate {
 
     var window: UIWindow?
-
+    var metodo_circular:String="getCircularId.php"
     
     func registerForPushNotifications() {
       UNUserNotificationCenter.current() // 1
@@ -161,8 +161,37 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate,GIDSignI
     
     
     
+    open func application(_ application: UIApplication, didReceiveRemoteNotification data: [AnyHashable: Any]) {
+       
+       guard
+        let aps = data[AnyHashable("aps")] as? NSDictionary,
+            let alert = aps["alert"] as? NSDictionary,
+            let body = alert["body"] as? String,
+            let title = alert["title"] as? String,
+            let idC = alert["id"] as? String
+            else {
+               
+                return
+            }
+            
+        UserDefaults.standard.set(idC, forKey: "idViaNotif")
+        //Se recibió una notificacion
+        //print("Title: \(title) \nBody:\(body)")
+        
+    }
     
-    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+            print("Se dio click a la notificacion")
+        UserDefaults.standard.set(1, forKey: "viaNotif")
+          
+        let mainStoryboard:UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+                let circulares = mainStoryboard.instantiateViewController(withIdentifier: "CircularTableViewController") as! CircularTableViewController
+                self.window?.rootViewController = circulares
+
+        
+        
+            completionHandler()
+    }
     
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
         return GIDSignIn.sharedInstance().handle(url as URL?,

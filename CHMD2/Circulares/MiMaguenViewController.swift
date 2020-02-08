@@ -8,7 +8,7 @@
 
 import UIKit
 import WebKit
-class MiMaguenViewController: UIViewController {
+class MiMaguenViewController: UIViewController,WKUIDelegate {
 
     @IBOutlet weak var webView: WKWebView!
     override func viewDidLoad() {
@@ -29,6 +29,14 @@ class MiMaguenViewController: UIViewController {
         
         
         
+    }
+    
+    override func loadView() {
+        let webConfiguration = WKWebViewConfiguration()
+        webConfiguration.applicationNameForUserAgent = "Version/8.0.2 Safari/600.2.5"
+        webView = WKWebView(frame: .zero, configuration: webConfiguration)
+        webView.uiDelegate = self
+        view = webView
     }
     
 

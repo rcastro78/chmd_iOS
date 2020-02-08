@@ -111,6 +111,12 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
        
     }
     
+    
+    @IBAction func googleSignIn(_ sender: UIButton) {
+        GIDSignIn.sharedInstance().signIn()
+    }
+    
+    
     func signIn(signIn: GIDSignIn!, didSignInForUser user: GIDGoogleUser!, withError error: NSError!){
         if (error != nil){
             let nombre:String = user.profile.givenName

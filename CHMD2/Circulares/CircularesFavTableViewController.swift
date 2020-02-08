@@ -233,6 +233,7 @@ class CircularesFavTableViewController: UITableViewController {
         UserDefaults.standard.set(c.id,forKey:"id")
         UserDefaults.standard.set(c.nombre,forKey:"nombre")
         UserDefaults.standard.set(c.contenido,forKey:"contenido")
+        UserDefaults.standard.set(0, forKey: "viaNotif")
         performSegue(withIdentifier: "FcircularSegue", sender:self)
         
     }

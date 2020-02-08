@@ -17,11 +17,15 @@ class CircularDetalleViewController: UIViewController {
     
     @IBOutlet weak var webView: WKWebView!
     @IBOutlet weak var lblFechaCircular: UILabel!
+    @IBOutlet weak var lblTituloParte1: UILabel!
+    @IBOutlet weak var lblTituloParte2: UILabel!
     
     var ids = [String]()
     var titulos = [String]()
+    var fechas = [String]()
     var idInicial:Int=0
     var posicion:Int=0
+    var viaNotif:Int=0
     var id:String=""
     var idUsuario=""
     var favMetodo:String="favCircular.php"
@@ -31,23 +35,42 @@ class CircularDetalleViewController: UIViewController {
     var urlBase:String="https://www.chmd.edu.mx/WebAdminCirculares/ws/"
     var circularUrl:String=""
     var circularTitulo:String=""
-
+    var metodo_circular="getCircularId.php"
+    var contenido:String=""
+    var circulares = [CircularTodas]()
     override func viewDidLoad() {
         super.viewDidLoad()
+        lblTituloParte1.backgroundColor = UIColor(red: 145/255, green: 202/255, blue: 238/255, alpha: 1.0)
+        lblTituloParte2.backgroundColor = UIColor(red: 9/255, green: 143/255, blue: 207/255, alpha: 1.0)
+        lblTituloParte1.textColor = UIColor(red: 14/255, green: 36/255, blue: 85/255, alpha: 1.0)
+        lblTituloParte2.textColor = UIColor(red: 14/255, green: 73/255, blue: 123/255, alpha: 1.0)
+        lblTituloParte2.isHidden = true
+        
         idUsuario = UserDefaults.standard.string(forKey: "idUsuario") ?? "0"
-        let titulo = UserDefaults.standard.string(forKey: "nombre") ?? ""
-        circularTitulo = titulo
-        let fecha = UserDefaults.standard.string(forKey: "fecha") ?? ""
-        let contenido = UserDefaults.standard.string(forKey:"contenido") ?? ""
-        id = UserDefaults.standard.string(forKey: "id") ?? ""
-        idInicial = Int(UserDefaults.standard.string(forKey: "id") ?? "0")!
+        viaNotif = UserDefaults.standard.integer(forKey: "viaNotif")
         
-        let anio = fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
-        let mes = fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
-        let dia = fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
-        lblFechaCircular.text = "\(dia)/\(mes)/\(anio)"
-        
-        self.title = titulo.uppercased()
+        if (viaNotif == 0){
+            let titulo = UserDefaults.standard.string(forKey: "nombre") ?? ""
+            circularTitulo = titulo
+            let fecha = UserDefaults.standard.string(forKey: "fecha") ?? ""
+            contenido = UserDefaults.standard.string(forKey:"contenido") ?? ""
+            id = UserDefaults.standard.string(forKey: "id") ?? ""
+            idInicial = Int(UserDefaults.standard.string(forKey: "id") ?? "0")!
+            
+            let anio = fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
+                   let mes = fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
+                   let dia = fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
+                   lblFechaCircular.text = "\(dia)/\(mes)/\(anio)"
+                   self.title = "Detalles de la circular"
+                   partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:titulo)
+            
+        }else{
+            id = UserDefaults.standard.string(forKey: "idViaNotif") ?? ""
+            idInicial = Int(UserDefaults.standard.string(forKey: "idViaNotif") ?? "0")!
+            obtenerCircular(uri: urlBase+metodo_circular+"?id="+id)
+           
+        }
+       
         
         if(ConexionRed.isConnectedToNetwork()){
             let link = URL(string:urlBase+"getCircularId2.php?id=\(id)")!
@@ -160,7 +183,9 @@ class CircularDetalleViewController: UIViewController {
             let request = URLRequest(url: link)
             circularUrl = urlBase+"getCircularId2.php?id=\(nextId)"
             webView.load(request)
-            self.title = nextTitulo.uppercased()
+            self.title = "Detalles de la circular"
+            //nextTitulo.uppercased()
+            partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())
             id = nextId;
         }else{
             posicion = 0
@@ -185,7 +210,9 @@ class CircularDetalleViewController: UIViewController {
             circularUrl = urlBase+"getCircularId2.php?id=\(nextId)"
             let request = URLRequest(url: link)
             webView.load(request)
-            self.title = nextTitulo.uppercased()
+            self.title = "Detalles de la circular"
+                //nextTitulo.uppercased()
+            partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())
             id = nextId
         }else{
             posicion = ids.count
@@ -235,17 +262,17 @@ class CircularDetalleViewController: UIViewController {
             link = response?.bitlink ?? ""
         }*/
         
-        compartir(message: "Compartiendo", link: link)
+        compartir(message: "Compartiendo", link: circularUrl)
     }
     
     
-    func compartir(message: String, link: String) {
-        if let link = URL(string: link) {
-            let objectsToShare = [message,link] as [Any]
-            let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
-            self.present(activityVC, animated: true, completion: nil)
-        }
-    }
+   func compartir(message: String, link: String) {
+       if let link = NSURL(string: link) {
+           let objectsToShare = [message,link] as [Any]
+           let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
+           self.present(activityVC, animated: true, completion: nil)
+       }
+   }
     
     
     
@@ -437,11 +464,96 @@ class CircularDetalleViewController: UIViewController {
         
  }
     
+        
+        
+        
+        
     
     
 }
     
-  
+  func obtenerCircular(uri:String){
+          
+          Alamofire.request(uri)
+              .responseJSON { response in
+                  // check for errors
+                  guard response.result.error == nil else {
+                      // got an error in getting the data, need to handle it
+                      print("error en la consulta")
+                      print(response.result.error!)
+                      return
+                  }
+                  /*
+                   [{"id":"1008","titulo":"\u00a1Felices vacaciones!","estatus":"Enviada","ciclo_escolar_id":"4","created_at":"2019-04-12 13:02:19","updated_at":"2019-04-12 13:02:19","leido":"1","favorito":"1","compartida":"1","eliminado":"1","status_envio":null,"envio_todos":"0"},
+                   */
+                  
+                  if let diccionarios = response.result.value as? [Dictionary<String,AnyObject>]{
+                      for diccionario in diccionarios{
+                          //print(diccionario)
+                          
+                          guard let id = diccionario["id"] as? String else {
+                              print("No se pudo obtener el id")
+                              return
+                          }
+                          print(id)
+                          
+                          guard let titulo = diccionario["titulo"] as? String else {
+                              print("No se pudo obtener el titulo")
+                              return
+                          }
+                        guard let fecha = diccionario["created_at"] as? String else {
+                                                     print("No se pudo obtener la fecha")
+                                                     return
+                                                 }
+                        self.ids.append(id)
+                        self.titulos.append(titulo)
+                        self.fechas.append(fecha)
+                  }
+                    
+                    let anio = self.fechas[0].components(separatedBy: " ")[0].components(separatedBy: "-")[0]
+                                      let mes = self.fechas[0].components(separatedBy: " ")[0].components(separatedBy: "-")[1]
+                                      let dia = self.fechas[0].components(separatedBy: " ")[0].components(separatedBy: "-")[2]
+                    self.lblFechaCircular.text = "\(dia)/\(mes)/\(anio)"
+                    self.title = "Detalles de la circular"
+                    //self.titulos[0].uppercased()
+                    self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:self.titulos[0].uppercased())
+              
+          
+      }
+                
+                
+             
+                
+          
+   }
+      
+          
+    
+          
+          
+      
+      
+  }
+    
+   
+    func partirTitulo(label1:UILabel, label2:UILabel, titulo:String){
+        var totalElementos:Int=0
+        var tituloArreglo = titulo.split{$0 == " "}.map(String.init)
+        totalElementos = tituloArreglo.count
+        if(totalElementos>2){
+            label1.text = tituloArreglo[0]+" "+tituloArreglo[1]
+            var t:String=""
+            var i:Int=0
+            for i in 2...totalElementos-1{
+                t += tituloArreglo[i]+" "
+            }
+            label2.text = t
+            label2.isHidden = false
+        }else{
+             label2.isHidden = true
+            label1.text = titulo
+        }
+    }
     
 }
 

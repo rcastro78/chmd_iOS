@@ -185,6 +185,7 @@ class CircularesLeidasTableViewController: UITableViewController {
         
         UserDefaults.standard.set(c.id,forKey:"id")
         UserDefaults.standard.set(c.nombre,forKey:"nombre")
+        UserDefaults.standard.set(0, forKey: "viaNotif")
         performSegue(withIdentifier: "LcircularSegue", sender:self)
         
     }

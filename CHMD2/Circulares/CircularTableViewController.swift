@@ -233,6 +233,7 @@ class CircularTableViewController: UITableViewController {
             UserDefaults.standard.set(c.nombre,forKey:"nombre")
             UserDefaults.standard.set(c.fecha,forKey:"fecha")
             UserDefaults.standard.set(c.contenido,forKey:"contenido")
+            UserDefaults.standard.set(0, forKey: "viaNotif")
             performSegue(withIdentifier: "TcircularSegue", sender:self)
              
     }
@@ -413,9 +414,7 @@ class CircularTableViewController: UITableViewController {
                     print(response.result.error!)
                     return
                 }
-                /*
-                 [{"id":"1008","titulo":"\u00a1Felices vacaciones!","estatus":"Enviada","ciclo_escolar_id":"4","created_at":"2019-04-12 13:02:19","updated_at":"2019-04-12 13:02:19","leido":"1","favorito":"1","compartida":"1","eliminado":"1","status_envio":null,"envio_todos":"0"},
-                 */
+               
                 
                 if let diccionarios = response.result.value as? [Dictionary<String,AnyObject>]{
                     for diccionario in diccionarios{

@@ -45,26 +45,28 @@ class CredencialViewController: UIViewController {
         print(fotoUrl)
         print(nombre)
         print(responsable)
-        
-        let imageURL = URL(string: fotoUrl)!
-          Alamofire.request(imageURL).responseJSON {
-          response in
+         if(ConexionRed.isConnectedToNetwork()){
+            let imageURL = URL(string: fotoUrl)!
+              Alamofire.request(imageURL).responseJSON {
+              response in
 
-          let status = response.response?.statusCode
-            if(status!>=200){
-                let imagen = self.generarQR(from: self.urlFotos+"sinfoto.png")
-                let imageURL = URL(string: self.urlFotos+"sinfoto.png")!
-                self.imgFotoPadre.sd_setImage(with: imageURL)
-                self.qrImage.image = imagen
-            }else{
-                let imagen = self.generarQR(from: fotoUrl)
-                let imageURL = URL(string: fotoUrl)!
-                let placeholderImageURL = URL(string: self.urlFotos+"sinfoto.png")!
-                self.imgFotoPadre.sd_setImage(with: imageURL,placeholderImage:UIImage.init(named: "sinfoto.png"))
-                self.qrImage.image = imagen
+              let status = response.response?.statusCode
+                if(status!>=200){
+                    let imagen = self.generarQR(from: self.urlFotos+"sinfoto.png")
+                    let imageURL = URL(string: self.urlFotos+"sinfoto.png")!
+                    self.imgFotoPadre.sd_setImage(with: imageURL)
+                    self.qrImage.image = imagen
+                }else{
+                    let imagen = self.generarQR(from: fotoUrl)
+                    let imageURL = URL(string: fotoUrl)!
+                    let placeholderImageURL = URL(string: self.urlFotos+"sinfoto.png")!
+                    self.imgFotoPadre.sd_setImage(with: imageURL,placeholderImage:UIImage.init(named: "sinfoto.png"))
+                    self.qrImage.image = imagen
+                }
+
             }
-
         }
+        
         
       
         
