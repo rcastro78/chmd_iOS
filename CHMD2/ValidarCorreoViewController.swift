@@ -5,7 +5,6 @@
 //  Created by Rafael David Castro Luna on 8/9/19.
 //  Copyright © 2019 Rafael David Castro Luna. All rights reserved.
 //
-
 import UIKit
 import Alamofire
 import Firebase
@@ -78,17 +77,8 @@ class ValidarCorreoViewController: UIViewController {
         //if (valida==1){
         //TODO: Cuando pase a produccion
         if (valida==1 || valida==0){
-             lblMensaje.text="Cuenta de correo validada"
-            
-            
-           
-            
-            
+             lblMensaje.text="Validando cuenta de correo"
              performSegue(withIdentifier: "validarSegue", sender: self)
-            
-          
-            
-            
             
         }else{
             //Crear y presentar un cuadro de alerta cuando no se encuentre el email en la base

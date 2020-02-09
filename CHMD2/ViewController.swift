@@ -5,7 +5,6 @@
 //  Created by Rafael David Castro Luna on 7/6/19.
 //  Copyright © 2019 Rafael David Castro Luna. All rights reserved.
 //
-
 import UIKit
 import AVKit
 import AVFoundation
@@ -179,4 +178,3 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
     }
 
 }
-

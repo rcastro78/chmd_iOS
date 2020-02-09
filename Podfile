@@ -8,14 +8,15 @@ target 'CHMD2' do
   # Pods for CHMD2
 pod 'GoogleSignIn', '~> 4.4.0'
 pod 'Firebase'
-pod 'Firebase/Core'
-pod 'Firebase/Auth'
-pod 'Firebase/Database'
+#pod 'Firebase/Core'
+#pod 'Firebase/Auth'
+#pod 'Firebase/Database'
 pod 'Firebase/Messaging'
-pod 'Firebase/Storage'
-pod 'Firebase/Firestore'
+#pod 'Firebase/Storage'
+#pod 'Firebase/Firestore'
 pod 'Alamofire'
 pod 'FMDB'
 pod 'SDWebImage'
+pod 'BitlySDK'
 
 end

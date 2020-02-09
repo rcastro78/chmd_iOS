@@ -10,8 +10,8 @@ import UIKit
 import WebKit
 import Alamofire
 import EventKit
-
-//import BitlySDK
+import Firebase
+import BitlySDK
 class CircularDetalleViewController: UIViewController {
 
     
@@ -61,7 +61,7 @@ class CircularDetalleViewController: UIViewController {
                    let mes = fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
                    let dia = fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
                    lblFechaCircular.text = "\(dia)/\(mes)/\(anio)"
-                   self.title = "Detalles de la circular"
+                   self.title = "Circular"
                    partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:titulo)
             
         }else{
@@ -183,7 +183,7 @@ class CircularDetalleViewController: UIViewController {
             let request = URLRequest(url: link)
             circularUrl = urlBase+"getCircularId2.php?id=\(nextId)"
             webView.load(request)
-            self.title = "Detalles de la circular"
+            self.title = "Circular"
             //nextTitulo.uppercased()
             partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())
             id = nextId;
@@ -210,7 +210,7 @@ class CircularDetalleViewController: UIViewController {
             circularUrl = urlBase+"getCircularId2.php?id=\(nextId)"
             let request = URLRequest(url: link)
             webView.load(request)
-            self.title = "Detalles de la circular"
+            self.title = "Circular"
                 //nextTitulo.uppercased()
             partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())
             id = nextId
@@ -255,14 +255,38 @@ class CircularDetalleViewController: UIViewController {
     }
     
     @IBAction func btnCompartirClick(_ sender: UIButton) {
-        var link:String=""
+        //var link:String=""
         //Crear el link mediante bit.ly, para pruebas
         circularUrl = "https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularId2?id=\(id)"
+        compartir(message:"Compartir",link:circularUrl)
         /*Bitly.shorten(circularUrl) { response, error in
-            link = response?.bitlink ?? ""
+            var link = response?.bitlink ?? ""
+            self.compartir(message:"Compartir",link:link)
+            
+            print(response?.bitlink)
+            print(response?.applink)
+            print(response?.statusCode)
+            print(response?.statusText)
         }*/
         
-        compartir(message: "Compartiendo", link: circularUrl)
+        /*guard let link = URL(string: circularUrl) else { return }
+        let dynamicLinksDomainURIPrefix:String = "https://chmd1.page.link/"
+        let linkBuilder = DynamicLinkComponents(link: link, domainURIPrefix: dynamicLinksDomainURIPrefix)
+        linkBuilder?.iOSParameters = DynamicLinkIOSParameters(bundleID: "mx.edu.CHMD1")
+        linkBuilder?.androidParameters = DynamicLinkAndroidParameters(packageName: "mx.edu.chmd1")
+        
+        guard let longDynamicLink = linkBuilder?.url else { return }
+        print("The long URL is: \(longDynamicLink)")
+        
+        
+        linkBuilder?.shorten() { url, warnings, error in
+          guard let url = url, error != nil else { return }
+          print("The short URL is: \(url)")
+        }
+        */
+        
+        
+        
     }
     
     

@@ -855,29 +855,40 @@
                                     <wkPreferences key="preferences"/>
                                 </wkWebViewConfiguration>
                             </wkWebView>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3fE-c3-ccW">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3fE-c3-ccW">
                                 <rect key="frame" x="0.0" y="56" width="375" height="72"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Chz-Q8-PgU">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Chz-Q8-PgU">
                                         <rect key="frame" x="8" y="9" width="44" height="43"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="Chz-Q8-PgU" secondAttribute="height" multiplier="44:43" id="QFZ-mN-izf"/>
+                                            <constraint firstAttribute="height" constant="43" id="jKg-m6-1vm"/>
+                                            <constraint firstAttribute="width" constant="44" id="xhj-6B-FBM"/>
+                                        </constraints>
                                         <state key="normal" image="appmenu06"/>
                                         <connections>
                                             <action selector="btnFavClick:" destination="WNa-wt-toA" eventType="touchUpInside" id="d7g-5j-wOs"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rK9-mr-BPl">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rK9-mr-BPl">
                                         <rect key="frame" x="60" y="10" width="43" height="43"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="rK9-mr-BPl" secondAttribute="height" multiplier="1:1" id="7aw-K4-OpJ"/>
+                                            <constraint firstAttribute="height" constant="43" id="cYw-0x-tA1"/>
+                                            <constraint firstAttribute="width" constant="43" id="mwZ-Xx-w8z"/>
+                                        </constraints>
                                         <state key="normal" image="appmenu08"/>
                                         <connections>
                                             <action selector="btnCompartirClick:" destination="WNa-wt-toA" eventType="touchUpInside" id="t7f-Rt-BgY"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4cF-cH-gSC">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4cF-cH-gSC">
                                         <rect key="frame" x="263" y="15" width="42" height="36"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="4cF-cH-gSC" secondAttribute="height" multiplier="7:6" id="Jer-op-dGn"/>
+                                            <constraint firstAttribute="width" constant="42" id="n8l-28-jY0"/>
+                                            <constraint firstAttribute="height" constant="36" id="pH5-nu-6EX"/>
+                                        </constraints>
                                         <state key="normal" image="flecha_fwd">
                                             <color key="titleColor" red="0.1831529438495636" green="0.23283499479293823" blue="0.6335146427154541" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         </state>
@@ -885,25 +896,37 @@
                                             <action selector="btnNextClick:" destination="WNa-wt-toA" eventType="touchUpInside" id="bVu-c8-l06"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OQ7-2q-EBM">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OQ7-2q-EBM">
                                         <rect key="frame" x="320" y="11" width="47" height="42"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="42" id="FWg-VI-BkB"/>
+                                            <constraint firstAttribute="width" secondItem="OQ7-2q-EBM" secondAttribute="height" multiplier="47:42" id="Qbl-uy-6Cc"/>
+                                            <constraint firstAttribute="width" constant="47" id="e52-V6-lhg"/>
+                                        </constraints>
                                         <state key="normal" image="appmenu07"/>
                                         <connections>
                                             <action selector="btnEliminarClick:" destination="WNa-wt-toA" eventType="touchUpInside" id="wid-Hb-Tws"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tPy-SO-FsP">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tPy-SO-FsP">
                                         <rect key="frame" x="111" y="8" width="43" height="43"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="43" id="4I1-Ma-3ss"/>
+                                            <constraint firstAttribute="height" constant="43" id="a60-9v-rOo"/>
+                                            <constraint firstAttribute="width" secondItem="tPy-SO-FsP" secondAttribute="height" multiplier="1:1" id="hBO-gA-ygb"/>
+                                        </constraints>
                                         <state key="normal" image="appmenu05"/>
                                         <connections>
                                             <action selector="btnNoLeerClick:" destination="WNa-wt-toA" eventType="touchUpInside" id="5qh-N5-V9q"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xd0-bO-eO9">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xd0-bO-eO9">
                                         <rect key="frame" x="215" y="15" width="42" height="36"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="36" id="38W-SH-ANz"/>
+                                            <constraint firstAttribute="width" secondItem="xd0-bO-eO9" secondAttribute="height" multiplier="7:6" id="C5b-L8-96x"/>
+                                            <constraint firstAttribute="width" constant="42" id="Run-VR-9MN"/>
+                                        </constraints>
                                         <state key="normal" image="flecha_back">
                                             <color key="titleColor" red="0.1831529438495636" green="0.23283499479293823" blue="0.6335146427154541" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         </state>
@@ -911,9 +934,13 @@
                                             <action selector="btnAntClick:" destination="WNa-wt-toA" eventType="touchUpInside" id="CEh-QR-lNg"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5hG-rQ-Bse">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5hG-rQ-Bse">
                                         <rect key="frame" x="168" y="15" width="32" height="32"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="32" id="1j2-1Y-Knt"/>
+                                            <constraint firstAttribute="width" secondItem="5hG-rQ-Bse" secondAttribute="height" multiplier="1:1" id="Eew-Ib-hmS"/>
+                                            <constraint firstAttribute="width" constant="32" id="ksM-0c-J7P"/>
+                                        </constraints>
                                         <state key="normal" image="calendar"/>
                                         <connections>
                                             <action selector="btnCalendarioClick:" destination="WNa-wt-toA" eventType="touchUpInside" id="E1n-wq-ZkZ"/>
@@ -921,33 +948,56 @@
                                     </button>
                                 </subviews>
                                 <color key="backgroundColor" red="0.24079120039999999" green="0.77030890620000003" blue="0.93657374380000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstItem="5hG-rQ-Bse" firstAttribute="top" secondItem="3fE-c3-ccW" secondAttribute="top" constant="15" id="0Yh-gL-xaK"/>
+                                    <constraint firstAttribute="bottom" secondItem="4cF-cH-gSC" secondAttribute="bottom" constant="21" id="0gb-df-pnn"/>
+                                    <constraint firstItem="5hG-rQ-Bse" firstAttribute="leading" secondItem="tPy-SO-FsP" secondAttribute="trailing" constant="14" id="56m-du-qZ0"/>
+                                    <constraint firstItem="4cF-cH-gSC" firstAttribute="top" secondItem="3fE-c3-ccW" secondAttribute="top" constant="15" id="7rj-xj-oh1"/>
+                                    <constraint firstItem="Chz-Q8-PgU" firstAttribute="leading" secondItem="3fE-c3-ccW" secondAttribute="leading" constant="8" id="86a-Do-PNX"/>
+                                    <constraint firstItem="tPy-SO-FsP" firstAttribute="top" secondItem="3fE-c3-ccW" secondAttribute="top" constant="8" id="A7M-vz-u7b"/>
+                                    <constraint firstItem="4cF-cH-gSC" firstAttribute="leading" secondItem="xd0-bO-eO9" secondAttribute="trailing" constant="6" id="GM7-Gy-EYZ"/>
+                                    <constraint firstItem="OQ7-2q-EBM" firstAttribute="top" secondItem="3fE-c3-ccW" secondAttribute="top" constant="11" id="LIe-8S-p8s"/>
+                                    <constraint firstItem="xd0-bO-eO9" firstAttribute="top" secondItem="3fE-c3-ccW" secondAttribute="top" constant="15" id="Mt0-bP-d7z"/>
+                                    <constraint firstAttribute="bottom" secondItem="5hG-rQ-Bse" secondAttribute="bottom" constant="25" id="P3a-MI-6VC"/>
+                                    <constraint firstAttribute="bottom" secondItem="OQ7-2q-EBM" secondAttribute="bottom" constant="19" id="P8p-u9-GBB"/>
+                                    <constraint firstItem="rK9-mr-BPl" firstAttribute="top" secondItem="3fE-c3-ccW" secondAttribute="top" constant="10" id="Wud-sQ-3Ra"/>
+                                    <constraint firstAttribute="bottom" secondItem="rK9-mr-BPl" secondAttribute="bottom" constant="19" id="Ydd-MV-7ez"/>
+                                    <constraint firstAttribute="bottom" secondItem="tPy-SO-FsP" secondAttribute="bottom" constant="21" id="ciZ-Ua-r0L"/>
+                                    <constraint firstItem="tPy-SO-FsP" firstAttribute="leading" secondItem="rK9-mr-BPl" secondAttribute="trailing" constant="8" id="dZx-Pj-wkF"/>
+                                    <constraint firstItem="Chz-Q8-PgU" firstAttribute="top" secondItem="3fE-c3-ccW" secondAttribute="top" constant="9" id="dcn-GY-MAZ"/>
+                                    <constraint firstAttribute="bottom" secondItem="Chz-Q8-PgU" secondAttribute="bottom" constant="20" id="ghc-Qu-SE1"/>
+                                    <constraint firstAttribute="trailing" secondItem="OQ7-2q-EBM" secondAttribute="trailing" constant="8" id="hVk-bx-Bka"/>
+                                    <constraint firstItem="xd0-bO-eO9" firstAttribute="leading" secondItem="5hG-rQ-Bse" secondAttribute="trailing" constant="15" id="l0p-Vt-4fz"/>
+                                    <constraint firstAttribute="bottom" secondItem="xd0-bO-eO9" secondAttribute="bottom" constant="21" id="ubn-Wa-o2Q"/>
+                                    <constraint firstItem="OQ7-2q-EBM" firstAttribute="leading" secondItem="4cF-cH-gSC" secondAttribute="trailing" constant="15" id="wIX-rO-Cvg"/>
+                                </constraints>
                             </view>
-                            <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZuS-Si-dKa">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZuS-Si-dKa">
                                 <rect key="frame" x="0.0" y="127" width="375" height="69"/>
                                 <subviews>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="logo2" translatesAutoresizingMaskIntoConstraints="NO" id="ThN-au-rKe">
+                                        <rect key="frame" x="0.0" y="4" width="152" height="60"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="20/12/2019" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VJL-ho-Klm">
-                                        <rect key="frame" x="183" y="35" width="173" height="22"/>
+                                        <rect key="frame" x="181" y="23" width="173" height="22"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" name="GothamRounded-Bold" family="Gotham Rounded" pointSize="21"/>
                                         <color key="textColor" red="0.18431372549019609" green="0.23137254901960785" blue="0.63529411764705879" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="logo2" translatesAutoresizingMaskIntoConstraints="NO" id="ThN-au-rKe">
-                                        <rect key="frame" x="0.0" y="16" width="152" height="60"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                    </imageView>
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4FV-8q-YcO">
-                                <rect key="frame" x="16" y="241" width="343" height="21"/>
+                                <rect key="frame" x="16" y="247" width="343" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="GothamRounded-Bold" family="Gotham Rounded" pointSize="15"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="06k-2A-R41">
-                                <rect key="frame" x="16" y="212" width="343" height="21"/>
+                                <rect key="frame" x="16" y="218" width="343" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="GothamRounded-Bold" family="Gotham Rounded" pointSize="15"/>
                                 <nil key="textColor"/>
@@ -956,8 +1006,13 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="3fE-c3-ccW" firstAttribute="top" secondItem="F1g-zB-akU" secondAttribute="top" id="78i-ME-5Ga"/>
                             <constraint firstItem="ZuS-Si-dKa" firstAttribute="top" secondItem="F1g-zB-akU" secondAttribute="top" constant="71" id="Cvy-dy-pbE"/>
+                            <constraint firstItem="3fE-c3-ccW" firstAttribute="leading" secondItem="F1g-zB-akU" secondAttribute="leading" id="DXA-sD-uX2"/>
+                            <constraint firstItem="3fE-c3-ccW" firstAttribute="trailing" secondItem="ZuS-Si-dKa" secondAttribute="trailing" id="MmY-Ro-fcH"/>
+                            <constraint firstItem="3fE-c3-ccW" firstAttribute="centerX" secondItem="wZn-RL-l1S" secondAttribute="centerX" id="e7l-B8-gpC"/>
                             <constraint firstAttribute="bottom" secondItem="ZuS-Si-dKa" secondAttribute="bottom" constant="562" id="fwb-gZ-BIE"/>
+                            <constraint firstItem="3fE-c3-ccW" firstAttribute="leading" secondItem="ZuS-Si-dKa" secondAttribute="leading" id="isJ-79-pbM"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="F1g-zB-akU"/>
                     </view>

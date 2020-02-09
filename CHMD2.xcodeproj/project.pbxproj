@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		042C72A0187B65EA3A6BB91A /* Pods_CHMD2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9293438C30B766ADBADA4FB6 /* Pods_CHMD2.framework */; };
 		530EC2C823D409F300A8BDBD /* NotificacionesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 530EC2C723D409F300A8BDBD /* NotificacionesTableViewController.swift */; };
 		530EC2CA23D40A3200A8BDBD /* NotificacionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 530EC2C923D40A3200A8BDBD /* NotificacionTableViewCell.swift */; };
 		53356BC223E2606E00C7A516 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 53356BC023E2606D00C7A516 /* GoogleService-Info.plist */; };
@@ -17,6 +16,7 @@
 		53AB8078239C15890073833F /* GothamRoundedMedium_21022.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E0E8293D230CDA4F005D5A6D /* GothamRoundedMedium_21022.ttf */; };
 		53AB807B239C91AC0073833F /* ConexionRed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53AB807A239C91AC0073833F /* ConexionRed.swift */; };
 		53F799DD235E1BF600BB7E00 /* Responsable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53F799DC235E1BF500BB7E00 /* Responsable.swift */; };
+		5E6463E64E3EFEA17D6E3D5A /* Pods_CHMD2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20CF577F2E5A86CC6E684013 /* Pods_CHMD2.framework */; };
 		E0090AED22EBE92B00BC236C /* CircularesLeidasTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0090AEC22EBE92B00BC236C /* CircularesLeidasTableViewController.swift */; };
 		E0090AEF22EBEBD500BC236C /* CircularesNoLeidasTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0090AEE22EBEBD500BC236C /* CircularesNoLeidasTableViewController.swift */; };
 		E0090AF122EBEC7E00BC236C /* CircularesFavTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0090AF022EBEC7E00BC236C /* CircularesFavTableViewController.swift */; };
@@ -49,15 +49,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		14ACD568BCAA7CC9D7FAF646 /* Pods-CHMD2.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CHMD2.debug.xcconfig"; path = "Target Support Files/Pods-CHMD2/Pods-CHMD2.debug.xcconfig"; sourceTree = "<group>"; };
+		20CF577F2E5A86CC6E684013 /* Pods_CHMD2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CHMD2.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		530EC2C723D409F300A8BDBD /* NotificacionesTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificacionesTableViewController.swift; sourceTree = "<group>"; };
 		530EC2C923D40A3200A8BDBD /* NotificacionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificacionTableViewCell.swift; sourceTree = "<group>"; };
 		53356BC023E2606D00C7A516 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		537E3758239B6DCF005838F1 /* EliminadasTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EliminadasTableViewController.swift; sourceTree = "<group>"; };
 		53AB807A239C91AC0073833F /* ConexionRed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConexionRed.swift; sourceTree = "<group>"; };
 		53F799DC235E1BF500BB7E00 /* Responsable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Responsable.swift; sourceTree = "<group>"; };
-		704D0635D14B2CA56AF93238 /* Pods-CHMD2.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CHMD2.release.xcconfig"; path = "Target Support Files/Pods-CHMD2/Pods-CHMD2.release.xcconfig"; sourceTree = "<group>"; };
-		9293438C30B766ADBADA4FB6 /* Pods_CHMD2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CHMD2.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		DFECDEC02EB5F83AF7EC5A0D /* Pods-CHMD2.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CHMD2.debug.xcconfig"; path = "Target Support Files/Pods-CHMD2/Pods-CHMD2.debug.xcconfig"; sourceTree = "<group>"; };
 		E0090AEC22EBE92B00BC236C /* CircularesLeidasTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularesLeidasTableViewController.swift; sourceTree = "<group>"; };
 		E0090AEE22EBEBD500BC236C /* CircularesNoLeidasTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularesNoLeidasTableViewController.swift; sourceTree = "<group>"; };
 		E0090AF022EBEC7E00BC236C /* CircularesFavTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularesFavTableViewController.swift; sourceTree = "<group>"; };
@@ -95,6 +94,7 @@
 		E0E8293C230CDA4E005D5A6D /* GothamRoundedBook_21018.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = GothamRoundedBook_21018.ttf; sourceTree = "<group>"; };
 		E0E8293D230CDA4F005D5A6D /* GothamRoundedMedium_21022.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = GothamRoundedMedium_21022.ttf; sourceTree = "<group>"; };
 		E0F7AD0B2356A51F002ECB1B /* CredencialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredencialViewController.swift; sourceTree = "<group>"; };
+		E859ABF29F670B1258327CA6 /* Pods-CHMD2.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CHMD2.release.xcconfig"; path = "Target Support Files/Pods-CHMD2/Pods-CHMD2.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,7 +103,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E0C209BC2312384900342D6D /* libsqlite3.tbd in Frameworks */,
-				042C72A0187B65EA3A6BB91A /* Pods_CHMD2.framework in Frameworks */,
+				5E6463E64E3EFEA17D6E3D5A /* Pods_CHMD2.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -130,8 +130,8 @@
 		B98E657104E7BA515BA79067 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				DFECDEC02EB5F83AF7EC5A0D /* Pods-CHMD2.debug.xcconfig */,
-				704D0635D14B2CA56AF93238 /* Pods-CHMD2.release.xcconfig */,
+				14ACD568BCAA7CC9D7FAF646 /* Pods-CHMD2.debug.xcconfig */,
+				E859ABF29F670B1258327CA6 /* Pods-CHMD2.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -140,7 +140,7 @@
 			isa = PBXGroup;
 			children = (
 				E0C209BB2312384800342D6D /* libsqlite3.tbd */,
-				9293438C30B766ADBADA4FB6 /* Pods_CHMD2.framework */,
+				20CF577F2E5A86CC6E684013 /* Pods_CHMD2.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -289,12 +289,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = E065779422D1128B0089A05A /* Build configuration list for PBXNativeTarget "CHMD2" */;
 			buildPhases = (
-				DE2EAF3D44B99B14336BEEB3 /* [CP] Check Pods Manifest.lock */,
+				027FA5B18E2BAEB46D167473 /* [CP] Check Pods Manifest.lock */,
 				E065777E22D112690089A05A /* Sources */,
 				E065777F22D112690089A05A /* Frameworks */,
 				E065778022D112690089A05A /* Resources */,
-				15257B6A6FB2AA2D256DDB84 /* [CP] Embed Pods Frameworks */,
-				16BD47E42FE2BC88751A5862 /* [CP] Copy Pods Resources */,
+				672096B7878C3E97F330166B /* [CP] Embed Pods Frameworks */,
+				37AF6F27609D36E71D198DDE /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -363,41 +363,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		15257B6A6FB2AA2D256DDB84 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CHMD2/Pods-CHMD2-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CHMD2/Pods-CHMD2-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CHMD2/Pods-CHMD2-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		16BD47E42FE2BC88751A5862 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CHMD2/Pods-CHMD2-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CHMD2/Pods-CHMD2-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CHMD2/Pods-CHMD2-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		DE2EAF3D44B99B14336BEEB3 /* [CP] Check Pods Manifest.lock */ = {
+		027FA5B18E2BAEB46D167473 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -417,6 +383,40 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		37AF6F27609D36E71D198DDE /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-CHMD2/Pods-CHMD2-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-CHMD2/Pods-CHMD2-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CHMD2/Pods-CHMD2-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		672096B7878C3E97F330166B /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-CHMD2/Pods-CHMD2-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-CHMD2/Pods-CHMD2-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CHMD2/Pods-CHMD2-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -598,7 +598,7 @@
 		};
 		E065779522D1128B0089A05A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DFECDEC02EB5F83AF7EC5A0D /* Pods-CHMD2.debug.xcconfig */;
+			baseConfigurationReference = 14ACD568BCAA7CC9D7FAF646 /* Pods-CHMD2.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -623,7 +623,7 @@
 		};
 		E065779622D1128B0089A05A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 704D0635D14B2CA56AF93238 /* Pods-CHMD2.release.xcconfig */;
+			baseConfigurationReference = E859ABF29F670B1258327CA6 /* Pods-CHMD2.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;

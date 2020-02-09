@@ -11,7 +11,7 @@ import GoogleSignIn
 import Firebase
 import  UserNotifications
 import Network
-//import BitlySDK
+import BitlySDK
 import FirebaseInstanceID
 import FirebaseMessaging
 
@@ -51,17 +51,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate,GIDSignI
     }
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        //client key: 1a11599f0dadc14c7c3141bcf2576eb7611bcf85
+        //client secret: fd10a0b735e5a716b6f4cd97f870736f89e49c08
         
         
-        
-        /*Bitly.initialize("e8bb7ba58c708d041c59b1ba04616b0668bdf53b", supportedDomains:["chmd.edu.mx","chmd.edu.mx"], supportedSchemes:["chmd"]) { response, error in
+        Bitly.initialize("1a11599f0dadc14c7c3141bcf2576eb7611bcf85", supportedDomains:["chmd.edu.mx","chmd.edu.mx"], supportedSchemes:["chmd"]) { response, error in
               // response provides a BitlyResponse object which contains the full URL information
               // response includes a status code
               // error provides any errors in retrieving information about the URL
               // Your custom logic goes here...
           }
         
-        Bitly.initialize("9bd1d4e87ce38e38044ff0c7c60c07c90483e2a4")*/
+        //Bitly.initialize("9bd1d4e87ce38e38044ff0c7c60c07c90483e2a4")
         
         
         if ConexionRed.isConnectedToNetwork() == true {

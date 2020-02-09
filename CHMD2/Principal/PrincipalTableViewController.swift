@@ -5,7 +5,6 @@
 //  Created by Rafael David Castro Luna on 7/6/19.
 //  Copyright © 2019 Rafael David Castro Luna. All rights reserved.
 //
-
 import UIKit
 import AVKit
 import AVFoundation
@@ -305,7 +304,6 @@ class PrincipalTableViewController: UITableViewController {
     
     
     // MARK: - Table view data source
-
     override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         return 1
@@ -352,12 +350,25 @@ class PrincipalTableViewController: UITableViewController {
             performSegue(withIdentifier: "credencialSegue", sender: self)
         }
         
-        
-        
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
+     
+        
+        let valida:Int = UserDefaults.standard.integer(forKey: "valida")
+               if(valida == 0){
+                   UserDefaults.standard.set(0, forKey: "cuentaValida")
+                   GIDSignIn.sharedInstance()?.signOut()
+                   performSegue(withIdentifier: "unwindSegueToVC1", sender: self)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                        UIApplication.shared.perform(#selector(NSXPCConnection.suspend))
+                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                          exit(0)
+                         }
+                    }
+                
+                
+               }
         
         
         let urlVideo = Bundle.main.url(forResource: "video_app", withExtension: "mp4")
@@ -441,4 +452,3 @@ class PrincipalTableViewController: UITableViewController {
      */
     
 }
-
