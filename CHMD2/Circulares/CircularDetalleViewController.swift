@@ -178,6 +178,7 @@ class CircularDetalleViewController: UIViewController {
         if(posicion<ids.count){
             var nextId = ids[posicion]
             var nextTitulo = titulos[posicion]
+            var nextFecha = fechas[posicion]
             circularTitulo = nextTitulo
             let link = URL(string:urlBase+"getCircularId2.php?id=\(nextId)")!
             let request = URLRequest(url: link)
@@ -185,6 +186,13 @@ class CircularDetalleViewController: UIViewController {
             webView.load(request)
             self.title = "Circular"
             //nextTitulo.uppercased()
+            
+            let anio = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
+            let mes = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
+            let dia = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
+            self.lblFechaCircular.text = "\(dia)/\(mes)/\(anio)"
+            
+            
             partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())
             id = nextId;
         }else{
@@ -205,13 +213,18 @@ class CircularDetalleViewController: UIViewController {
         if(posicion>=0){
             var nextId = ids[posicion]
             var nextTitulo = titulos[posicion]
+            var nextFecha = fechas[posicion]
              circularTitulo = nextTitulo
             let link = URL(string:urlBase+"getCircularId2.php?id=\(nextId)")!
             circularUrl = urlBase+"getCircularId2.php?id=\(nextId)"
             let request = URLRequest(url: link)
             webView.load(request)
             self.title = "Circular"
-                //nextTitulo.uppercased()
+           let anio = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
+           let mes = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
+           let dia = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
+           self.lblFechaCircular.text = "\(dia)/\(mes)/\(anio)"
+            
             partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())
             id = nextId
         }else{
@@ -477,8 +490,13 @@ class CircularDetalleViewController: UIViewController {
                             print("No se pudo obtener el titulo")
                             return
                         }
-                      self.ids.append(id)
-                      self.titulos.append(titulo)
+                      guard let fecha = diccionario["updated_at"] as? String else {
+                                                                          print("No se pudo obtener la fecha")
+                                                                          return
+                                                                      }
+                     self.ids.append(id)
+                     self.titulos.append(titulo)
+                     self.fechas.append(fecha)
                 }
                 
                 
@@ -489,11 +507,6 @@ class CircularDetalleViewController: UIViewController {
  }
     
         
-        
-        
-        
-    
-    
 }
     
   func obtenerCircular(uri:String){
@@ -525,7 +538,7 @@ class CircularDetalleViewController: UIViewController {
                               print("No se pudo obtener el titulo")
                               return
                           }
-                        guard let fecha = diccionario["created_at"] as? String else {
+                        guard let fecha = diccionario["updated_at"] as? String else {
                                                      print("No se pudo obtener la fecha")
                                                      return
                                                  }
@@ -535,8 +548,8 @@ class CircularDetalleViewController: UIViewController {
                   }
                     
                     let anio = self.fechas[0].components(separatedBy: " ")[0].components(separatedBy: "-")[0]
-                                      let mes = self.fechas[0].components(separatedBy: " ")[0].components(separatedBy: "-")[1]
-                                      let dia = self.fechas[0].components(separatedBy: " ")[0].components(separatedBy: "-")[2]
+                    let mes = self.fechas[0].components(separatedBy: " ")[0].components(separatedBy: "-")[1]
+                    let dia = self.fechas[0].components(separatedBy: " ")[0].components(separatedBy: "-")[2]
                     self.lblFechaCircular.text = "\(dia)/\(mes)/\(anio)"
                     self.title = "Detalles de la circular"
                     //self.titulos[0].uppercased()

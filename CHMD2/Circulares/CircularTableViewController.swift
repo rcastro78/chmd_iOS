@@ -113,7 +113,9 @@ class CircularTableViewController: UITableViewController {
         
         cell.lblEncabezado.text? = "Circular No. \(c.id)"
         cell.lblTitulo.text? = c.nombre.uppercased()
-        cell.lblFecha.text? = c.fecha
+        var horaFecha = c.fecha.split{$0 == " "}.map(String.init)
+        cell.lblFecha.text? = horaFecha[0]
+        cell.lblHora.text? = horaFecha[1]
         cell.imgCircular.image = c.imagen
         
         /*let fuentePeq = UIFont(name: "Gotham Rounded", size: 12)
@@ -431,7 +433,7 @@ class CircularTableViewController: UITableViewController {
                             return
                         }
                         
-                        guard let fecha = diccionario["created_at"] as? String else {
+                        guard let fecha = diccionario["updated_at"] as? String else {
                             print("No se pudo obtener la fecha")
                             return
                         }

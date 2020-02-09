@@ -57,7 +57,9 @@ class EliminadasTableViewController: UITableViewController {
             let c = circulares[indexPath.row]
             cell.lblEncabezado.text? = "Circular No. \(c.id)"
             cell.lblTitulo.text? = c.nombre.uppercased()
-            cell.lblFecha.text? = c.fecha
+            var horaFecha = c.fecha.split{$0 == " "}.map(String.init)
+            cell.lblFecha.text? = horaFecha[0]
+            cell.lblHora.text? = horaFecha[1]
             
             return cell
             

@@ -13,6 +13,7 @@ class CircularLeidaTableViewCell: UITableViewCell {
     @IBOutlet weak var lblEncabezado: UILabel!
     @IBOutlet weak var lblTitulo: UILabel!
     @IBOutlet weak var lblFecha: UILabel!
+    @IBOutlet weak var lblHora: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
