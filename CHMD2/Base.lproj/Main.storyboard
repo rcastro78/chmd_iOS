@@ -336,9 +336,14 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="758"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <searchBar key="tableHeaderView" contentMode="redraw" id="zna-oD-GAL">
+                            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <textInputTraits key="textInputTraits"/>
+                        </searchBar>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="celda" rowHeight="90" id="Bwb-ie-gfm" customClass="CircularTableViewCell" customModule="CHMD2" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="28" width="375" height="90"/>
+                                <rect key="frame" x="0.0" y="72" width="375" height="90"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Bwb-ie-gfm" id="9L9-TY-I3x">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="90"/>
@@ -426,6 +431,7 @@
                     </tableView>
                     <tabBarItem key="tabBarItem" title="Todas" image="homeIconBar" selectedImage="homeIconBar" id="UTA-X5-gaH"/>
                     <connections>
+                        <outlet property="barBusqueda" destination="zna-oD-GAL" id="D2p-Va-5YZ"/>
                         <outlet property="tableViewCirculares" destination="fgy-mY-EGs" id="vfb-hI-hpG"/>
                         <segue destination="WNa-wt-toA" kind="show" identifier="TcircularSegue" id="pUa-WZ-WHd"/>
                     </connections>
@@ -591,9 +597,14 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="758"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <searchBar key="tableHeaderView" contentMode="redraw" id="vVG-vb-NSA">
+                            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <textInputTraits key="textInputTraits"/>
+                        </searchBar>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="celda" rowHeight="90" id="oJB-bQ-DeV" customClass="CircularNoLeidaTableViewCell" customModule="CHMD2" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="28" width="375" height="90"/>
+                                <rect key="frame" x="0.0" y="72" width="375" height="90"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="oJB-bQ-DeV" id="2iR-AF-PcQ">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="90"/>
@@ -674,6 +685,7 @@
                     </tableView>
                     <tabBarItem key="tabBarItem" title="No Leídas" image="unreadIconBar" selectedImage="unreadIconBar" id="lkQ-Ha-G39"/>
                     <connections>
+                        <outlet property="barBusqueda" destination="vVG-vb-NSA" id="flc-nh-4Eg"/>
                         <outlet property="tableCirculares" destination="Eu0-oT-uGd" id="U7t-Ub-No3"/>
                         <segue destination="WNa-wt-toA" kind="show" identifier="NLcircularSegue" id="u2Y-Ac-kg2"/>
                     </connections>
@@ -690,9 +702,14 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="758"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <searchBar key="tableHeaderView" contentMode="redraw" id="dMZ-xe-21x">
+                            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <textInputTraits key="textInputTraits"/>
+                        </searchBar>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="celda" rowHeight="90" id="HIF-OF-sgt" customClass="CircularFavoritaTableViewCell" customModule="CHMD2" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="28" width="375" height="90"/>
+                                <rect key="frame" x="0.0" y="72" width="375" height="90"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="HIF-OF-sgt" id="lSj-KB-CMK">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="90"/>
@@ -778,6 +795,7 @@
                     </tableView>
                     <tabBarItem key="tabBarItem" title="Favoritas" image="favIconBar" selectedImage="favIconBar" id="8CT-Ij-eVC"/>
                     <connections>
+                        <outlet property="barBusqueda" destination="dMZ-xe-21x" id="dLM-S7-Oma"/>
                         <outlet property="tableCirculares" destination="e5V-v7-jKQ" id="iAt-vz-xbk"/>
                         <segue destination="WNa-wt-toA" kind="show" identifier="FcircularSegue" id="a2F-zX-JEX"/>
                     </connections>
@@ -794,9 +812,14 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="758"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <searchBar key="tableHeaderView" contentMode="redraw" id="xfd-nr-1e4">
+                            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <textInputTraits key="textInputTraits"/>
+                        </searchBar>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="celda" rowHeight="90" id="zvx-Fa-q5e" customClass="CircularCompartidaTableViewCell" customModule="CHMD2" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="28" width="375" height="90"/>
+                                <rect key="frame" x="0.0" y="72" width="375" height="90"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="zvx-Fa-q5e" id="2EG-nZ-xbm">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="90"/>
@@ -831,7 +854,7 @@
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cAC-bR-uCy">
-                                            <rect key="frame" x="83" y="55" width="97.999999999999972" height="18"/>
+                                            <rect key="frame" x="83" y="55" width="98" height="18"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="10"/>
                                             <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <nil key="highlightedColor"/>
@@ -879,6 +902,7 @@
                     </tableView>
                     <tabBarItem key="tabBarItem" title="Papelera" image="delIconBar" selectedImage="delIconBar" id="FhM-tV-jpa"/>
                     <connections>
+                        <outlet property="barBusqueda" destination="xfd-nr-1e4" id="vYA-5c-ozv"/>
                         <outlet property="tableCirculares" destination="eTv-rx-XC4" id="lAc-nu-4YD"/>
                         <segue destination="WNa-wt-toA" kind="show" identifier="CcircularSegue" id="YES-ri-AJO"/>
                     </connections>

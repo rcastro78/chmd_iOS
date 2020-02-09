@@ -10,15 +10,20 @@ import UIKit
 import Alamofire
 import SQLite3
 
-class CircularesFavTableViewController: UITableViewController {
+class CircularesFavTableViewController: UITableViewController,UISearchBarDelegate {
 
     @IBOutlet var tableCirculares: UITableView!
+    @IBOutlet weak var barBusqueda: UISearchBar!
+    
      var db: OpaquePointer?
     var idUsuario:String=""
+    var buscando=false
     var circulares = [Circular]()
+   
     override func viewDidLoad() {
         super.viewDidLoad()
         circulares.removeAll()
+        barBusqueda.delegate = self
          idUsuario = UserDefaults.standard.string(forKey: "idUsuario") ?? "0"
         if(ConexionRed.isConnectedToNetwork()){
             let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesFavoritas.php?usuario_id=\(idUsuario)"
@@ -41,8 +46,7 @@ class CircularesFavTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return circulares.count
+     return circulares.count
     }
     
     
@@ -238,6 +242,37 @@ class CircularesFavTableViewController: UITableViewController {
         UserDefaults.standard.set(0, forKey: "viaNotif")
         performSegue(withIdentifier: "FcircularSegue", sender:self)
         
+    }
+    
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        if(!(searchBar.text?.isEmpty)!){
+            buscando=true
+            circulares = circulares.filter({$0.nombre.contains(searchBar.text!.uppercased())})
+            self.tableView?.reloadData()
+        }else{
+            buscando=false
+            view.endEditing(true)
+            self.tableView?.reloadData()
+        }
+    }
+    
+    
+    
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText:String) {
+        if searchBar.text==nil || searchBar.text==""{
+            buscando=false
+            view.endEditing(true)
+            let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesFavoritas.php?usuario_id=\(idUsuario)"
+                        self.obtenerCirculares(uri: address)
+            
+        }else{
+            buscando=true
+            //circularesFiltradas = circulares.filter({$0.nombre.contains(searchBar.text!)})
+            //self.tableViewCirculares?.reloadData()
+            
+        }
     }
     
 }

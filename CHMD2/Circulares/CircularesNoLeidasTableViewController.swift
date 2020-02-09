@@ -10,10 +10,12 @@ import UIKit
 import Alamofire
 import SQLite3
 
-class CircularesNoLeidasTableViewController: UITableViewController {
+class CircularesNoLeidasTableViewController: UITableViewController,UISearchBarDelegate {
     @IBOutlet var tableCirculares: UITableView!
+    @IBOutlet weak var barBusqueda: UISearchBar!
+    var buscando=false
     var circulares = [Circular]()
-    var db: OpaquePointer?
+       var db: OpaquePointer?
        var idUsuario:String=""
     var urlBase:String="https://www.chmd.edu.mx/WebAdminCirculares/ws/"
     var leerMetodo:String="leerCircular.php"
@@ -21,6 +23,8 @@ class CircularesNoLeidasTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         circulares.removeAll()
+        self.hideKeyboardWhenTappedAround()
+        barBusqueda.delegate = self
         
         idUsuario = UserDefaults.standard.string(forKey: "idUsuario") ?? "0"
        
@@ -50,7 +54,8 @@ class CircularesNoLeidasTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return circulares.count
+         return circulares.count
+        
     }
     
     
@@ -58,6 +63,7 @@ class CircularesNoLeidasTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "celda", for: indexPath)
             as! CircularNoLeidaTableViewCell
         let c = circulares[indexPath.row]
+       
         cell.lblEncabezado.text? = "Circular No. \(c.id)"
         cell.lblTitulo.text? = c.nombre.uppercased()
          var horaFecha = c.fecha.split{$0 == " "}.map(String.init)
@@ -407,5 +413,40 @@ class CircularesNoLeidasTableViewController: UITableViewController {
             }
         }
     }
+    
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        if(!(searchBar.text?.isEmpty)!){
+            buscando=true
+            circulares = circulares.filter({$0.nombre.contains(searchBar.text!.uppercased())})
+            self.tableView?.reloadData()
+        }else{
+            buscando=false
+            view.endEditing(true)
+            self.tableView?.reloadData()
+        }
+    }
+    
+    
+    
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText:String) {
+        if searchBar.text==nil || searchBar.text==""{
+            buscando=false
+            view.endEditing(true)
+            circulares = circulares.filter({$0.nombre.contains(searchBar.text!.uppercased())})
+            self.tableView?.reloadData()
+            
+            let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesUsuarios.php?usuario_id=\(self.idUsuario)"
+                       let _url = URL(string: address);
+                       self.obtenerCirculares(uri: address)
+        }else{
+            buscando=true
+            circulares = circulares.filter({$0.nombre.contains(searchBar.text!.uppercased())})
+            self.tableView?.reloadData()
+            
+        }
+    }
+    
     
 }

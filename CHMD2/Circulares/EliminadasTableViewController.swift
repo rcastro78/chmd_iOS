@@ -11,17 +11,21 @@ import Alamofire
 import SQLite3
 
 
-class EliminadasTableViewController: UITableViewController {
+class EliminadasTableViewController: UITableViewController,UISearchBarDelegate {
      @IBOutlet var tableCirculares: UITableView!
+     @IBOutlet weak var barBusqueda: UISearchBar!
+    
         var circulares = [Circular]()
+       
         var db: OpaquePointer?
-       var idUsuario:String=""
+        var idUsuario:String=""
+        var buscando=false
     
         override func viewDidLoad() {
             super.viewDidLoad()
             circulares.removeAll()
             idUsuario = UserDefaults.standard.string(forKey: "idUsuario") ?? "0"
-            
+            barBusqueda.delegate = self
             if(ConexionRed.isConnectedToNetwork()){
             let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesEliminadas.php?usuario_id=\(idUsuario)"
             self.obtenerCirculares(uri: address)
@@ -47,7 +51,9 @@ class EliminadasTableViewController: UITableViewController {
         
         override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
             // #warning Incomplete implementation, return the number of rows
-            return circulares.count
+           
+                return circulares.count
+            
         }
         
         
@@ -55,6 +61,7 @@ class EliminadasTableViewController: UITableViewController {
             let cell = tableView.dequeueReusableCell(withIdentifier: "celda", for: indexPath)
                 as! CircularCompartidaTableViewCell
             let c = circulares[indexPath.row]
+            
             cell.lblEncabezado.text? = "Circular No. \(c.id)"
             cell.lblTitulo.text? = c.nombre.uppercased()
             var horaFecha = c.fecha.split{$0 == " "}.map(String.init)
@@ -245,5 +252,41 @@ class EliminadasTableViewController: UITableViewController {
             performSegue(withIdentifier: "CcircularSegue", sender:self)
             
         }
+    
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+           if(!(searchBar.text?.isEmpty)!){
+               buscando=true
+               circulares = circulares.filter({$0.nombre.contains(searchBar.text!.uppercased())})
+               self.tableView?.reloadData()
+           }else{
+               buscando=false
+               view.endEditing(true)
+               self.tableView?.reloadData()
+           }
+       }
+       
+       
+       
+       
+       func searchBar(_ searchBar: UISearchBar, textDidChange searchText:String) {
+           if searchBar.text==nil || searchBar.text==""{
+               buscando=false
+               view.endEditing(true)
+               circulares = circulares.filter({$0.nombre.contains(searchBar.text!.uppercased())})
+                          self.tableView?.reloadData()
+               
+             let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesEliminadas.php?usuario_id=\(idUsuario)"
+               self.obtenerCirculares(uri: address)
+               
+           }else{
+               buscando=true
+               circulares = circulares.filter({$0.nombre.contains(searchBar.text!.uppercased())})
+               self.tableView?.reloadData()
+               
+           }
+       }
+    
+    
         
     }
