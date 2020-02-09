@@ -176,8 +176,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate,GIDSignI
             }
             
         UserDefaults.standard.set(idC, forKey: "idViaNotif")
-        //Se recibió una notificacion
-        //print("Title: \(title) \nBody:\(body)")
+        
+        let state = application.applicationState
+        switch state {
+            case .background:
+             print("Background")
+             application.applicationIconBadgeNumber = application.applicationIconBadgeNumber + 1
+        case .active:
+            print("activa")
+        case .inactive:
+          print("Inactiva")
+        @unknown default:
+            print("default")
+        }
+        
+    
+
         
     }
     
