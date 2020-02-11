@@ -10,6 +10,59 @@ import AVKit
 import AVFoundation
 import GoogleSignIn
 import SQLite3
+import AuthenticationServices
+
+
+extension ViewController: ASAuthorizationControllerDelegate {
+     // ASAuthorizationControllerDelegate function for authorization failed
+     
+    @available(iOS 13.0, *)
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
+        print(error.localizedDescription)
+}
+    
+       // ASAuthorizationControllerDelegate function for successful authorization
+  
+    @available(iOS 13.0, *)
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+  
+    if #available(iOS 13.0, *) {
+        if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
+            // Create an account as per your requirement
+            
+            let appleId = appleIDCredential.user
+            let appleUserFirstName = appleIDCredential.fullName?.givenName
+            let appleUserLastName = appleIDCredential.fullName?.familyName
+            let appleUserEmail = appleIDCredential.email
+            
+            //Revisar que el correo exista en el server del colegio
+            UserDefaults.standard.set(appleUserFirstName, forKey: "nombre")
+            UserDefaults.standard.set(appleIDCredential.email, forKey: "email")
+            performSegue(withIdentifier: "verificarSegue", sender: self)
+            
+        } else if let passwordCredential = authorization.credential as? ASPasswordCredential {
+            
+            let appleUsername = passwordCredential.user
+            let applePassword = passwordCredential.password
+            //Write your code
+           
+        }
+    } else {
+        // Fallback on earlier versions
+    }
+   }
+}
+
+extension ViewController:
+ASAuthorizationControllerPresentationContextProviding {
+
+    //For present window
+    
+    @available(iOS 13.0, *)
+    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+        return self.view.window!
+    }
+}
 
 extension UIViewController {
     func hideKeyboardWhenTappedAround() {
@@ -116,7 +169,7 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
         }
         
         
-        
+         self.setupSOAppleSignIn()
         
        
     }
@@ -188,4 +241,33 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
         
     }
 
+    
+    
+    func setupSOAppleSignIn() {
+        if #available(iOS 13.0, *) {
+                    let btnAuthorization = ASAuthorizationAppleIDButton()
+                    btnAuthorization.frame = CGRect(x: 180, y: 20, width: 200, height: 40)
+                    btnAuthorization.center = self.view.center
+                    btnAuthorization.addTarget(self, action: #selector(actionHandleAppleSignin), for: .touchUpInside)
+                    self.view.addSubview(btnAuthorization)
+        } else {
+            // Fallback on earlier versions
+        }
+          
+    }
+    
+    @objc func actionHandleAppleSignin() {
+ if #available(iOS 13.0, *) {
+            let appleIDProvider = ASAuthorizationAppleIDProvider()
+            let request = appleIDProvider.createRequest()
+            request.requestedScopes = [.fullName, .email]
+            let authorizationController = ASAuthorizationController(authorizationRequests: [request])
+            authorizationController.delegate = self
+            authorizationController.presentationContextProvider = self as! ASAuthorizationControllerPresentationContextProviding
+            authorizationController.performRequests()
+
+        }
+    }
+    
+    
 }

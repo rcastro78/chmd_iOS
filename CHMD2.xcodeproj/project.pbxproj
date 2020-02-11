@@ -15,6 +15,7 @@
 		53AB8077239C15890073833F /* GothamRoundedBook_21018.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E0E8293C230CDA4E005D5A6D /* GothamRoundedBook_21018.ttf */; };
 		53AB8078239C15890073833F /* GothamRoundedMedium_21022.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E0E8293D230CDA4F005D5A6D /* GothamRoundedMedium_21022.ttf */; };
 		53AB807B239C91AC0073833F /* ConexionRed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53AB807A239C91AC0073833F /* ConexionRed.swift */; };
+		53DA15A723F24B2F006D3553 /* SignInWithApple.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53DA15A623F24B2F006D3553 /* SignInWithApple.swift */; };
 		53F799DD235E1BF600BB7E00 /* Responsable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53F799DC235E1BF500BB7E00 /* Responsable.swift */; };
 		5E6463E64E3EFEA17D6E3D5A /* Pods_CHMD2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20CF577F2E5A86CC6E684013 /* Pods_CHMD2.framework */; };
 		E0090AED22EBE92B00BC236C /* CircularesLeidasTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0090AEC22EBE92B00BC236C /* CircularesLeidasTableViewController.swift */; };
@@ -56,6 +57,7 @@
 		53356BC023E2606D00C7A516 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		537E3758239B6DCF005838F1 /* EliminadasTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EliminadasTableViewController.swift; sourceTree = "<group>"; };
 		53AB807A239C91AC0073833F /* ConexionRed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConexionRed.swift; sourceTree = "<group>"; };
+		53DA15A623F24B2F006D3553 /* SignInWithApple.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInWithApple.swift; sourceTree = "<group>"; };
 		53F799DC235E1BF500BB7E00 /* Responsable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Responsable.swift; sourceTree = "<group>"; };
 		E0090AEC22EBE92B00BC236C /* CircularesLeidasTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularesLeidasTableViewController.swift; sourceTree = "<group>"; };
 		E0090AEE22EBEBD500BC236C /* CircularesNoLeidasTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularesNoLeidasTableViewController.swift; sourceTree = "<group>"; };
@@ -123,6 +125,7 @@
 			isa = PBXGroup;
 			children = (
 				53AB807A239C91AC0073833F /* ConexionRed.swift */,
+				53DA15A623F24B2F006D3553 /* SignInWithApple.swift */,
 			);
 			path = Utilerias;
 			sourceTree = "<group>";
@@ -436,6 +439,7 @@
 				E06577AE22D14DD60089A05A /* AlumnosTableViewController.swift in Sources */,
 				530EC2C823D409F300A8BDBD /* NotificacionesTableViewController.swift in Sources */,
 				E0090AF522EBF5A500BC236C /* CircularDetalleViewController.swift in Sources */,
+				53DA15A723F24B2F006D3553 /* SignInWithApple.swift in Sources */,
 				E065778622D1126A0089A05A /* AppDelegate.swift in Sources */,
 				E0B1E47F22E7F76F00CD8EE6 /* CircularCompartidaTableViewCell.swift in Sources */,
 				53AB807B239C91AC0073833F /* ConexionRed.swift in Sources */,
@@ -604,14 +608,14 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = CHMD2/CHMD2.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = 3UAVXU6LK5;
 				INFOPLIST_FILE = CHMD2/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.2;
+				MARKETING_VERSION = 1.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = mx.edu.CHMD1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "CHMD2/SideMenu/CHMD2-Bridging-Header.h";
@@ -629,14 +633,14 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = CHMD2/CHMD2.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = 3UAVXU6LK5;
 				INFOPLIST_FILE = CHMD2/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.2;
+				MARKETING_VERSION = 1.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = mx.edu.CHMD1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "CHMD2/SideMenu/CHMD2-Bridging-Header.h";
