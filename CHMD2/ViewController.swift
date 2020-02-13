@@ -38,7 +38,7 @@ extension ViewController: ASAuthorizationControllerDelegate {
             //Revisar que el correo exista en el server del colegio
             UserDefaults.standard.set(appleUserFirstName, forKey: "nombre")
             UserDefaults.standard.set(appleIDCredential.email, forKey: "email")
-            performSegue(withIdentifier: "verificarSegue", sender: self)
+            performSegue(withIdentifier: "inicioSegue", sender: self)
             
         } else if let passwordCredential = authorization.credential as? ASPasswordCredential {
             
