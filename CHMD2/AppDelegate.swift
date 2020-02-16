@@ -113,6 +113,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate,GIDSignI
         }
         UIApplication.shared.registerForRemoteNotifications()
         
+        
+        
+        UINavigationBar.appearance().barTintColor = UIColor(red: 9.0/255.0, green: 143.0/255.0, blue: 207.0/255.0, alpha: 1.0)
+        UINavigationBar.appearance().tintColor = UIColor.white
+        UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.foregroundColor : UIColor.white]
+        
         return true
     }
     

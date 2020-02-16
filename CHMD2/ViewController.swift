@@ -169,8 +169,8 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
         }
         
         
-         self.setupSOAppleSignIn()
-        
+         //self.setupSOAppleSignIn()
+        self.appleCustomLoginButton()
        
     }
     
@@ -241,6 +241,33 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
         
     }
 
+    
+    func appleCustomLoginButton() {
+    if #available(iOS 13.0, *) {
+            let customAppleLoginBtn = UIButton()
+            customAppleLoginBtn.layer.cornerRadius = 80.0
+            customAppleLoginBtn.layer.borderWidth = 0.0
+            customAppleLoginBtn.backgroundColor = UIColor.white
+            //customAppleLoginBtn.layer.borderColor = UIColor.black.cgColor
+            //customAppleLoginBtn.setTitle("Sign in with Apple", for: .normal)
+            customAppleLoginBtn.setTitleColor(UIColor.black, for: .normal)
+            customAppleLoginBtn.titleLabel?.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
+            customAppleLoginBtn.setImage(UIImage(named: "boton_apple"), for: .normal)
+            customAppleLoginBtn.imageEdgeInsets = UIEdgeInsets.init(top: 0, left: 0, bottom: 0, right: 0)
+            customAppleLoginBtn.addTarget(self, action: #selector(actionHandleAppleSignin), for: .touchUpInside)
+            customAppleLoginBtn.frame = CGRect(x: 140, y: 700, width: 96, height: 96)
+            self.view.addSubview(customAppleLoginBtn)
+            // Setup Layout Constraints to be in the center of the screen
+            /*customAppleLoginBtn.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                customAppleLoginBtn.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+                customAppleLoginBtn.centerYAnchor.constraint(equalTo: self.view.centerYAnchor),
+                customAppleLoginBtn.widthAnchor.constraint(equalToConstant: 200),
+                customAppleLoginBtn.heightAnchor.constraint(equalToConstant: 40)
+                ])*/
+        }
+        
+    }
     
     
     func setupSOAppleSignIn() {
