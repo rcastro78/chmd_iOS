@@ -9,13 +9,13 @@
 import UIKit
 
 class MenuPrincipal: NSObject {
-    var nombre:String
+    
     var id:Int=0;
     var imagen:UIImage
     
-    init(id:Int,nombre:String, imagen:UIImage) {
+    init(id:Int,imagen:UIImage) {
         self.id=id;
-        self.nombre=nombre;
+    
         self.imagen=imagen;
     }
 }

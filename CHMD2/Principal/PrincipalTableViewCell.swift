@@ -10,7 +10,7 @@ import UIKit
 
 class PrincipalTableViewCell: UITableViewCell {
 
-    @IBOutlet weak var lblMenu: UILabel!
+    //@IBOutlet weak var lblMenu: UILabel!
     @IBOutlet weak var imgMenu: UIImageView!
     override func awakeFromNib() {
         super.awakeFromNib()

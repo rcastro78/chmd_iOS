@@ -14,7 +14,7 @@ import Network
 import BitlySDK
 import FirebaseInstanceID
 import FirebaseMessaging
-
+import SQLite3
 
 extension Data {
     var hexString: String {
@@ -28,6 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate,GIDSignI
 
     var window: UIWindow?
     var metodo_circular:String="getCircularId.php"
+    var db: OpaquePointer?
     
     func registerForPushNotifications() {
       UNUserNotificationCenter.current() // 1
@@ -50,9 +51,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate,GIDSignI
       }
     }
     
+    
+    func applicationDidBecomeActive(application: UIApplication) {
+        application.applicationIconBadgeNumber = 0
+    }
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         //client key: 1a11599f0dadc14c7c3141bcf2576eb7611bcf85
         //client secret: fd10a0b735e5a716b6f4cd97f870736f89e49c08
+        
+         var statement:OpaquePointer?
+        let sqlRecuento1 = "select count(*) from appNotificacion"
+          if sqlite3_prepare(self.db, sqlRecuento1, -1, &statement, nil) == SQLITE_OK{
+                while(sqlite3_step(statement) == SQLITE_ROW){
+                     let count = sqlite3_column_int(statement, 0)
+                     print("Notificaciones: \(count)")
+                }
+
+          }else{
+            print("Notificaciones: -1")
+        }
+
         
         
         Bitly.initialize("1a11599f0dadc14c7c3141bcf2576eb7611bcf85", supportedDomains:["chmd.edu.mx","chmd.edu.mx"], supportedSchemes:["chmd"]) { response, error in
@@ -168,26 +187,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate,GIDSignI
     
     
     
-    open func application(_ application: UIApplication, didReceiveRemoteNotification data: [AnyHashable: Any]) {
-       
+   func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any],
+    fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        var statement:OpaquePointer?
        guard
-        let aps = data[AnyHashable("aps")] as? NSDictionary,
+        let aps = userInfo[AnyHashable("aps")] as? NSDictionary,
             let alert = aps["alert"] as? NSDictionary,
             let body = alert["body"] as? String,
             let title = alert["title"] as? String,
-            let idC = alert["id"] as? String
+            let idC = alert["id"] as? String,
+            let badge = alert["badge"] as? String
+        
+            
+        
             else {
-               
+               print("Error en las notificaciones")
                 return
             }
-            
-        UserDefaults.standard.set(idC, forKey: "idViaNotif")
         
+       
+            
+       
         let state = application.applicationState
         switch state {
             case .background:
              print("Background")
-             application.applicationIconBadgeNumber = application.applicationIconBadgeNumber + 1
+             
+           
         case .active:
             print("activa")
         case .inactive:
@@ -196,14 +222,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate,GIDSignI
             print("default")
         }
         
+       
+        
+    debugPrint("Notificaciones: \(userInfo)")
     
-
         
     }
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
             print("Se dio click a la notificacion")
-        UserDefaults.standard.set(1, forKey: "viaNotif")
+            let request = response.notification.request
+            let userInfo = request.content.userInfo
+            //Con esto capturamos los valores enviados en la notificacion
+            let idCircular = userInfo["idCircular"] as! String
+            UserDefaults.standard.set(1, forKey: "viaNotif")
+            UserDefaults.standard.set(idCircular, forKey: "idCircularViaNotif")
+            
+        
           
         let mainStoryboard:UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
                 let circulares = mainStoryboard.instantiateViewController(withIdentifier: "CircularTableViewController") as! CircularTableViewController
@@ -274,6 +309,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate,GIDSignI
     
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+         application.applicationIconBadgeNumber = 0
     }
     
     func applicationWillTerminate(_ application: UIApplication) {

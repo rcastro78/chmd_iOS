@@ -64,7 +64,7 @@
 		E0090AF022EBEC7E00BC236C /* CircularesFavTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularesFavTableViewController.swift; sourceTree = "<group>"; };
 		E0090AF222EBEC8F00BC236C /* CircularesCompTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularesCompTableViewController.swift; sourceTree = "<group>"; };
 		E0090AF422EBF5A500BC236C /* CircularDetalleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularDetalleViewController.swift; sourceTree = "<group>"; };
-		E065778222D1126A0089A05A /* CHMD2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CHMD2.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E065778222D1126A0089A05A /* CHMD.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CHMD.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E065778522D1126A0089A05A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E065778722D1126B0089A05A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		E065778A22D1126B0089A05A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -161,7 +161,7 @@
 		E065778322D1126A0089A05A /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E065778222D1126A0089A05A /* CHMD2.app */,
+				E065778222D1126A0089A05A /* CHMD.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -305,7 +305,7 @@
 			);
 			name = CHMD2;
 			productName = CHMD2;
-			productReference = E065778222D1126A0089A05A /* CHMD2.app */;
+			productReference = E065778222D1126A0089A05A /* CHMD.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -608,16 +608,16 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = CHMD2/CHMD2.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 13;
 				DEVELOPMENT_TEAM = 3UAVXU6LK5;
 				INFOPLIST_FILE = CHMD2/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.5;
+				MARKETING_VERSION = 1.0.12;
 				PRODUCT_BUNDLE_IDENTIFIER = mx.edu.CHMD1;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = CHMD;
 				SWIFT_OBJC_BRIDGING_HEADER = "CHMD2/SideMenu/CHMD2-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -633,16 +633,16 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = CHMD2/CHMD2.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 13;
 				DEVELOPMENT_TEAM = 3UAVXU6LK5;
 				INFOPLIST_FILE = CHMD2/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.5;
+				MARKETING_VERSION = 1.0.12;
 				PRODUCT_BUNDLE_IDENTIFIER = mx.edu.CHMD1;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = CHMD;
 				SWIFT_OBJC_BRIDGING_HEADER = "CHMD2/SideMenu/CHMD2-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;

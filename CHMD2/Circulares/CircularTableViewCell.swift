@@ -15,6 +15,8 @@ class CircularTableViewCell: UITableViewCell {
     @IBOutlet weak var lblTitulo: UILabel!
     @IBOutlet weak var lblFecha: UILabel!
     @IBOutlet weak var lblHora: UILabel!
+    @IBOutlet weak var imgAdjunto: UIImageView!
+    
     var favMetodo:String="favCircular.php"
     var delMetodo:String="eliminarCircular.php"
     var urlBase:String="https://www.chmd.edu.mx/WebAdminCirculares/ws/"
@@ -23,10 +25,9 @@ class CircularTableViewCell: UITableViewCell {
         super.awakeFromNib()
         // Initialization code
     }
-
+/*
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-        //self.accessoryType = selected ? .checkmark : .none
         self.accessoryType = selected ? UITableViewCell.AccessoryType.checkmark : UITableViewCell.AccessoryType.none
     }
 
@@ -35,7 +36,7 @@ class CircularTableViewCell: UITableViewCell {
         self.selectionStyle = .none
         
         
-    }
+    }*/
     
     required init?(coder aDecoder: NSCoder) {
          super.init(coder: aDecoder)

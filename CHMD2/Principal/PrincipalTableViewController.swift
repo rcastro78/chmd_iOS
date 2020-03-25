@@ -50,10 +50,10 @@ class PrincipalTableViewController: UITableViewController {
         let CREDENCIAL=4
  
             
-            menu.append(MenuPrincipal(id: INICIO, nombre: "Circulares", imagen:UIImage.init(named: "circulares2")!))
-            menu.append(MenuPrincipal(id: MAGUEN, nombre: "Mi Maguén", imagen:UIImage.init(named: "maguen2")!))
-            menu.append(MenuPrincipal(id: CREDENCIAL, nombre: "Mi Credencial", imagen:UIImage.init(named: "credencial2")!))
-            menu.append(MenuPrincipal(id: SIGN_OUT, nombre: "Cerrar Sesión", imagen:UIImage.init(named: "cerrar2")!))
+            menu.append(MenuPrincipal(id: INICIO, imagen:UIImage.init(named: "circulares256")!))
+            menu.append(MenuPrincipal(id: MAGUEN,  imagen:UIImage.init(named: "mi_maguen256")!))
+            menu.append(MenuPrincipal(id: CREDENCIAL,  imagen:UIImage.init(named: "mi_credencial256")!))
+            menu.append(MenuPrincipal(id: SIGN_OUT, imagen:UIImage.init(named: "cerrar_sesion256")!))
         
     
         /*let urlVideo = Bundle.main.url(forResource: "video_app", withExtension: "mp4")
@@ -87,6 +87,15 @@ class PrincipalTableViewController: UITableViewController {
         let p: AVPlayerItem = notification.object as! AVPlayerItem
         p.seek(to: CMTime.zero)
     }*/
+    
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableView.automaticDimension
+    }
+
+    override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 200
+    }
     
     
     func obtenerDatosUsuario(uri:String){
@@ -319,8 +328,8 @@ class PrincipalTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "celda", for: indexPath)
             as! PrincipalTableViewCell
         let m = menu[indexPath.row]
-        cell.lblMenu.text?=m.nombre
-        cell.lblMenu.font = UIFont(name: "Gotham Rounded", size: 17.0)
+        //cell.lblMenu.text?=m.nombre
+        //cell.lblMenu.font = UIFont(name: "Gotham Rounded", size: 17.0)
         cell.imgMenu.image=m.imagen
         
         return cell
@@ -332,22 +341,28 @@ class PrincipalTableViewController: UITableViewController {
         
         if (valor.id==1){
             performSegue(withIdentifier: "inicioSegue", sender: self)
-        }
+          }
         if (valor.id==2){
+            
             performSegue(withIdentifier: "webSegue", sender: self)
         }
         if(valor.id==3){
-           
-                GIDSignIn.sharedInstance()?.signOut()
-                performSegue(withIdentifier: "unwindSegueToVC1", sender: self)
-                UserDefaults.standard.set(0,forKey: "autenticado")
-                UserDefaults.standard.set(0,forKey: "cuentaValida")
-                UserDefaults.standard.set("", forKey: "nombre")
-                UserDefaults.standard.set("", forKey: "email")
+           //GIDSignIn.sharedInstance()?.signOut()
+                      performSegue(withIdentifier: "unwindSegueToVC1", sender: self)
+                      //UserDefaults.standard.set(0,forKey: "autenticado")
+                      //UserDefaults.standard.set(0,forKey: "cuentaValida")
+                      //UserDefaults.standard.set("", forKey: "nombre")
+                     // UserDefaults.standard.set("", forKey: "email")
+                      DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                          UIApplication.shared.perform(#selector(NSXPCConnection.suspend))
+                           DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            exit(0)
+                           }
+                      }
         }
         
         if (valor.id==4){
-            performSegue(withIdentifier: "credencialSegue", sender: self)
+           performSegue(withIdentifier: "credencialSegue", sender: self)
         }
         
     }

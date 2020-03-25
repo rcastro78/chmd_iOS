@@ -18,28 +18,40 @@ extension CircularTableViewController: UISearchResultsUpdating {
   }
 }
 
-class CircularTableViewController: UITableViewController,UISearchBarDelegate {
+class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIGestureRecognizerDelegate {
     @IBOutlet var tableViewCirculares: UITableView!
     @IBOutlet weak var barBusqueda: UISearchBar!
+    
+    
+   
+    
     var buscando=false
     var circulares = [CircularTodas]()
     var db: OpaquePointer?
     var idUsuario:String=""
     var urlBase:String="https://www.chmd.edu.mx/WebAdminCirculares/ws/"
     var noleerMetodo:String="noleerCircular.php"
-  
-    
-    
+    var selecMultiple=false
+    var circularesSeleccionadas = [Int]()
     override func viewDidLoad() {
         super.viewDidLoad()
         circulares.removeAll()
         self.hideKeyboardWhenTappedAround()
         barBusqueda.delegate = self
-        
-        
+        self.title="Circulares"
+        selecMultiple=false
+        circularesSeleccionadas.removeAll()
+        setupLongPressGesture()
+        //let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: "longPress:")
+        //self.view.addGestureRecognizer(longPressRecognizer)
+        //stackBotones.isHidden=true
         idUsuario = UserDefaults.standard.string(forKey: "idUsuario") ?? "0"
         //idUsuario="1944"
-         
+        
+        self.tableViewCirculares.allowsMultipleSelection = true
+        self.tableViewCirculares.allowsMultipleSelectionDuringEditing = true
+        
+     
         if ConexionRed.isConnectedToNetwork() == true {
             let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesUsuarios.php?usuario_id=\(self.idUsuario)"
               let _url = URL(string: address);
@@ -65,16 +77,19 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate {
          //self.guardarCirculares(idCircular: 2, idUsuario: 1944, nombre: "TEST 2...", textoCircular: "<p>Este es el texto de la circular número 2<p>", no_leida: 0, leida: 0, favorita: 0, compartida: 0, eliminada: 0)
         
         
-        setupLongPressGesture()
+        //setupLongPressGesture()
         
         
     }
-
     
+    
+    
+
+    /*
     func setupLongPressGesture() {
         let longPressGesture:UILongPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(self.handleLongPress))
         longPressGesture.minimumPressDuration = 2.0 // 1 second press
-        //longPressGesture.delegate = self as? UIGestureRecognizerDelegate
+        longPressGesture.delegate = self as? UIGestureRecognizerDelegate
         self.tableViewCirculares.addGestureRecognizer(longPressGesture)
     }
     
@@ -103,13 +118,58 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate {
             }
         }
     }
-    
+    */
     
     // MARK: - Table view data source
 
+    /*
+    @IBAction func pasarFavoritos(_ sender: UIButton) {
+        for circular in circularesSeleccionadas{
+            print(circular)
+        }
+    }
+    
+    @IBAction func pasarNoLeidas(_ sender: UIButton) {
+        for circular in circularesSeleccionadas{
+            print(circular)
+        }
+    }
+    
+    @IBAction func pasarBorrar(_ sender: UIButton) {
+        for circular in circularesSeleccionadas{
+            print(circular)
+        }
+    }
+    
+    
+    
+    
+    
+    func longPress(longPressGestureRecognizer: UILongPressGestureRecognizer) {
+        
+      if longPressGestureRecognizer.state == UIGestureRecognizer.State.began {
+        selecMultiple=true
+        //stackBotones.isHidden=false
+        let touchPoint = longPressGestureRecognizer.location(in: self.view)
+        if let indexPath = tableViewCirculares.indexPathForRow(at: touchPoint) {
+            // let c = circulares[indexPath.row]
+            //al tener la circular, agregarla al arreglo
+            //circularesSeleccionadas.append(c.id)
+        }
+    }
+        
+    }
+    
+    */
+    
     override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         return 1
+    }
+    
+    func tableView(tableView: UITableView, titleForHeaderInSection section:Int) -> String?
+    {
+      return "Circulares"
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -131,11 +191,33 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate {
         
         cell.lblEncabezado.text? = "Circular No. \(c.id)"
         cell.lblTitulo.text? = c.nombre.uppercased()
-        var horaFecha = c.fecha.split{$0 == " "}.map(String.init)
-        cell.lblFecha.text? = horaFecha[0]
-        cell.lblHora.text? = horaFecha[1]
-        cell.imgCircular.image = c.imagen
+        //var horaFecha = c.fecha.split{$0 == " "}.map(String.init)
+        //cell.lblFecha.text? = horaFecha[0]
+        //cell.lblHora.text? = horaFecha[1]
         
+               let dateFormatter = DateFormatter()
+               dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+               dateFormatter.locale = Locale(identifier: "es_ES_POSIX")
+               let date1 = dateFormatter.date(from: c.fecha)
+               dateFormatter.dateFormat = "EEEE"
+        
+        
+                  /*let date = NSDate(c.fecha)
+                  let dateFormatter = DateFormatter()
+                  dateFormatter.dateFormat = "EEEE"
+                  let dayInWeek = dateFormatter.string(from: date)*/
+                let dia = dateFormatter.string(from: date1!)
+       
+        
+        cell.lblFecha.text?=dia
+        cell.imgCircular.image = c.imagen
+        if(c.adjunto==1){
+            cell.imgAdjunto.isHidden=false
+        }
+        if(c.adjunto==0){
+            cell.imgAdjunto.isHidden=true
+        }
+        //cell.accessoryType = UITableViewCell.AccessoryType.none
         /*let fuentePeq = UIFont(name: "Gotham Rounded", size: 12)
         let fuenteTitulo = UIFont(name: "Gotham Rounded", size: 14)
         cell.lblEncabezado.font = fuentePeq
@@ -162,11 +244,24 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate {
     
     
     //Función para manejar el swipe
+    
+    //El leadingSwipe es para manejar el swipe de izquierda a derecha
+    override func tableView(_ tableView: UITableView,
+                   leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration?
+    {
+        
+        let noleeAction = self.contextualUnreadAction(forRowAtIndexPath: indexPath)
+        let swipeConfig = UISwipeActionsConfiguration(actions: [noleeAction])
+        return swipeConfig
+    }
+    
+    
+    
+    //El trailingSwipe es para manejar el swipe de derecha a izquierda
     override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let favAction = self.contextualFavAction(forRowAtIndexPath: indexPath)
         let eliminaAction = self.contextualDelAction(forRowAtIndexPath: indexPath)
-        let noleerAction = self.contextualUnreadAction(forRowAtIndexPath: indexPath)
-        let swipeConfig = UISwipeActionsConfiguration(actions: [eliminaAction,noleerAction,favAction])
+        let favAction = self.contextualFavAction(forRowAtIndexPath: indexPath)
+        let swipeConfig = UISwipeActionsConfiguration(actions: [eliminaAction,favAction])
         return swipeConfig
     }
     
@@ -175,7 +270,7 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate {
         let circular = circulares[indexPath.row]
         // 2
         let action = UIContextualAction(style: .normal,
-                                        title: "Favorita") { (contextAction: UIContextualAction, sourceView: UIView, completionHandler: (Bool) -> Void) in
+                                        title: "") { (contextAction: UIContextualAction, sourceView: UIView, completionHandler: (Bool) -> Void) in
                                             let idCircular:String = "\(circular.id)"
                                             
                                             self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: idCircular)
@@ -188,8 +283,8 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate {
             
         }
         // 7
-        action.image = UIImage(named: "favIcon")
-        action.backgroundColor = UIColor.blue
+        action.image = UIImage(named: "fav_naranja_icono")
+        //action.backgroundColor = UIColor.orange
         
         return action
     }
@@ -201,7 +296,7 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate {
            let circular = circulares[indexPath.row]
            // 2
            let action = UIContextualAction(style: .normal,
-                                           title: "Compartida") { (contextAction: UIContextualAction, sourceView: UIView, completionHandler: (Bool) -> Void) in
+                                           title: "") { (contextAction: UIContextualAction, sourceView: UIView, completionHandler: (Bool) -> Void) in
                                                 let idCircular:String = "\(circular.id)"
                                                                                          
                                             self.noleerCircular(direccion: self.urlBase+self.noleerMetodo, usuario_id: self.idUsuario, circular_id: idCircular)
@@ -212,8 +307,8 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate {
                
            }
            // 7
-           action.image = UIImage(named: "unreadIcon")
-        action.backgroundColor = UIColor.green
+           action.image = UIImage(named: "noleido3_icono")
+        //action.backgroundColor = UIColor.blue
            
            return action
        }
@@ -223,7 +318,7 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate {
         let circular = circulares[indexPath.row]
         // 2
         let action = UIContextualAction(style: .normal,
-                                        title: "Eliminada") { (contextAction: UIContextualAction, sourceView: UIView, completionHandler: (Bool) -> Void) in
+                                        title: "") { (contextAction: UIContextualAction, sourceView: UIView, completionHandler: (Bool) -> Void) in
                                             let idCircular:String = "\(circular.id)"
                                             
                                             self.delCircular(direccion: self.urlBase+"eliminarCircular.php", usuario_id: self.idUsuario, circular_id: idCircular)
@@ -236,8 +331,8 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate {
             
         }
         // 7
-        action.image = UIImage(named: "delIcon")
-        action.backgroundColor = UIColor.red
+        action.image = UIImage(named: "borrar_icono")
+        //action.backgroundColor = UIColor.red
         
         return action
     }
@@ -253,6 +348,10 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate {
             UserDefaults.standard.set(c.nombre,forKey:"nombre")
             UserDefaults.standard.set(c.fecha,forKey:"fecha")
             UserDefaults.standard.set(c.contenido,forKey:"contenido")
+            UserDefaults.standard.set(c.fechaIcs,forKey:"fechaIcs")
+            UserDefaults.standard.set(c.horaInicialIcs,forKey:"horaInicialIcs")
+            UserDefaults.standard.set(c.horaFinalIcs,forKey:"horaFinalIcs")
+            UserDefaults.standard.set(c.nivel,forKey:"nivel")
             UserDefaults.standard.set(0, forKey: "viaNotif")
             performSegue(withIdentifier: "TcircularSegue", sender:self)
              
@@ -304,17 +403,20 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate {
                         let favorita = sqlite3_column_int(queryStatement, 6)
                         let eliminada = sqlite3_column_int(queryStatement, 8)
                         if(Int(leida)>0){
-                           imagen = UIImage.init(named: "leidas_azul")!
+                           //imagen = UIImage.init(named: "leidas_azul")!
                          }
                         
-                        
-                        if(Int(favorita)>0 && Int(leida) == 1){
-                           imagen = UIImage.init(named: "appmenu06")!
+                        if(Int(leida) == 1){
+                    
+                        }
+                
+                        if(Int(favorita)==1){
+                           imagen = UIImage.init(named: "star")!
                           }
                         var noLeida:Int = 0
                         if(Int(leida) == 0){
                             noLeida = 1
-                            imagen = UIImage.init(named: "noleidas_celeste")!
+                            imagen = UIImage.init(named: "circle")!
                            }
                 var fechaCircular="";
                 if let fecha = sqlite3_column_text(queryStatement, 9) {
@@ -323,7 +425,7 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate {
                     print("name not found")
                 }
                 
-                self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo,fecha: fechaCircular,estado: 0,contenido:cont))
+                self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo,fecha: fechaCircular,estado: 0,contenido:cont,adjunto:0,fechaIcs:"",horaInicialIcs: "",horaFinalIcs: "", nivel:""))
               }
             
             self.tableViewCirculares.reloadData()
@@ -468,6 +570,9 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate {
                             return
                         }
                         
+                        guard let adjunto = diccionario["adjunto"] as? String else {
+                                                   return
+                                               }
                         
                         guard let eliminada = diccionario["eliminado"] as? String else {
                             return
@@ -477,23 +582,55 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate {
                             return
                         }
                         
+                        guard let fechaIcs = diccionario["fecha_ics"] as? String else {
+                          return
+                        }
+                        guard let horaInicioIcs = diccionario["hora_inicial_ics"] as? String else {
+                                                 return
+                                               }
+                        
+                       
+                        guard let horaFinIcs = diccionario["hora_final_ics"] as? String else {
+                                                                        return
+                                                                      }
+                        
+                       
+                            /*guard let nivel = diccionario["nivel"] as? String else {
+                               return
+                            }*/
+                        //Con esto se evita la excepcion por los valores nulos
+                        var nv:String?
+                        if (diccionario["nivel"] == nil){
+                            nv=""
+                        }else{
+                            nv=diccionario["nivel"] as? String
+                        }
+
+                        
+                       
+                        
                         //leídas
                         if(Int(leido)!>0){
-                            imagen = UIImage.init(named: "leidas_azul")!
+                            imagen = UIImage.init(named: "circle_white")!
                         }
                         //No leídas
                         if(Int(leido)==0){
-                            imagen = UIImage.init(named: "noleidas_celeste")!
+                            imagen = UIImage.init(named: "circle")!
                         }
                         if(Int(favorito)!>0){
-                            imagen = UIImage.init(named: "appmenu06")!
+                            imagen = UIImage.init(named: "star")!
                         }
                         var noLeida:Int = 0
                         if(Int(leido)! == 0){
                             noLeida = 1
                         }
                         
-                        self.circulares.append(CircularTodas(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo.uppercased(),fecha: fecha,estado: 0,contenido:""))
+                        var adj=0;
+                        if(Int(adjunto)!==1){
+                            adj=1
+                        }
+                        
+                        self.circulares.append(CircularTodas(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo.uppercased(),fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? ""))
                         //Guardar las circulares
                         self.guardarCirculares(idCircular: Int(id)!, idUsuario: Int(self.idUsuario)!, nombre: titulo.uppercased(), textoCircular: texto, no_leida: noLeida, leida: Int(leido)!, favorita: Int(favorito)!, compartida: 0, eliminada: Int(eliminada)!,fecha: fecha)
                     }
@@ -507,6 +644,170 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate {
     }
         
     }
+    
+    
+    func setupLongPressGesture() {
+        let longPressGesture:UILongPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(self.handleLongPress))
+        longPressGesture.minimumPressDuration = 1.0 // 1 second press
+        longPressGesture.delegate = self
+        self.tableViewCirculares.addGestureRecognizer(longPressGesture)
+        
+        //Mostrar los botones
+              
+        
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+       return 84
+    }
+    
+    let footerView = UIView()
+    override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        footerView.isHidden=true
+        footerView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height:
+       100)
+     
+                                //Favoritos al pie
+                                let btnFavoritos = UIButton(type: .custom)
+                                 btnFavoritos.frame=CGRect(x:10,y:20,width:64,height:64)
+                                 btnFavoritos.setImage(UIImage(named:"estrella_fav"), for: .normal)
+                                 btnFavoritos.backgroundColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
+                                 btnFavoritos.clipsToBounds = true
+                                 btnFavoritos.layer.cornerRadius = 32
+                                 btnFavoritos.layer.borderColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
+                                 btnFavoritos.layer.borderWidth = 3.0
+                                 btnFavoritos.addTarget(self,action: #selector(agregarFavoritos), for: .touchUpInside)
+        
+        
+        let btnNoLeidos = UIButton(type: .custom)
+        btnNoLeidos.frame=CGRect(x:100,y:20,width:64,height:64)
+        btnNoLeidos.setImage(UIImage(named:"icono_noleido"), for: .normal)
+        btnNoLeidos.backgroundColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
+        btnNoLeidos.clipsToBounds = true
+        btnNoLeidos.layer.cornerRadius = 32
+        btnNoLeidos.layer.borderColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
+        btnNoLeidos.layer.borderWidth = 3.0
+        btnNoLeidos.addTarget(self,action: #selector(noleer), for: .touchUpInside)
+        
+        
+              let btnEliminar = UIButton(type: .custom)
+               btnEliminar.frame=CGRect(x:180,y:20,width:64,height:64)
+               btnEliminar.setImage(UIImage(named:"delIcon"), for: .normal)
+               btnEliminar.backgroundColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
+               btnEliminar.clipsToBounds = true
+               btnEliminar.layer.cornerRadius = 32
+               btnEliminar.layer.borderColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
+               btnEliminar.layer.borderWidth = 3.0
+               btnEliminar.addTarget(self,action: #selector(eliminar), for: .touchUpInside)
+        
+        
+        let btnDeshacer = UIButton(type: .custom)
+        btnDeshacer.frame=CGRect(x:260,y:20,width:64,height:64)
+        btnDeshacer.setImage(UIImage(named:"undo"), for: .normal)
+        btnDeshacer.backgroundColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
+        btnDeshacer.clipsToBounds = true
+        btnDeshacer.layer.cornerRadius = 32
+        btnDeshacer.layer.borderColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
+        btnDeshacer.layer.borderWidth = 3.0
+        btnDeshacer.addTarget(self,action: #selector(eliminar), for: .touchUpInside)
+        
+        
+       footerView.addSubview(btnFavoritos)
+       footerView.addSubview(btnNoLeidos)
+       footerView.addSubview(btnEliminar)
+       footerView.addSubview(btnDeshacer)
+       return footerView
+    }
+    
+    
+    @objc func agregarFavoritos(){
+       circulares.removeAll()
+          for c in circularesSeleccionadas{
+          self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: "\(c)")
+       }
+       let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesUsuarios.php?usuario_id=\(self.idUsuario)"
+                  let _url = URL(string: address);
+                  self.obtenerCirculares(uri:address)
+       
+       tableViewCirculares.reloadData()
+        
+    }
+    
+    @objc func eliminar(){
+        circulares.removeAll()
+        for c in circularesSeleccionadas{
+              self.delCircular(direccion: self.urlBase+"eliminarCircular.php", usuario_id: self.idUsuario, circular_id: "\(c)")
+        }
+        
+        let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesUsuarios.php?usuario_id=\(self.idUsuario)"
+                   let _url = URL(string: address);
+                   self.obtenerCirculares(uri:address)
+        //tableViewCirculares.reloadData()
+        
+       }
+    
+    @objc func deshacer(){
+        circulares.removeAll()
+         let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesUsuarios.php?usuario_id=\(self.idUsuario)"
+        let _url = URL(string: address);
+                        self.obtenerCirculares(uri:address)
+        //tableViewCirculares.reloadData()
+          }
+    
+    @objc func noleer(){
+        circulares.removeAll()
+           for c in circularesSeleccionadas{
+           self.noleerCircular(direccion: self.urlBase+self.noleerMetodo, usuario_id: self.idUsuario, circular_id: "\(c)")
+        }
+        let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesUsuarios.php?usuario_id=\(self.idUsuario)"
+                   let _url = URL(string: address);
+                   self.obtenerCirculares(uri:address)
+        
+        tableViewCirculares.reloadData()
+       }
+
+    @objc func handleLongPress(_ gestureRecognizer: UILongPressGestureRecognizer){
+        if gestureRecognizer.state == .began {
+            footerView.isHidden=false
+            footerView.backgroundColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
+            let touchPoint = gestureRecognizer.location(in: self.tableViewCirculares)
+            if let indexPath = tableViewCirculares.indexPathForRow(at: touchPoint) {
+                   let c = circulares[indexPath.row]
+                
+             
+                /*let cell = tableViewCirculares.cellForRow(at: indexPath) as! CircularTableViewCell
+                             
+                if cell.isSelected
+                {
+                    cell.isSelected = false
+                    if cell.accessoryType == .none
+                    {
+                        cell.accessoryType = .checkmark
+                       
+                    }
+                    else
+                    {
+                        cell.accessoryType = .none
+                    }
+                }*/
+                
+                let cell = tableViewCirculares.cellForRow(at: indexPath) as! CircularTableViewCell
+                             
+                              if(!cell.isSelected){
+                                cell.accessoryType = .checkmark
+                                print("Se seleccionó")
+                                cell.setSelected(true, animated: true)
+                              }
+                              
+                              
+                
+                
+                
+                circularesSeleccionadas.append(c.id)
+            }
+        }
+    }
+    
     
 
     //Operaciones con las circulares
@@ -584,6 +885,8 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate {
     }
     
     
+    
+    @IBAction func unwindCirculares(segue:UIStoryboardSegue) {}
      
 
 }

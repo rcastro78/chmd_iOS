@@ -20,14 +20,22 @@ class ValidarCorreoViewController: UIViewController {
     var email:String=""
     var so:String=""
     var deviceToken = ""
-    
+    let v = UIView()
     @IBOutlet weak var lblMensaje: UILabel!
     override func viewDidLoad() {
         super.viewDidLoad()
         email = UserDefaults.standard.string(forKey: "email") ?? ""
-
-        // Do any additional setup after loading the view.
+        Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { (timer) in
+                                         self.v.isHidden = true
+                                     }
      }
+    
+   func finish(){
+   var navigationArray = self.navigationController?.viewControllers //To get all UIViewController stack as Array
+   navigationArray!.remove(at: (navigationArray?.count)! - 2) // To remove previous UIViewController
+   self.navigationController?.viewControllers = navigationArray!
+   }
+    
     
     override func viewDidAppear(_ animated: Bool) {
         print(email)
@@ -41,6 +49,9 @@ class ValidarCorreoViewController: UIViewController {
             let valida = Int(existe) ?? 0
             if(valida==1){
                 performSegue(withIdentifier: "validarSegue", sender: self)
+                finish()
+               
+                
             }else{
                
             }

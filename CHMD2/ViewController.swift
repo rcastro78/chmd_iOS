@@ -113,9 +113,16 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
     var paused:Bool = false
     var db: OpaquePointer?
     
+    @IBOutlet weak var btnAppleLogin: UIButton!
     @IBOutlet weak var signInButton: GIDSignInButton!
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if #available(iOS 13.0, *) {
+            self.btnAppleLogin.isHidden=false
+        }else{
+          self.btnAppleLogin.isHidden=true
+        }
         
         
          if ConexionRed.isConnectedToNetwork() == true {
@@ -168,6 +175,12 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
             print("Error creando la tabla de las circulares")
         }
         
+        let crearTablaNotificaciones="CREATE TABLE IF NOT EXISTS appNotificacion(idCircular INTEGER, notificacion INTEGER)"
+        if sqlite3_exec(db, crearTablaNotificaciones, nil, nil, nil) != SQLITE_OK {
+            print("Error creando la tabla de las notificaciones")
+        }else{
+           print("creada la tabla de las notificaciones")
+        }
         
          //self.setupSOAppleSignIn()
         self.appleCustomLoginButton()
@@ -213,6 +226,7 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
         p.seek(to: CMTime.zero)
     }
     
+   
     
     //Esta función es para el redirect automático
     override func viewDidAppear(_ animated: Bool) {
@@ -224,6 +238,7 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
         if(cuentaValida==1){
             print("Valida")
             performSegue(withIdentifier: "inicioSegue", sender: self)
+            //self.performSegue(withIdentifier: "validarSinInternetSegue", sender: self)
         }else{
             print("Cuenta No Valida")
         }
@@ -240,6 +255,22 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
     @IBAction func unwindToVC1(segue:UIStoryboardSegue) {
         
     }
+    
+    
+    @IBAction func appleLogin(_ sender: UIButton) {
+        if #available(iOS 13.0, *){
+            actionHandleAppleSignin()
+        }else{
+            let alert = UIAlertController(title: "CHMD", message: "Esta opción sólo está disponible a partir de iOS 13", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Cerrar", style: .cancel, handler: nil))
+
+            self.present(alert, animated: true)
+            
+        }
+        
+    }
+    
+    
 
     
     func appleCustomLoginButton() {
@@ -248,15 +279,14 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
             customAppleLoginBtn.layer.cornerRadius = 80.0
             customAppleLoginBtn.layer.borderWidth = 0.0
             customAppleLoginBtn.backgroundColor = UIColor.white
-            //customAppleLoginBtn.layer.borderColor = UIColor.black.cgColor
-            //customAppleLoginBtn.setTitle("Sign in with Apple", for: .normal)
+           
             customAppleLoginBtn.setTitleColor(UIColor.black, for: .normal)
             customAppleLoginBtn.titleLabel?.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
             customAppleLoginBtn.setImage(UIImage(named: "boton_apple"), for: .normal)
             customAppleLoginBtn.imageEdgeInsets = UIEdgeInsets.init(top: 0, left: 0, bottom: 0, right: 0)
             customAppleLoginBtn.addTarget(self, action: #selector(actionHandleAppleSignin), for: .touchUpInside)
             customAppleLoginBtn.frame = CGRect(x: 140, y: 700, width: 96, height: 96)
-            self.view.addSubview(customAppleLoginBtn)
+            //self.view.addSubview(customAppleLoginBtn)
             // Setup Layout Constraints to be in the center of the screen
             /*customAppleLoginBtn.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([

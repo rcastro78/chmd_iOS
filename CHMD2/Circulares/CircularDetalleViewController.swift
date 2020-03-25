@@ -19,15 +19,26 @@ class CircularDetalleViewController: UIViewController {
     @IBOutlet weak var lblFechaCircular: UILabel!
     @IBOutlet weak var lblTituloParte1: UILabel!
     @IBOutlet weak var lblTituloParte2: UILabel!
+    @IBOutlet weak var lblTituloNivel: UILabel!
+    @IBOutlet weak var imbCalendario: UIButton!
     
+    @IBOutlet weak var lblNivel: UILabel!
     var ids = [String]()
     var titulos = [String]()
     var fechas = [String]()
+    var niveles = [String]()
+    var fechasIcs = [String]()
+    var horasInicioIcs = [String]()
+    var horasFinIcs = [String]()
     var idInicial:Int=0
     var posicion:Int=0
     var viaNotif:Int=0
     var id:String=""
     var idUsuario=""
+    var horaInicialIcs=""
+    var horaFinalIcs=""
+    var fechaIcs=""
+    var nivel=""
     var favMetodo:String="favCircular.php"
     var delMetodo:String="eliminarCircular.php"
     var noleerMetodo:String="noleerCircular.php"
@@ -37,17 +48,28 @@ class CircularDetalleViewController: UIViewController {
     var circularTitulo:String=""
     var metodo_circular="getCircularId.php"
     var contenido:String=""
+    let eventStore = EKEventStore()
     var circulares = [CircularTodas]()
     override func viewDidLoad() {
         super.viewDidLoad()
-        lblTituloParte1.backgroundColor = UIColor(red: 145/255, green: 202/255, blue: 238/255, alpha: 1.0)
+        /*lblTituloParte1.backgroundColor = UIColor(red: 145/255, green: 202/255, blue: 238/255, alpha: 1.0)
         lblTituloParte2.backgroundColor = UIColor(red: 9/255, green: 143/255, blue: 207/255, alpha: 1.0)
         lblTituloParte1.textColor = UIColor(red: 14/255, green: 36/255, blue: 85/255, alpha: 1.0)
         lblTituloParte2.textColor = UIColor(red: 14/255, green: 73/255, blue: 123/255, alpha: 1.0)
-        lblTituloParte2.isHidden = true
+        lblTituloParte2.isHidden = true*/
+        imbCalendario.isHidden=true
         
         idUsuario = UserDefaults.standard.string(forKey: "idUsuario") ?? "0"
         viaNotif = UserDefaults.standard.integer(forKey: "viaNotif")
+        horaInicialIcs = UserDefaults.standard.string(forKey: "horaInicialIcs") ?? "0"
+        horaFinalIcs = UserDefaults.standard.string(forKey: "horaFinalIcs") ?? "0"
+        fechaIcs = UserDefaults.standard.string(forKey: "fechaIcs") ?? "0"
+        nivel = UserDefaults.standard.string(forKey: "nivel") ?? "0"
+        
+        if(horaInicialIcs != "00:00:00"){
+            imbCalendario.isHidden=false
+        }
+         lblNivel.text = nivel
         
         if (viaNotif == 0){
             let titulo = UserDefaults.standard.string(forKey: "nombre") ?? ""
@@ -57,16 +79,17 @@ class CircularDetalleViewController: UIViewController {
             id = UserDefaults.standard.string(forKey: "id") ?? ""
             idInicial = Int(UserDefaults.standard.string(forKey: "id") ?? "0")!
             
-            let anio = fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
+                    let anio = fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
                    let mes = fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
                    let dia = fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
                    lblFechaCircular.text = "\(dia)/\(mes)/\(anio)"
                    self.title = "Circular"
-                   partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:titulo)
+                   self.lblTituloParte1.text = titulo.uppercased()
+                   //partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:titulo)
             
         }else{
-            id = UserDefaults.standard.string(forKey: "idViaNotif") ?? ""
-            idInicial = Int(UserDefaults.standard.string(forKey: "idViaNotif") ?? "0")!
+            id = UserDefaults.standard.string(forKey: "idCircularViaNotif") ?? ""
+            idInicial = Int(UserDefaults.standard.string(forKey: "idCircularViaNotif") ?? "0")!
             obtenerCircular(uri: urlBase+metodo_circular+"?id="+id)
            
         }
@@ -113,7 +136,6 @@ class CircularDetalleViewController: UIViewController {
         return nil
     }
     
-    
     func insertarEvento(store: EKEventStore,titulo:String,fechaIcs:String,horaInicioIcs:String,horaFinIcs:String,ubicacionIcs:String) {
         let calendario = store.calendars(for: .event)
         
@@ -123,8 +145,8 @@ class CircularDetalleViewController: UIViewController {
         dateFormatter.dateFormat = dateFormat
       
         let calendar = calendario[0]
-        let startDate = dateFormatter.date(from: "2019-01-21T09:00")
-        let eDate = dateFormatter.date(from: "2019-01-21T11:00")
+        let startDate = dateFormatter.date(from: "\(fechaIcs)T\(horaInicioIcs)")
+        let eDate = dateFormatter.date(from:"\(fechaIcs)T\(horaFinIcs)")
         print(startDate)
         print(eDate)
         let endDate = eDate
@@ -144,30 +166,41 @@ class CircularDetalleViewController: UIViewController {
         
         
     }
+    
+    
+    
+    @IBAction func insertaEventoClick(_ sender: UIButton) {
+       
         
-    @IBAction func btnCalendarioClick(_ sender: UIButton) {
-         let eventStore = EKEventStore()
-        switch EKEventStore.authorizationStatus(for: .event) {
-        case .authorized:
-            insertarEvento(store: eventStore,titulo: circularTitulo,fechaIcs: "2019-01-21",horaInicioIcs: "09:00",horaFinIcs: "12:00",ubicacionIcs: "En el colegio")
-            case .denied:
-                print("Acceso denegado")
-            case .notDetermined:
-            // 3
-                eventStore.requestAccess(to: .event, completion:
-                  {[weak self] (granted: Bool, error: Error?) -> Void in
-                      if granted {
-                        self!.insertarEvento(store: eventStore,titulo: self?.circularTitulo ?? "",
-                                             fechaIcs: "2019-01-21",horaInicioIcs: "09:00",horaFinIcs: "12:00",ubicacionIcs: "En el colegio")
-                      } else {
-                            print("Acceso denegado")
-                      }
-                })
-                default:
-                    print("Case default")
-        }
+        let eventStore = EKEventStore()
+               switch EKEventStore.authorizationStatus(for: .event) {
+               case .authorized:
+                insertarEvento(store: eventStore, titulo: circularTitulo, fechaIcs: fechaIcs, horaInicioIcs: horaInicialIcs, horaFinIcs: horaFinalIcs, ubicacionIcs: "")
+                   case .denied:
+                       print("Acceso denegado")
+                   case .notDetermined:
+                   // 3
+                       eventStore.requestAccess(to: .event, completion:
+                         {[weak self] (granted: Bool, error: Error?) -> Void in
+                             if granted {
+                                self?.insertarEvento(store: eventStore, titulo: self?.circularTitulo ?? "", fechaIcs: self?.fechaIcs ?? "", horaInicioIcs: self?.horaInicialIcs ?? "", horaFinIcs: self?.horaFinalIcs ?? "", ubicacionIcs: "")
+                             } else {
+                                   print("Acceso denegado")
+                             }
+                       })
+                       default:
+                           print("Case default")
+        
         
     }
+        
+    }
+    
+    
+    
+    
+        
+ 
     
     @IBAction func btnNextClick(_ sender: UIButton) {
        //obtener la posición del elemento cargado
@@ -179,6 +212,17 @@ class CircularDetalleViewController: UIViewController {
             var nextId = ids[posicion]
             var nextTitulo = titulos[posicion]
             var nextFecha = fechas[posicion]
+            
+            var nextHoraIniIcs = horasInicioIcs[posicion]
+            var nextHoraFinIcs = horasFinIcs[posicion]
+            var nextFechaIcs = fechasIcs[posicion]
+            var nextNivel = niveles[posicion]
+            
+            if(nextHoraIniIcs != "00:00:00"){
+                imbCalendario.isHidden=false
+            }
+             lblNivel.text = nextNivel
+            
             circularTitulo = nextTitulo
             let link = URL(string:urlBase+"getCircularId2.php?id=\(nextId)")!
             let request = URLRequest(url: link)
@@ -193,7 +237,7 @@ class CircularDetalleViewController: UIViewController {
             self.lblFechaCircular.text = "\(dia)/\(mes)/\(anio)"
             
             
-            partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())
+            self.lblTituloParte1.text=nextTitulo /*partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())*/
             id = nextId;
         }else{
             posicion = 0
@@ -214,6 +258,19 @@ class CircularDetalleViewController: UIViewController {
             var nextId = ids[posicion]
             var nextTitulo = titulos[posicion]
             var nextFecha = fechas[posicion]
+            
+            var nextHoraIniIcs = horasInicioIcs[posicion]
+            var nextHoraFinIcs = horasFinIcs[posicion]
+            var nextFechaIcs = fechasIcs[posicion]
+            var nextNivel = niveles[posicion]
+            
+            if(nextHoraIniIcs != "00:00:00"){
+                imbCalendario.isHidden=false
+            }
+            
+            lblNivel.text = nextNivel
+            
+            
              circularTitulo = nextTitulo
             let link = URL(string:urlBase+"getCircularId2.php?id=\(nextId)")!
             circularUrl = urlBase+"getCircularId2.php?id=\(nextId)"
@@ -225,7 +282,7 @@ class CircularDetalleViewController: UIViewController {
            let dia = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
            self.lblFechaCircular.text = "\(dia)/\(mes)/\(anio)"
             
-            partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())
+            self.lblTituloParte1.text=nextTitulo /*partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())*/
             id = nextId
         }else{
             posicion = ids.count
@@ -494,9 +551,32 @@ class CircularDetalleViewController: UIViewController {
                                                                           print("No se pudo obtener la fecha")
                                                                           return
                                                                       }
+                        guard let fechaIcs = diccionario["fecha_ics"] as? String else {
+                                                return
+                                              }
+                                              guard let horaInicioIcs = diccionario["hora_inicial_ics"] as? String else {
+                                                                       return
+                                                                     }
+                                              
+                                             
+                                              guard let horaFinIcs = diccionario["hora_final_ics"] as? String else {
+                                                                                              return
+                                                                                            }
+                                              
+                                              
+                                              guard let nivel = diccionario["nivel"] as? String else {
+                                                                                              return
+                                                                                            }
+                        
+                        
                      self.ids.append(id)
                      self.titulos.append(titulo)
                      self.fechas.append(fecha)
+                        
+                    self.fechasIcs.append(fechaIcs)
+                    self.horasInicioIcs.append(horaInicioIcs)
+                    self.horasFinIcs.append(horaFinIcs)
+                    self.niveles.append(nivel)
                 }
                 
                 
@@ -553,7 +633,7 @@ class CircularDetalleViewController: UIViewController {
                     self.lblFechaCircular.text = "\(dia)/\(mes)/\(anio)"
                     self.title = "Detalles de la circular"
                     //self.titulos[0].uppercased()
-                    self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:self.titulos[0].uppercased())
+                    self.lblTituloParte1.text=self.titulos[0].uppercased() /*self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:self.titulos[0].uppercased())*/
               
           
       }
