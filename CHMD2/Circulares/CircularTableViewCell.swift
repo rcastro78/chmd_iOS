@@ -16,7 +16,7 @@ class CircularTableViewCell: UITableViewCell {
     @IBOutlet weak var lblFecha: UILabel!
     @IBOutlet weak var lblHora: UILabel!
     @IBOutlet weak var imgAdjunto: UIImageView!
-    
+    @IBOutlet weak var chkSeleccionar: CheckBox!
     var favMetodo:String="favCircular.php"
     var delMetodo:String="eliminarCircular.php"
     var urlBase:String="https://www.chmd.edu.mx/WebAdminCirculares/ws/"

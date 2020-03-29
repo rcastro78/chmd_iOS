@@ -52,6 +52,8 @@ class CircularDetalleViewController: UIViewController {
     var circulares = [CircularTodas]()
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        
         /*lblTituloParte1.backgroundColor = UIColor(red: 145/255, green: 202/255, blue: 238/255, alpha: 1.0)
         lblTituloParte2.backgroundColor = UIColor(red: 9/255, green: 143/255, blue: 207/255, alpha: 1.0)
         lblTituloParte1.textColor = UIColor(red: 14/255, green: 36/255, blue: 85/255, alpha: 1.0)
@@ -206,7 +208,7 @@ class CircularDetalleViewController: UIViewController {
        //obtener la posición del elemento cargado
         posicion = posicion+1
         
-        print(ids.count)
+        print("Cuenta: \(ids.count)")
         
         if(posicion<ids.count){
             var nextId = ids[posicion]
@@ -254,6 +256,7 @@ class CircularDetalleViewController: UIViewController {
     
     @IBAction func btnAntClick(_ sender: UIButton) {
         posicion = posicion-1
+        print("Anterior...")
         if(posicion>=0){
             var nextId = ids[posicion]
             var nextTitulo = titulos[posicion]
@@ -563,10 +566,13 @@ class CircularDetalleViewController: UIViewController {
                                                                                               return
                                                                                             }
                                               
-                                              
-                                              guard let nivel = diccionario["nivel"] as? String else {
-                                                                                              return
-                                                                                            }
+                                              //Esto si viene null desde el servicio web
+                                                                var nv:String?
+                                                                     if (diccionario["nivel"] == nil){
+                                                                         nv=""
+                                                                     }else{
+                                                                         nv=diccionario["nivel"] as? String
+                                                                     }
                         
                         
                      self.ids.append(id)
@@ -576,7 +582,7 @@ class CircularDetalleViewController: UIViewController {
                     self.fechasIcs.append(fechaIcs)
                     self.horasInicioIcs.append(horaInicioIcs)
                     self.horasFinIcs.append(horaFinIcs)
-                    self.niveles.append(nivel)
+                    self.niveles.append(nv ?? "")
                 }
                 
                 

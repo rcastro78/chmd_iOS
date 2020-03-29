@@ -20,7 +20,7 @@ extension CircularTableViewController: UISearchResultsUpdating {
 
 class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIGestureRecognizerDelegate {
     @IBOutlet var tableViewCirculares: UITableView!
-    @IBOutlet weak var barBusqueda: UISearchBar!
+   // @IBOutlet weak var barBusqueda: UISearchBar!
     
     
    
@@ -37,7 +37,7 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
         super.viewDidLoad()
         circulares.removeAll()
         self.hideKeyboardWhenTappedAround()
-        barBusqueda.delegate = self
+        
         self.title="Circulares"
         selecMultiple=false
         circularesSeleccionadas.removeAll()
@@ -191,6 +191,7 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
         
         cell.lblEncabezado.text? = "Circular No. \(c.id)"
         cell.lblTitulo.text? = c.nombre.uppercased()
+        cell.chkSeleccionar.addTarget(self, action: #selector(seleccionMultiple), for: .touchUpInside)
         //var horaFecha = c.fecha.split{$0 == " "}.map(String.init)
         //cell.lblFecha.text? = horaFecha[0]
         //cell.lblHora.text? = horaFecha[1]
@@ -283,8 +284,8 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
             
         }
         // 7
-        action.image = UIImage(named: "fav_naranja_icono")
-        //action.backgroundColor = UIColor.orange
+        action.image = UIImage(named: "fav32")
+        action.backgroundColor = UIColor.orange
         
         return action
     }
@@ -307,8 +308,8 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
                
            }
            // 7
-           action.image = UIImage(named: "noleido3_icono")
-        //action.backgroundColor = UIColor.blue
+           action.image = UIImage(named: "unread32")
+        action.backgroundColor = UIColor.blue
            
            return action
        }
@@ -331,8 +332,8 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
             
         }
         // 7
-        action.image = UIImage(named: "borrar_icono")
-        //action.backgroundColor = UIColor.red
+        action.image = UIImage(named: "delIcon32")
+        action.backgroundColor = UIColor.red
         
         return action
     }
@@ -669,46 +670,46 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
      
                                 //Favoritos al pie
                                 let btnFavoritos = UIButton(type: .custom)
-                                 btnFavoritos.frame=CGRect(x:10,y:20,width:64,height:64)
+                                 btnFavoritos.frame=CGRect(x:10,y:20,width:32,height:32)
                                  btnFavoritos.setImage(UIImage(named:"estrella_fav"), for: .normal)
-                                 btnFavoritos.backgroundColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
+                                 //btnFavoritos.backgroundColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
                                  btnFavoritos.clipsToBounds = true
-                                 btnFavoritos.layer.cornerRadius = 32
-                                 btnFavoritos.layer.borderColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
-                                 btnFavoritos.layer.borderWidth = 3.0
+                                 //btnFavoritos.layer.cornerRadius = 32
+                                 //btnFavoritos.layer.borderColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
+                               
                                  btnFavoritos.addTarget(self,action: #selector(agregarFavoritos), for: .touchUpInside)
         
         
         let btnNoLeidos = UIButton(type: .custom)
-        btnNoLeidos.frame=CGRect(x:100,y:20,width:64,height:64)
+        btnNoLeidos.frame=CGRect(x:100,y:20,width:32,height:32)
         btnNoLeidos.setImage(UIImage(named:"icono_noleido"), for: .normal)
-        btnNoLeidos.backgroundColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
+        //btnNoLeidos.backgroundColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
         btnNoLeidos.clipsToBounds = true
-        btnNoLeidos.layer.cornerRadius = 32
-        btnNoLeidos.layer.borderColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
-        btnNoLeidos.layer.borderWidth = 3.0
+        //btnNoLeidos.layer.cornerRadius = 32
+        //btnNoLeidos.layer.borderColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
+        
         btnNoLeidos.addTarget(self,action: #selector(noleer), for: .touchUpInside)
         
         
               let btnEliminar = UIButton(type: .custom)
-               btnEliminar.frame=CGRect(x:180,y:20,width:64,height:64)
+               btnEliminar.frame=CGRect(x:180,y:20,width:32,height:32)
                btnEliminar.setImage(UIImage(named:"delIcon"), for: .normal)
-               btnEliminar.backgroundColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
+               //btnEliminar.backgroundColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
                btnEliminar.clipsToBounds = true
-               btnEliminar.layer.cornerRadius = 32
-               btnEliminar.layer.borderColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
-               btnEliminar.layer.borderWidth = 3.0
+               //btnEliminar.layer.cornerRadius = 32
+               //btnEliminar.layer.borderColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
+              
                btnEliminar.addTarget(self,action: #selector(eliminar), for: .touchUpInside)
         
         
         let btnDeshacer = UIButton(type: .custom)
-        btnDeshacer.frame=CGRect(x:260,y:20,width:64,height:64)
+        btnDeshacer.frame=CGRect(x:260,y:20,width:32,height:32)
         btnDeshacer.setImage(UIImage(named:"undo"), for: .normal)
-        btnDeshacer.backgroundColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
+        //btnDeshacer.backgroundColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
         btnDeshacer.clipsToBounds = true
-        btnDeshacer.layer.cornerRadius = 32
-        btnDeshacer.layer.borderColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
-        btnDeshacer.layer.borderWidth = 3.0
+        //btnDeshacer.layer.cornerRadius = 32
+        //btnDeshacer.layer.borderColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
+       
         btnDeshacer.addTarget(self,action: #selector(eliminar), for: .touchUpInside)
         
         
@@ -717,6 +718,46 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
        footerView.addSubview(btnEliminar)
        footerView.addSubview(btnDeshacer)
        return footerView
+    }
+    
+    
+     @objc func seleccionMultiple(_ sender:UIButton){
+        var superView = sender.superview
+        
+       
+       
+        
+        while !(superView is UITableViewCell) {
+            superView = superView?.superview
+        }
+        let cell = superView as! CircularTableViewCell
+        if let indexpath = tableView.indexPath(for: cell){
+            if(cell.chkSeleccionar.isChecked){
+                footerView.isHidden=false;
+                //let c = tableViewCirculares.cellForRow(at: indexpath) as! CircularTableViewCell
+                let c = circulares[indexpath.row]
+                //print("Seleccionado: \(c.id)")
+                circularesSeleccionadas.append(c.id)
+                print("recuento: \(circularesSeleccionadas.count)")
+            }else{
+               let c = circulares[indexpath.row]
+                //print("No Seleccionado: \(c.id)")
+                let itemEliminar = c.id
+                while circularesSeleccionadas.contains(itemEliminar) {
+                    if let indice = circularesSeleccionadas.firstIndex(of: itemEliminar) {
+                        circularesSeleccionadas.remove(at: indice)
+                    }
+                }
+                
+                if(circularesSeleccionadas.count<=0){
+                      footerView.isHidden=true;
+                }
+                         
+              
+                
+                //print("recuento: \(circularesSeleccionadas.count)")
+            }
+        }
     }
     
     
@@ -770,27 +811,12 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
         if gestureRecognizer.state == .began {
             footerView.isHidden=false
             footerView.backgroundColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
-            let touchPoint = gestureRecognizer.location(in: self.tableViewCirculares)
+            /*let touchPoint = gestureRecognizer.location(in: self.tableViewCirculares)
             if let indexPath = tableViewCirculares.indexPathForRow(at: touchPoint) {
                    let c = circulares[indexPath.row]
                 
              
-                /*let cell = tableViewCirculares.cellForRow(at: indexPath) as! CircularTableViewCell
-                             
-                if cell.isSelected
-                {
-                    cell.isSelected = false
-                    if cell.accessoryType == .none
-                    {
-                        cell.accessoryType = .checkmark
-                       
-                    }
-                    else
-                    {
-                        cell.accessoryType = .none
-                    }
-                }*/
-                
+                                
                 let cell = tableViewCirculares.cellForRow(at: indexPath) as! CircularTableViewCell
                              
                               if(!cell.isSelected){
@@ -798,13 +824,10 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
                                 print("Se seleccionó")
                                 cell.setSelected(true, animated: true)
                               }
-                              
-                              
-                
-                
-                
+                        
                 circularesSeleccionadas.append(c.id)
-            }
+            }*/
+            
         }
     }
     
@@ -852,7 +875,7 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
  }
     
     
-    
+    /*
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         if(!(searchBar.text?.isEmpty)!){
             buscando=true
@@ -883,7 +906,7 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
             
         }
     }
-    
+    */
     
     
     @IBAction func unwindCirculares(segue:UIStoryboardSegue) {}
