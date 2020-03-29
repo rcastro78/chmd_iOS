@@ -12,12 +12,13 @@ import Alamofire
 import EventKit
 import Firebase
 import BitlySDK
+import MarqueeLabel
 class CircularDetalleViewController: UIViewController {
 
     
     @IBOutlet weak var webView: WKWebView!
     @IBOutlet weak var lblFechaCircular: UILabel!
-    @IBOutlet weak var lblTituloParte1: UILabel!
+    @IBOutlet weak var lblTituloParte1: MarqueeLabel!
     @IBOutlet weak var lblTituloParte2: UILabel!
     @IBOutlet weak var lblTituloNivel: UILabel!
     @IBOutlet weak var imbCalendario: UIButton!
@@ -53,12 +54,13 @@ class CircularDetalleViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
-        /*lblTituloParte1.backgroundColor = UIColor(red: 145/255, green: 202/255, blue: 238/255, alpha: 1.0)
-        lblTituloParte2.backgroundColor = UIColor(red: 9/255, green: 143/255, blue: 207/255, alpha: 1.0)
-        lblTituloParte1.textColor = UIColor(red: 14/255, green: 36/255, blue: 85/255, alpha: 1.0)
-        lblTituloParte2.textColor = UIColor(red: 14/255, green: 73/255, blue: 123/255, alpha: 1.0)
-        lblTituloParte2.isHidden = true*/
+        lblTituloParte1.type = .continuous
+        lblTituloParte1.scrollDuration = 8.0
+        lblTituloParte1.animationCurve = .easeOut
+        lblTituloParte1.fadeLength = 10.0
+        lblTituloParte1.leadingBuffer = 30.0
+        lblTituloParte1.trailingBuffer = 20.0
+       
         imbCalendario.isHidden=true
         
         idUsuario = UserDefaults.standard.string(forKey: "idUsuario") ?? "0"
@@ -142,15 +144,16 @@ class CircularDetalleViewController: UIViewController {
         let calendario = store.calendars(for: .event)
         
         //Convertir las horas
-        let dateFormat = "yyyy-MM-dd'T'HH:mm"
+        let dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
         let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "es_MX_POSIX")
         dateFormatter.dateFormat = dateFormat
-      
+        print("\(fechaIcs)'T'\(horaInicioIcs)")
         let calendar = calendario[0]
         let startDate = dateFormatter.date(from: "\(fechaIcs)T\(horaInicioIcs)")
         let eDate = dateFormatter.date(from:"\(fechaIcs)T\(horaFinIcs)")
-        print(startDate)
-        print(eDate)
+        print("fecha \(startDate)")
+         print("fecha \(eDate)")
         let endDate = eDate
         let event = EKEvent(eventStore: store)
         event.calendar = calendar
@@ -160,11 +163,12 @@ class CircularDetalleViewController: UIViewController {
 
         do {
             try store.save(event, span: .thisEvent)
+            print("Evento guardado")
         }
         catch {
            print("Error guardando el evento")
             
-            }
+        }
         
         
     }
@@ -174,27 +178,63 @@ class CircularDetalleViewController: UIViewController {
     @IBAction func insertaEventoClick(_ sender: UIButton) {
        
         
-        let eventStore = EKEventStore()
-               switch EKEventStore.authorizationStatus(for: .event) {
-               case .authorized:
-                insertarEvento(store: eventStore, titulo: circularTitulo, fechaIcs: fechaIcs, horaInicioIcs: horaInicialIcs, horaFinIcs: horaFinalIcs, ubicacionIcs: "")
-                   case .denied:
-                       print("Acceso denegado")
-                   case .notDetermined:
-                   // 3
-                       eventStore.requestAccess(to: .event, completion:
-                         {[weak self] (granted: Bool, error: Error?) -> Void in
-                             if granted {
-                                self?.insertarEvento(store: eventStore, titulo: self?.circularTitulo ?? "", fechaIcs: self?.fechaIcs ?? "", horaInicioIcs: self?.horaInicialIcs ?? "", horaFinIcs: self?.horaFinalIcs ?? "", ubicacionIcs: "")
-                             } else {
+        
+        if(ConexionRed.isConnectedToNetwork()){
+            let dialogMessage = UIAlertController(title: "CHMD", message: "¿Deseas agregar este evento a tu calendario?", preferredStyle: .alert)
+            
+            // Create OK button with action handler
+            let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
+              
+                
+                
+                let eventStore = EKEventStore()
+                           switch EKEventStore.authorizationStatus(for: .event) {
+                           case .authorized:
+                            self.insertarEvento(store: eventStore, titulo: self.circularTitulo, fechaIcs: self.fechaIcs, horaInicioIcs: self.horaInicialIcs, horaFinIcs: self.horaFinalIcs, ubicacionIcs: "")
+                               case .denied:
                                    print("Acceso denegado")
-                             }
-                       })
-                       default:
-                           print("Case default")
+                               case .notDetermined:
+                               // 3
+                                   eventStore.requestAccess(to: .event, completion:
+                                     {[weak self] (granted: Bool, error: Error?) -> Void in
+                                         if granted {
+                                            self?.insertarEvento(store: eventStore, titulo: self?.circularTitulo ?? "", fechaIcs: self?.fechaIcs ?? "", horaInicioIcs: self?.horaInicialIcs ?? "", horaFinIcs: self?.horaFinalIcs ?? "", ubicacionIcs: "")
+                                         } else {
+                                               print("Acceso denegado")
+                                         }
+                                   })
+                                   default:
+                                       print("Case default")
+                    
+                    
+                }
+                
+                
+                
+                
+            })
+            
+            // Create Cancel button with action handlder
+            let cancel = UIAlertAction(title: "Cancelar", style: .cancel) { (action) -> Void in
+                
+            }
+            
+            //Add OK and Cancel button to dialog message
+            dialogMessage.addAction(ok)
+            dialogMessage.addAction(cancel)
+            
+            // Present dialog message to user
+            self.present(dialogMessage, animated: true, completion: nil)
+        }else{
+            var alert = UIAlertView(title: "No está conectado a Internet", message: "Esta opción solo funciona con una conexión a Internet", delegate: nil, cancelButtonTitle: "Aceptar")
+                       alert.show()
+        }
         
         
-    }
+        
+        
+        
+        
         
     }
     
@@ -412,6 +452,51 @@ class CircularDetalleViewController: UIViewController {
             // Create OK button with action handler
             let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
                 self.delCircular(direccion: self.urlBase+self.delMetodo, usuario_id:self.idUsuario, circular_id: self.id)
+                
+                //Pasar a la siguiente
+                
+                self.posicion = self.posicion+1
+                
+              
+                
+                if(self.posicion<self.ids.count){
+                    var nextId = self.ids[self.posicion]
+                    var nextTitulo = self.titulos[self.posicion]
+                    var nextFecha = self.fechas[self.posicion]
+                    
+                    var nextHoraIniIcs = self.horasInicioIcs[self.posicion]
+                    var nextHoraFinIcs = self.horasFinIcs[self.posicion]
+                    var nextFechaIcs = self.fechasIcs[self.posicion]
+                    var nextNivel = self.niveles[self.posicion]
+                    
+                    if(nextHoraIniIcs != "00:00:00"){
+                        self.imbCalendario.isHidden=false
+                    }
+                     self.lblNivel.text = nextNivel
+                    
+                    self.circularTitulo = nextTitulo
+                    let link = URL(string:self.urlBase+"getCircularId2.php?id=\(nextId)")!
+                    let request = URLRequest(url: link)
+                    self.circularUrl = self.urlBase+"getCircularId2.php?id=\(nextId)"
+                    self.webView.load(request)
+                    self.title = "Circular"
+                    //nextTitulo.uppercased()
+                    
+                    let anio = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
+                    let mes = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
+                    let dia = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
+                    self.lblFechaCircular.text = "\(dia)/\(mes)/\(anio)"
+                    
+                    
+                    self.lblTituloParte1.text=nextTitulo /*partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())*/
+                    self.id = nextId;
+                }else{
+                    self.posicion = 0
+                    self.id = UserDefaults.standard.string(forKey: "id") ?? ""
+                }
+                
+                
+                
             })
             
             // Create Cancel button with action handlder
