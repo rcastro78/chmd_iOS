@@ -363,166 +363,137 @@ class CircularesFavTableViewController: UITableViewController,UISearchBarDelegat
        
        //Leer las circulares cuando no haya internet
        func leerCirculares(){
-           
-           let fileUrl = try!
-                      FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd.sqlite")
-           
-           if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
-               print("error opening database")
-           }
-           
-              let consulta = "SELECT * FROM appCircular WHERE idUsuario=\(self.idUsuario);"
-              var queryStatement: OpaquePointer? = nil
-           var imagen:UIImage
-           imagen = UIImage.init(named: "appmenu05")!
-           
-           if sqlite3_prepare_v2(db, consulta, -1, &queryStatement, nil) == SQLITE_OK {
-          
-               
-               
-                while(sqlite3_step(queryStatement) == SQLITE_ROW) {
-                        let id = sqlite3_column_int(queryStatement, 0)
-                           var titulo:String="";
-                   
-                          if let name = sqlite3_column_text(queryStatement, 2) {
-                              titulo = String(cString: name).uppercased()
-                             } else {
-                              print("name not found")
-                          }
-                   
-                   
-                           var cont:String="";
-                   
-                          if let contenido = sqlite3_column_text(queryStatement, 3) {
-                              cont = String(cString: contenido)
-                             } else {
-                              print("name not found")
-                          }
-                   
-                           let leida = sqlite3_column_int(queryStatement, 5)
-                           let favorita = sqlite3_column_int(queryStatement, 6)
-                           let eliminada = sqlite3_column_int(queryStatement, 8)
-                           if(Int(leida)>0){
-                              //imagen = UIImage.init(named: "leidas_azul")!
-                            }
-                           
-                           if(Int(leida) == 1){
-                       
-                           }
-                   
-                           if(Int(favorita)==1){
-                              imagen = UIImage.init(named: "star")!
-                             }
-                           var noLeida:Int = 0
-                           if(Int(leida) == 0){
-                               noLeida = 1
-                               imagen = UIImage.init(named: "circle")!
-                              }
-                   var fechaCircular="";
-                   if let fecha = sqlite3_column_text(queryStatement, 9) {
-                       fechaCircular = String(cString: fecha).uppercased()
-                      } else {
-                       print("name not found")
-                   }
-                   
-                   self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo,fecha: fechaCircular,estado: 0,contenido:cont,adjunto:0,fechaIcs:"",horaInicialIcs: "",horaFinalIcs: "", nivel:""))
-                 }
-               
-               self.tableViewCirculares.reloadData()
-
-                }
-               else {
-                print("SELECT statement could not be prepared")
+              
+              let fileUrl = try!
+                         FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd.sqlite")
+              
+              if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
+                  print("error opening database")
               }
-
-              sqlite3_finalize(queryStatement)
-          }
-      
-       
-       //Esta función se utiliza para limpiar la base de datos cuando se abra al tener conexión a internet
-       func limpiarCirculares(){
-           let fileUrl = try!
-                      FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd.sqlite")
+              
+                 let consulta = "SELECT * FROM appCirculares WHERE idUsuario=\(self.idUsuario);"
+                 var queryStatement: OpaquePointer? = nil
+              var imagen:UIImage
+              imagen = UIImage.init(named: "appmenu05")!
+              
+              if sqlite3_prepare_v2(db, consulta, -1, &queryStatement, nil) == SQLITE_OK {
+             
+                 
                   
-                  if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
-                      print("Error en la base de datos")
-                  }else{
-                           var statement:OpaquePointer?
-                   let query = "DELETE FROM appCircular";
-                   if sqlite3_prepare(db,query,-1,&statement,nil) != SQLITE_OK {
-                       print("Error")
+                   while(sqlite3_step(queryStatement) == SQLITE_ROW) {
+                           let id = sqlite3_column_int(queryStatement, 0)
+                              var titulo:String="";
+                      
+                             if let name = sqlite3_column_text(queryStatement, 2) {
+                                 titulo = String(cString: name).uppercased()
+                                } else {
+                                 print("name not found")
+                             }
+                      
+                      
+                              var cont:String="";
+                      
+                             if let contenido = sqlite3_column_text(queryStatement, 3) {
+                                 cont = String(cString: contenido)
+                                } else {
+                                 print("name not found")
+                             }
+                      
+                      /*
+                                  idCircular 0, idUsuario 1, nombre 2, textoCircular 3, no_leida 4, leida 5, favorita 6, compartida 7, eliminada 8, created_at 9,fechaIcs 10, horaInicioIcs 11, horaFinIcs 12 , nivel 13, adjunto 14,updated_at  15
+                                  */
+                      
+                              let leida = sqlite3_column_int(queryStatement, 5)
+                              let favorita = sqlite3_column_int(queryStatement, 6)
+                              let eliminada = sqlite3_column_int(queryStatement, 8)
+                              
+                      
+                                              var fechaIcs:String="";
+                                              if let fIcs = sqlite3_column_text(queryStatement, 10) {
+                                                fechaIcs = String(cString: fIcs)
+                                               } else {
+                                                print("name not found")
+                                            }
+                      
+                                     
+                                          
+                      
+                             
+                        var hIniIcs:String="";
+                        if  let horaInicioIcs = sqlite3_column_text(queryStatement, 11) {
+                          hIniIcs = String(cString: horaInicioIcs)
+                         } else {
+                          print("name not found")
+                      }
+                              
+                      
+                       var hFinIcs:String="";
+                       if  let horaFinIcs = sqlite3_column_text(queryStatement, 12) {
+                           hFinIcs = String(cString: horaFinIcs)
+                           } else {
+                             print("name not found")
+                           }
+                      
+                      
+                      
+                              
+                              
+                      
+                      var nivel:String="";
+                      if  let nv = sqlite3_column_text(queryStatement, 12) {
+                          nivel = String(cString: nv)
+                          } else {
+                            print("name not found")
+                          }
+                      
+                              let adj = sqlite3_column_int(queryStatement, 13)
+                              if(Int(leida)>0){
+                                 //imagen = UIImage.init(named: "leidas_azul")!
+                               }
+                              
+                              if(Int(leida) == 1){
+                          
+                              }
+                      
+                              if(Int(favorita)==1){
+                                 imagen = UIImage.init(named: "star")!
+                                }
+                              var noLeida:Int = 0
+                              if(Int(leida) == 0){
+                                  noLeida = 1
+                                  imagen = UIImage.init(named: "circle")!
+                                 }
+                      var fechaCircular="";
+                      if let fecha = sqlite3_column_text(queryStatement, 8) {
+                          fechaCircular = String(cString: fecha)
+                          print("fecha c: \(fechaCircular)")
+                         } else {
+                          print("name not found")
+                      }
+                      
+                      
+                      /*
+                         self.circulares.append(CircularTodas(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo.uppercased(),fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? ""))
+                       */
+                      
+                      if(Int(favorita)==1){
+                      self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo.uppercased(),fecha: fechaCircular,estado: 0,contenido:cont,adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel))
+                    }
+                    
+                    }
+                  
+                  self.tableViewCirculares.reloadData()
+
                    }
-                   if sqlite3_step(statement) == SQLITE_DONE {
-                       print("Tabla borrada")
-                   }
-                   
-                   
-           }
-       }
+                  else {
+                   print("SELECT statement could not be prepared")
+                 }
+
+                 sqlite3_finalize(queryStatement)
+             }
        
        
-       func guardarCirculares(idCircular:Int,idUsuario:Int,nombre:String, textoCircular:String,no_leida:Int, leida:Int,favorita:Int,compartida:Int,eliminada:Int,fecha:String){
-           
-           //Abrir la base
-           let fileUrl = try!
-               FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd.sqlite")
-           
-           if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
-               print("Error en la base de datos")
-           }else{
-               //La base de datos abrió correctamente
-               var statement:OpaquePointer?
-               let query = "INSERT INTO appCircular(idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,compartida,eliminada,created_at) VALUES(?,?,?,?,?,?,?,?,?,?)"
-               if sqlite3_prepare(db,query,-1,&statement,nil) != SQLITE_OK {
-                   print("Error")
-               }
-               
-               if sqlite3_bind_int(statement,1,Int32(idCircular)) != SQLITE_OK {
-                   print("Error campo 1")
-               }
-               
-               if sqlite3_bind_int(statement,2,Int32(idUsuario)) != SQLITE_OK {
-                   print("Error campo 2")
-               }
-               
-               if sqlite3_bind_text(statement,3,nombre, -1, nil) != SQLITE_OK {
-                   print("Error campo 3")
-               }
-               
-               if sqlite3_bind_text(statement,4,textoCircular, -1, nil) != SQLITE_OK {
-                   print("Error campo 4")
-               }
-               
-               if sqlite3_bind_int(statement,5,Int32(no_leida)) != SQLITE_OK {
-                   print("Error campo 5")
-               }
-               
-               if sqlite3_bind_int(statement,6,Int32(leida)) != SQLITE_OK {
-                   print("Error campo 6")
-               }
-               
-               if sqlite3_bind_int(statement,7,Int32(favorita)) != SQLITE_OK {
-                   print("Error campo 7")
-               }
-               
-               if sqlite3_bind_int(statement,8,Int32(compartida)) != SQLITE_OK {
-                   print("Error campo 8")
-               }
-               
-               if sqlite3_bind_int(statement,9,Int32(eliminada)) != SQLITE_OK {
-                   print("Error campo 9")
-               }
-               
-               
-               if sqlite3_step(statement) == SQLITE_DONE {
-                   print("Circular almacenada correctamente")
-               }
-               
-           }
-           
-       
-           
-       }
+      
        
        
        func obtenerCirculares(limit:Int){
@@ -636,7 +607,7 @@ class CircularesFavTableViewController: UITableViewController,UISearchBarDelegat
                            
                            self.circulares.append(CircularTodas(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo.uppercased(),fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? ""))
                            //Guardar las circulares
-                           self.guardarCirculares(idCircular: Int(id)!, idUsuario: Int(self.idUsuario)!, nombre: titulo.uppercased(), textoCircular: texto, no_leida: noLeida, leida: Int(leido)!, favorita: Int(favorito)!, compartida: 0, eliminada: Int(eliminada)!,fecha: fecha)
+                        
                        }
                        
                        self.tableViewCirculares.reloadData()

@@ -259,7 +259,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate,GIDSignI
     func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!,
               withError error: Error!) {
         if let error = error {
-            print("\(error.localizedDescription)")
+            print("ERROR \(error.localizedDescription)")
         } else {
             // Perform any operations on signed in user here.
             let userId = user.userID                  // For client-side use only!
@@ -268,7 +268,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate,GIDSignI
             let givenName = user.profile.givenName
             let familyName = user.profile.familyName
             let email = user.profile.email
-            
+           
             let picURL = user.profile.imageURL(withDimension: 120) 
             
             UserDefaults.standard.set(userId,forKey:"userId")
@@ -279,16 +279,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate,GIDSignI
             UserDefaults.standard.set(email,forKey:"email")
             UserDefaults.standard.set(picURL,forKey:"picURL")
             UserDefaults.standard.set(1,forKey:"cuentaValida")
-            
-            
+            //Aquí se hará el redirect, trabaja en conjunto a la función
+            //viewDidAppear del ViewController.
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            let destinationViewController = storyboard.instantiateViewController(withIdentifier: "ViewController")
+                as! ViewController
+            let navigationController = self.window?.rootViewController as! UIViewController
+            navigationController.showDetailViewController(destinationViewController, sender: Any?.self)
             
         }
     }
     
     func sign(_ signIn: GIDSignIn!, didDisconnectWith user: GIDGoogleUser!,
               withError error: Error!) {
-        // Perform any operations when the user disconnects from app here.
-        // ...
+       UserDefaults.standard.set(0,forKey: "autenticado")
+       UserDefaults.standard.set(0,forKey: "cuentaValida")
+       UserDefaults.standard.set("", forKey: "nombre")
+       UserDefaults.standard.set("", forKey: "email")
     }
     
     

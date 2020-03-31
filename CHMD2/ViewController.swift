@@ -208,6 +208,8 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
             UserDefaults.standard.set(nombre, forKey: "nombre")
             UserDefaults.standard.set(email, forKey: "email")
             
+            
+           
         }
     }
     
@@ -215,12 +217,16 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
     func signIn(signIn: GIDSignIn!,
                 presentViewController viewController: UIViewController!) {
         self.present(viewController, animated: true, completion: nil)
+    
     }
     
     // Dismiss the "Sign in with Google" view
     func signIn(signIn: GIDSignIn!,
                 dismissViewController viewController: UIViewController!) {
         self.dismiss(animated: true, completion: nil)
+        UserDefaults.standard.set(1,forKey:"cuentaValida")
+         
+        
     }
     
     

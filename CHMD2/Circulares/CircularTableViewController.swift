@@ -18,6 +18,8 @@ extension CircularTableViewController: UISearchResultsUpdating {
   }
 }
 
+
+
 class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIGestureRecognizerDelegate {
     @IBOutlet var tableViewCirculares: UITableView!
    // @IBOutlet weak var barBusqueda: UISearchBar!
@@ -53,8 +55,7 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
         
      
         if ConexionRed.isConnectedToNetwork() == true {
-            /*let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesUsuarioLazyLoad.php?usuario_id=\(self.idUsuario)&limit=15"
-              let _url = URL(string: address);*/
+            self.borrarCirculares()
             self.obtenerCirculares(limit:15)
             //self.leerCirculares()
             
@@ -423,11 +424,7 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
                                       }
                 
                                
-                                      if let contenido = sqlite3_column_text(queryStatement, 3) {
-                                          cont = String(cString: contenido)
-                                         } else {
-                                          print("name not found")
-                                      }
+                                    
                 
                        
                   var hIniIcs:String="";
@@ -451,13 +448,13 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
                         
                 
                 var nivel:String="";
-                if  let nv = sqlite3_column_text(queryStatement, 13) {
+                if  let nv = sqlite3_column_text(queryStatement, 12) {
                     nivel = String(cString: nv)
                     } else {
                       print("name not found")
                     }
                 
-                        let adj = sqlite3_column_int(queryStatement, 14)
+                        let adj = sqlite3_column_int(queryStatement, 13)
                         if(Int(leida)>0){
                            //imagen = UIImage.init(named: "leidas_azul")!
                          }
@@ -523,6 +520,28 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
         }
     }
     
+    func borrarCirculares(){
+        let fileUrl = try!
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd.sqlite")
+        
+        if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
+            print("Error en la base de datos")
+        }else{
+        let q = "DELETE FROM appCirculares"
+            var statement:OpaquePointer?
+        if sqlite3_prepare(db,q,-1,&statement,nil) != SQLITE_OK {
+            print("Error")
+        }
+            
+            if sqlite3_step(statement) == SQLITE_DONE {
+                           print("Tabla borrada correctamente")
+                       }else{
+                           print("No se pudo borrar")
+                       }
+        
+        }
+        
+    }
     
     func guardarCirculares(idCircular:Int,idUsuario:Int,nombre:String, textoCircular:String,no_leida:Int, leida:Int,favorita:Int,compartida:Int,eliminada:Int,fecha:String,fechaIcs:String,horaInicioIcs:String,horaFinIcs:String,nivel:String,adjunto:Int){
         
@@ -542,10 +561,7 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
             var statement:OpaquePointer?
             
              //Vaciar la tabla
-            let q = "DELETE FROM appCirculares"
-            if sqlite3_prepare(db,q,-1,&statement,nil) != SQLITE_OK {
-                print("Error")
-            }
+            
             
             let query = "INSERT INTO appCirculares(idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,compartida,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
             if sqlite3_prepare(db,query,-1,&statement,nil) != SQLITE_OK {
@@ -608,6 +624,8 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
             
             if sqlite3_step(statement) == SQLITE_DONE {
                 print("Circular almacenada correctamente")
+            }else{
+                print("Circular no se pudo guardar")
             }
             
         }
@@ -723,6 +741,8 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
                         if(Int(adjunto)!==1){
                             adj=1
                         }
+                        
+                         print("Contenido: \(texto)")
                         
                         self.circulares.append(CircularTodas(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo.uppercased(),fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? ""))
                         //Guardar las circulares

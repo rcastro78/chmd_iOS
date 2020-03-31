@@ -13,6 +13,23 @@ import EventKit
 import Firebase
 import BitlySDK
 import MarqueeLabel
+
+extension String {
+    var htmlToAttributedString: NSAttributedString? {
+        guard let data = data(using: .utf8) else { return NSAttributedString() }
+        do {
+            return try NSAttributedString(data: data, options: [.documentType: NSAttributedString.DocumentType.html, .characterEncoding:String.Encoding.utf8.rawValue], documentAttributes: nil)
+        } catch {
+            return NSAttributedString()
+        }
+    }
+    var htmlToString: String {
+        return htmlToAttributedString?.string ?? ""
+    }
+}
+
+
+
 class CircularDetalleViewController: UIViewController {
 
     
@@ -23,6 +40,7 @@ class CircularDetalleViewController: UIViewController {
     @IBOutlet weak var lblTituloNivel: UILabel!
     @IBOutlet weak var imbCalendario: UIButton!
     
+    @IBOutlet weak var lblContenidoHTML: UILabel!
     @IBOutlet weak var lblNivel: UILabel!
     var ids = [String]()
     var titulos = [String]()
@@ -83,7 +101,7 @@ class CircularDetalleViewController: UIViewController {
             id = UserDefaults.standard.string(forKey: "id") ?? ""
             idInicial = Int(UserDefaults.standard.string(forKey: "id") ?? "0")!
             
-                    let anio = fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
+                   let anio = fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
                    let mes = fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
                    let dia = fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
                    //lblFechaCircular.text = "\(dia)/\(mes)/\(anio)"
@@ -111,6 +129,17 @@ class CircularDetalleViewController: UIViewController {
        
         
         if(ConexionRed.isConnectedToNetwork()){
+           
+            /*var attributedString = NSMutableAttributedString(string: "<p>Esta es una prueba</p><br><b>TEST</b>")
+            lblContenidoHTML.isHidden=false
+            webView.isHidden=true
+            lblContenidoHTML.attributedText=attributedString
+            */
+            
+            
+          lblContenidoHTML.isHidden=true
+          webView.isHidden=false
+            
             let link = URL(string:urlBase+"getCircularId2.php?id=\(id)")!
                   let request = URLRequest(url: link)
                   webView.load(request)
@@ -124,17 +153,49 @@ class CircularDetalleViewController: UIViewController {
                              
                          }
                   
-                  //obtener la primer posicion
+                 
                   posicion = find(value: id,in: ids) ?? 0
                   
-                  //Marcar la circular como leída
+                 
                   self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: self.id)
+            
+            
         }else{
-            webView.loadHTMLString("<html><header><meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no'></header><body><p><h3>\(contenido)</h3></p></body></html>", baseURL: nil)
+           /* webView.loadHTMLString("<html><head><meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=5, minimum-scale=1.0, user-scalable=yes'><meta  http-equiv='X-UA-Compatible'  content='IE=edge,chrome=1'><meta name='HandheldFriendly' content='true'></head><body {color: #005188;}><h3><p>\(contenido)</h3></p></body></html>", baseURL: nil)
+            */
+            
+            lblContenidoHTML.attributedText = contenido.htmlToAttributedString
+            
+            /*guard let data = contenido.data(using: .utf8) else {
+                print("No se pudo convertir")
+                return
+            }
+            let url:NSURL?=nil
+            webView.load(data, mimeType: "text/html", characterEncodingName: "UTF8", baseURL: url! as URL)*/
+            
         }
         
       
-        
+        /*
+         <html>
+           <head>
+             <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5,user-scalable=yes">
+         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+         <meta name="HandheldFriendly" content="true">
+          
+           </head>
+          <body {color: #005188;}>
+             <style>
+             @font-face {font-family: GothamRoundedMedium; src: url('GothamRoundedBook_21018.ttf'); }
+             h3 {
+                  font-family: GothamRoundedMedium;
+                  color:#0E2455;
+               }
+             </style>
+             <h3>
+                 
+             <p>
+         */
         
     }
     

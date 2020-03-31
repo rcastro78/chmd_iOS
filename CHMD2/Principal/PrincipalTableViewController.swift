@@ -347,12 +347,12 @@ class PrincipalTableViewController: UITableViewController {
             performSegue(withIdentifier: "webSegue", sender: self)
         }
         if(valor.id==3){
-           //GIDSignIn.sharedInstance()?.signOut()
-                      performSegue(withIdentifier: "unwindSegueToVC1", sender: self)
-                      //UserDefaults.standard.set(0,forKey: "autenticado")
-                      //UserDefaults.standard.set(0,forKey: "cuentaValida")
-                      //UserDefaults.standard.set("", forKey: "nombre")
-                     // UserDefaults.standard.set("", forKey: "email")
+                     GIDSignIn.sharedInstance()?.signOut()
+                     performSegue(withIdentifier: "unwindSegueToVC1", sender: self)
+                      UserDefaults.standard.set(0,forKey: "autenticado")
+                      UserDefaults.standard.set(0,forKey: "cuentaValida")
+                      UserDefaults.standard.set("", forKey: "nombre")
+                      UserDefaults.standard.set("", forKey: "email")
                       DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                           UIApplication.shared.perform(#selector(NSXPCConnection.suspend))
                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
