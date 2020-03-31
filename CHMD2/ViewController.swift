@@ -170,7 +170,11 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
             print("Error en la base de datos")
         }
         
-        let crearTablaCirculares = "CREATE TABLE IF NOT EXISTS appCircular(idCircular INTEGER, idUsuario INTEGER, nombre TEXT, textoCircular TEXT, no_leida INTEGER, leida INTEGER, favorita INTEGER, compartida INTEGER, eliminada INTEGER, created_at TEXT, updated_at TEXT)"
+        /*
+         idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,compartida,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel
+         */
+        
+        let crearTablaCirculares = "CREATE TABLE IF NOT EXISTS appCirculares(idCircular INTEGER, idUsuario INTEGER, nombre TEXT, textoCircular TEXT, no_leida INTEGER, leida INTEGER, favorita INTEGER, compartida INTEGER, eliminada INTEGER, created_at TEXT,fechaIcs TEXT, horaInicioIcs TEXT, horaFinIcs TEXT, nivel TEXT, adjunto INT,updated_at TEXT)"
         if sqlite3_exec(db, crearTablaCirculares, nil, nil, nil) != SQLITE_OK {
             print("Error creando la tabla de las circulares")
         }
@@ -237,7 +241,14 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
         let cuentaValida:Int = UserDefaults.standard.integer(forKey: "cuentaValida") ?? 0
         if(cuentaValida==1){
             print("Valida")
-            performSegue(withIdentifier: "inicioSegue", sender: self)
+            
+             if ConexionRed.isConnectedToNetwork() == true {
+                performSegue(withIdentifier: "inicioSegue", sender: self)
+             }else{
+                performSegue(withIdentifier: "validarSinInternetSegue", sender: self)
+            }
+            
+            
             //self.performSegue(withIdentifier: "validarSinInternetSegue", sender: self)
         }else{
             print("Cuenta No Valida")

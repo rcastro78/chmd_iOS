@@ -53,15 +53,17 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
         
      
         if ConexionRed.isConnectedToNetwork() == true {
-            let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesUsuarios.php?usuario_id=\(self.idUsuario)"
-              let _url = URL(string: address);
-            self.obtenerCirculares(uri:address)
+            /*let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesUsuarioLazyLoad.php?usuario_id=\(self.idUsuario)&limit=15"
+              let _url = URL(string: address);*/
+            self.obtenerCirculares(limit:15)
+            //self.leerCirculares()
             
+             
         } else {
             var alert = UIAlertView(title: "No está conectado a Internet", message: "Se muestran las últimas circulares registradas", delegate: nil, cancelButtonTitle: "Aceptar")
             alert.show()
             
-            print("Leer desde la base")
+            //print("Leer desde la base")
             self.leerCirculares()
             
         }
@@ -162,6 +164,20 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
     
     */
     
+    func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        var valorInicial:Int=1
+        var valorFinal:Int=15
+        let ultimo = circulares.count - 1
+        if indexPath.row == ultimo {
+            //El método debe venir con top 15
+            //del registro 1 al 15
+            valorFinal = valorFinal+15
+           self.obtenerCirculares(limit:valorFinal)
+            print("se pasó el último registro")
+            }
+    }
+    
+    
     override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         return 1
@@ -196,21 +212,19 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
         //cell.lblFecha.text? = horaFecha[0]
         //cell.lblHora.text? = horaFecha[1]
         
-               let dateFormatter = DateFormatter()
-               dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-               dateFormatter.locale = Locale(identifier: "es_ES_POSIX")
-               let date1 = dateFormatter.date(from: c.fecha)
-               dateFormatter.dateFormat = "EEEE"
-        
-        
-                  /*let date = NSDate(c.fecha)
-                  let dateFormatter = DateFormatter()
-                  dateFormatter.dateFormat = "EEEE"
-                  let dayInWeek = dateFormatter.string(from: date)*/
-                let dia = dateFormatter.string(from: date1!)
-       
-        
-        cell.lblFecha.text?=dia
+         if(c.fecha != "")
+         {
+                          let dateFormatter = DateFormatter()
+                          dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                          dateFormatter.locale = Locale(identifier: "es_ES_POSIX")
+                          let date1 = dateFormatter.date(from: c.fecha)
+                          dateFormatter.dateFormat = "EEEE"
+                          let dia = dateFormatter.string(from: date1!)
+                  
+                   
+                   cell.lblFecha.text?=dia
+         }
+              
         cell.imgCircular.image = c.imagen
         if(c.adjunto==1){
             cell.imgAdjunto.isHidden=false
@@ -277,9 +291,7 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
                                             self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: idCircular)
                                             
                                             //self.tableViewCirculares.reloadRows(at: [indexPath], with: .none)
-                                           let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesUsuarios.php?usuario_id=\(self.idUsuario)"
-                                              let _url = URL(string: address);
-                                            self.obtenerCirculares(uri:address)
+                                          self.obtenerCirculares(limit:15)
                                             
             
         }
@@ -301,9 +313,7 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
                                                 let idCircular:String = "\(circular.id)"
                                                                                          
                                             self.noleerCircular(direccion: self.urlBase+self.noleerMetodo, usuario_id: self.idUsuario, circular_id: idCircular)
-                                                let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesUsuarios.php?usuario_id=\(self.idUsuario)"
-                                               let _url = URL(string: address);
-                                               self.obtenerCirculares(uri:address)
+                                            self.obtenerCirculares(limit:15)
                                                
                
            }
@@ -323,11 +333,7 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
                                             let idCircular:String = "\(circular.id)"
                                             
                                             self.delCircular(direccion: self.urlBase+"eliminarCircular.php", usuario_id: self.idUsuario, circular_id: idCircular)
-                                            
-                                            let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesUsuarios.php?usuario_id=\(self.idUsuario)"
-                                              let _url = URL(string: address);
-                                           
-                                            self.obtenerCirculares(uri:address)
+                                            self.obtenerCirculares(limit:15)
                                             
             
         }
@@ -372,14 +378,14 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
             print("error opening database")
         }
         
-           let consulta = "SELECT * FROM appCircular WHERE idUsuario=\(self.idUsuario);"
+           let consulta = "SELECT * FROM appCirculares WHERE idUsuario=\(self.idUsuario);"
            var queryStatement: OpaquePointer? = nil
         var imagen:UIImage
         imagen = UIImage.init(named: "appmenu05")!
         
         if sqlite3_prepare_v2(db, consulta, -1, &queryStatement, nil) == SQLITE_OK {
        
-            
+           
             
              while(sqlite3_step(queryStatement) == SQLITE_ROW) {
                      let id = sqlite3_column_int(queryStatement, 0)
@@ -400,9 +406,58 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
                            print("name not found")
                        }
                 
+                /*
+                            idCircular 0, idUsuario 1, nombre 2, textoCircular 3, no_leida 4, leida 5, favorita 6, compartida 7, eliminada 8, created_at 9,fechaIcs 10, horaInicioIcs 11, horaFinIcs 12 , nivel 13, adjunto 14,updated_at  15
+                            */
+                
                         let leida = sqlite3_column_int(queryStatement, 5)
                         let favorita = sqlite3_column_int(queryStatement, 6)
                         let eliminada = sqlite3_column_int(queryStatement, 8)
+                        
+                
+                                        var fechaIcs:String="";
+                                        if let fIcs = sqlite3_column_text(queryStatement, 10) {
+                                          fechaIcs = String(cString: fIcs)
+                                         } else {
+                                          print("name not found")
+                                      }
+                
+                               
+                                      if let contenido = sqlite3_column_text(queryStatement, 3) {
+                                          cont = String(cString: contenido)
+                                         } else {
+                                          print("name not found")
+                                      }
+                
+                       
+                  var hIniIcs:String="";
+                  if  let horaInicioIcs = sqlite3_column_text(queryStatement, 11) {
+                    hIniIcs = String(cString: horaInicioIcs)
+                   } else {
+                    print("name not found")
+                }
+                        
+                
+                 var hFinIcs:String="";
+                 if  let horaFinIcs = sqlite3_column_text(queryStatement, 12) {
+                     hFinIcs = String(cString: horaFinIcs)
+                     } else {
+                       print("name not found")
+                     }
+                
+                
+                
+                        
+                        
+                
+                var nivel:String="";
+                if  let nv = sqlite3_column_text(queryStatement, 13) {
+                    nivel = String(cString: nv)
+                    } else {
+                      print("name not found")
+                    }
+                
+                        let adj = sqlite3_column_int(queryStatement, 14)
                         if(Int(leida)>0){
                            //imagen = UIImage.init(named: "leidas_azul")!
                          }
@@ -420,13 +475,20 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
                             imagen = UIImage.init(named: "circle")!
                            }
                 var fechaCircular="";
-                if let fecha = sqlite3_column_text(queryStatement, 9) {
-                    fechaCircular = String(cString: fecha).uppercased()
+                if let fecha = sqlite3_column_text(queryStatement, 8) {
+                    fechaCircular = String(cString: fecha)
+                    print("fecha c: \(fechaCircular)")
                    } else {
                     print("name not found")
                 }
                 
-                self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo,fecha: fechaCircular,estado: 0,contenido:cont,adjunto:0,fechaIcs:"",horaInicialIcs: "",horaFinalIcs: "", nivel:""))
+                
+                /*
+                   self.circulares.append(CircularTodas(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo.uppercased(),fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? ""))
+                 */
+                
+                
+                self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo.uppercased(),fecha: fechaCircular,estado: 0,contenido:cont,adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel))
               }
             
             self.tableViewCirculares.reloadData()
@@ -462,7 +524,7 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
     }
     
     
-    func guardarCirculares(idCircular:Int,idUsuario:Int,nombre:String, textoCircular:String,no_leida:Int, leida:Int,favorita:Int,compartida:Int,eliminada:Int,fecha:String){
+    func guardarCirculares(idCircular:Int,idUsuario:Int,nombre:String, textoCircular:String,no_leida:Int, leida:Int,favorita:Int,compartida:Int,eliminada:Int,fecha:String,fechaIcs:String,horaInicioIcs:String,horaFinIcs:String,nivel:String,adjunto:Int){
         
         //Abrir la base
         let fileUrl = try!
@@ -471,9 +533,21 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
         if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
             print("Error en la base de datos")
         }else{
+            
+           
+            
+            
+            
             //La base de datos abrió correctamente
             var statement:OpaquePointer?
-            let query = "INSERT INTO appCircular(idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,compartida,eliminada,created_at) VALUES(?,?,?,?,?,?,?,?,?,?)"
+            
+             //Vaciar la tabla
+            let q = "DELETE FROM appCirculares"
+            if sqlite3_prepare(db,q,-1,&statement,nil) != SQLITE_OK {
+                print("Error")
+            }
+            
+            let query = "INSERT INTO appCirculares(idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,compartida,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
             if sqlite3_prepare(db,query,-1,&statement,nil) != SQLITE_OK {
                 print("Error")
             }
@@ -506,12 +580,29 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
                 print("Error campo 7")
             }
             
-            if sqlite3_bind_int(statement,8,Int32(compartida)) != SQLITE_OK {
-                print("Error campo 8")
+            if sqlite3_bind_int(statement,8,Int32(eliminada)) != SQLITE_OK {
+                           print("Error campo 7")
+                       }
+            
+           if sqlite3_bind_text(statement,9,fecha, -1, nil) != SQLITE_OK {
+               print("Error campo 3")
+           }
+            
+            if sqlite3_bind_text(statement,10,fechaIcs, -1, nil) != SQLITE_OK {
+                print("Error campo 3")
+            }
+            if sqlite3_bind_text(statement,11,horaInicioIcs, -1, nil) != SQLITE_OK {
+                           print("Error campo 3")
+            }
+            if sqlite3_bind_text(statement,12,horaFinIcs, -1, nil) != SQLITE_OK {
+                           print("Error campo 3")
+            }
+            if sqlite3_bind_text(statement,13,nivel, -1, nil) != SQLITE_OK {
+                           print("Error campo 3")
             }
             
-            if sqlite3_bind_int(statement,9,Int32(eliminada)) != SQLITE_OK {
-                print("Error campo 9")
+            if sqlite3_bind_int(statement,14,Int32(adjunto)) != SQLITE_OK {
+                print("Error campo 7")
             }
             
             
@@ -526,9 +617,13 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
     }
     
     
-    func obtenerCirculares(uri:String){
+    func obtenerCirculares(limit:Int){
         self.circulares.removeAll()
-        Alamofire.request(uri)
+        
+        let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesUsuarioLazyLoad.php?usuario_id=\(self.idUsuario)&limit=\(limit)"
+       
+        
+        Alamofire.request(address)
             .responseJSON { response in
                 // check for errors
                 guard response.result.error == nil else {
@@ -554,10 +649,7 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
                             return
                         }
                         
-                        guard let fecha = diccionario["updated_at"] as? String else {
-                            print("No se pudo obtener la fecha")
-                            return
-                        }
+                        
                         
                         var imagen:UIImage
                         imagen = UIImage.init(named: "appmenu05")!
@@ -566,6 +658,10 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
                         guard let leido = diccionario["leido"] as? String else {
                             return
                         }
+                        
+                        guard let fecha = diccionario["created_at"] as? String else {
+                                                   return
+                                               }
                         
                         guard let favorito = diccionario["favorito"] as? String else {
                             return
@@ -595,10 +691,7 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
                                                                         return
                                                                       }
                         
-                       
-                            /*guard let nivel = diccionario["nivel"] as? String else {
-                               return
-                            }*/
+                     
                         //Con esto se evita la excepcion por los valores nulos
                         var nv:String?
                         if (diccionario["nivel"] == nil){
@@ -633,7 +726,10 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
                         
                         self.circulares.append(CircularTodas(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo.uppercased(),fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? ""))
                         //Guardar las circulares
-                        self.guardarCirculares(idCircular: Int(id)!, idUsuario: Int(self.idUsuario)!, nombre: titulo.uppercased(), textoCircular: texto, no_leida: noLeida, leida: Int(leido)!, favorita: Int(favorito)!, compartida: 0, eliminada: Int(eliminada)!,fecha: fecha)
+                        
+                        
+                        
+                        self.guardarCirculares(idCircular: Int(id)!, idUsuario: Int(self.idUsuario)!, nombre: titulo.uppercased(), textoCircular: texto, no_leida: noLeida, leida: Int(leido)!, favorita: Int(favorito)!, compartida: 0, eliminada: Int(eliminada)!,fecha: fecha,fechaIcs: fechaIcs,horaInicioIcs: horaInicioIcs,horaFinIcs: horaFinIcs,nivel: nv ?? "",adjunto:adj)
                     }
                     
                     self.tableViewCirculares.reloadData()
@@ -766,9 +862,7 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
           for c in circularesSeleccionadas{
           self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: "\(c)")
        }
-       let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesUsuarios.php?usuario_id=\(self.idUsuario)"
-                  let _url = URL(string: address);
-                  self.obtenerCirculares(uri:address)
+      self.obtenerCirculares(limit:15)
        
        tableViewCirculares.reloadData()
         
@@ -780,18 +874,14 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
               self.delCircular(direccion: self.urlBase+"eliminarCircular.php", usuario_id: self.idUsuario, circular_id: "\(c)")
         }
         
-        let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesUsuarios.php?usuario_id=\(self.idUsuario)"
-                   let _url = URL(string: address);
-                   self.obtenerCirculares(uri:address)
+       self.obtenerCirculares(limit:15)
         //tableViewCirculares.reloadData()
         
        }
     
     @objc func deshacer(){
         circulares.removeAll()
-         let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesUsuarios.php?usuario_id=\(self.idUsuario)"
-        let _url = URL(string: address);
-                        self.obtenerCirculares(uri:address)
+       self.obtenerCirculares(limit:15)
         //tableViewCirculares.reloadData()
           }
     
@@ -800,9 +890,7 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
            for c in circularesSeleccionadas{
            self.noleerCircular(direccion: self.urlBase+self.noleerMetodo, usuario_id: self.idUsuario, circular_id: "\(c)")
         }
-        let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesUsuarios.php?usuario_id=\(self.idUsuario)"
-                   let _url = URL(string: address);
-                   self.obtenerCirculares(uri:address)
+      self.obtenerCirculares(limit:15)
         
         tableViewCirculares.reloadData()
        }

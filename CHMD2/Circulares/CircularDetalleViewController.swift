@@ -86,7 +86,18 @@ class CircularDetalleViewController: UIViewController {
                     let anio = fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
                    let mes = fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
                    let dia = fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
-                   lblFechaCircular.text = "\(dia)/\(mes)/\(anio)"
+                   //lblFechaCircular.text = "\(dia)/\(mes)/\(anio)"
+            
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "dd/MM/yyyy"
+            dateFormatter.locale = Locale(identifier: "es_ES_POSIX")
+            let date1 = dateFormatter.date(from: "\(dia)/\(mes)/\(anio)")
+            dateFormatter.dateFormat = "d 'de' MMMM 'de' YYYY"
+            let d = dateFormatter.string(from: date1!)
+            lblFechaCircular.text = d
+                    //Convertir la fecha al formato dd de mes de año
+                    
+            
                    self.title = "Circular"
                    self.lblTituloParte1.text = titulo.uppercased()
                    //partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:titulo)
@@ -276,7 +287,15 @@ class CircularDetalleViewController: UIViewController {
             let anio = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
             let mes = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
             let dia = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
-            self.lblFechaCircular.text = "\(dia)/\(mes)/\(anio)"
+            //self.lblFechaCircular.text = "\(dia)/\(mes)/\(anio)"
+            
+            let dateFormatter = DateFormatter()
+                      dateFormatter.dateFormat = "dd/MM/yyyy"
+                      dateFormatter.locale = Locale(identifier: "es_ES_POSIX")
+                      let date1 = dateFormatter.date(from: "\(dia)/\(mes)/\(anio)")
+                      dateFormatter.dateFormat = "d 'de' MMMM 'de' YYYY"
+                      let d = dateFormatter.string(from: date1!)
+                      lblFechaCircular.text = d
             
             
             self.lblTituloParte1.text=nextTitulo /*partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())*/
@@ -323,7 +342,15 @@ class CircularDetalleViewController: UIViewController {
            let anio = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
            let mes = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
            let dia = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
-           self.lblFechaCircular.text = "\(dia)/\(mes)/\(anio)"
+           //self.lblFechaCircular.text = "\(dia)/\(mes)/\(anio)"
+            
+                      let dateFormatter = DateFormatter()
+                      dateFormatter.dateFormat = "dd/MM/yyyy"
+                      dateFormatter.locale = Locale(identifier: "es_ES_POSIX")
+                      let date1 = dateFormatter.date(from: "\(dia)/\(mes)/\(anio)")
+                      dateFormatter.dateFormat = "d 'de' MMMM 'de' YYYY"
+                      let d = dateFormatter.string(from: date1!)
+                      lblFechaCircular.text = d
             
             self.lblTituloParte1.text=nextTitulo /*partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())*/
             id = nextId
