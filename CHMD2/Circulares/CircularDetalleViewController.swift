@@ -14,19 +14,6 @@ import Firebase
 import BitlySDK
 import MarqueeLabel
 
-extension String {
-    var htmlToAttributedString: NSAttributedString? {
-        guard let data = data(using: .utf8) else { return NSAttributedString() }
-        do {
-            return try NSAttributedString(data: data, options: [.documentType: NSAttributedString.DocumentType.html, .characterEncoding:String.Encoding.utf8.rawValue], documentAttributes: nil)
-        } catch {
-            return NSAttributedString()
-        }
-    }
-    var htmlToString: String {
-        return htmlToAttributedString?.string ?? ""
-    }
-}
 
 
 
@@ -39,8 +26,8 @@ class CircularDetalleViewController: UIViewController {
     @IBOutlet weak var lblTituloParte2: UILabel!
     @IBOutlet weak var lblTituloNivel: UILabel!
     @IBOutlet weak var imbCalendario: UIButton!
-    
-    @IBOutlet weak var lblContenidoHTML: UILabel!
+   
+    @IBOutlet weak var lblContenidoHTML: UITextView!
     @IBOutlet weak var lblNivel: UILabel!
     var ids = [String]()
     var titulos = [String]()
@@ -135,7 +122,7 @@ class CircularDetalleViewController: UIViewController {
             webView.isHidden=true
             lblContenidoHTML.attributedText=attributedString
             */
-            
+           
             
           lblContenidoHTML.isHidden=true
           webView.isHidden=false
@@ -161,12 +148,29 @@ class CircularDetalleViewController: UIViewController {
             
             
         }else{
-           /* webView.loadHTMLString("<html><head><meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=5, minimum-scale=1.0, user-scalable=yes'><meta  http-equiv='X-UA-Compatible'  content='IE=edge,chrome=1'><meta name='HandheldFriendly' content='true'></head><body {color: #005188;}><h3><p>\(contenido)</h3></p></body></html>", baseURL: nil)
-            */
             
-            lblContenidoHTML.attributedText = contenido.htmlToAttributedString
+            //contenido = contenido.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLHostAllowedCharacterSet())
+            lblContenidoHTML.isHidden=true
+            webView.isHidden=false
             
-            /*guard let data = contenido.data(using: .utf8) else {
+            webView.loadHTMLString("<html><head><meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=5, minimum-scale=1.0, user-scalable=yes'><meta  http-equiv='X-UA-Compatible'  content='IE=edge,chrome=1'><meta name='HandheldFriendly' content='true'></head><body {color: #005188;}><h3>\(contenido)</h3></p></body></html>", baseURL: nil)
+            
+            
+           /* let messageString = "<!DOCTYPE html><html><body><h3>"+contenido+"</h3></p></body></html>"
+            
+            
+            let htmlData = NSString(string: messageString).data(using: String.Encoding.utf8.rawValue)
+            let options = [NSAttributedString.DocumentReadingOptionKey.documentType: NSAttributedString.DocumentType.html]
+            let attributedString = try! NSAttributedString(data: htmlData!,
+            options: options,
+            documentAttributes: nil)
+            lblContenidoHTML.attributedText = attributedString*/
+            
+            /*
+             contenidoCircular = Html.fromHtml(contenidoCircular).toString();
+             wvwDetalleCircular.loadData(contenidoCircular,"text/html", Xml.Encoding.UTF_8.toString());
+             
+             guard let data = contenido.data(using: .utf8) else {
                 print("No se pudo convertir")
                 return
             }
@@ -198,8 +202,8 @@ class CircularDetalleViewController: UIViewController {
          */
         
     }
-    
-    
+   
+   
     func find(value searchValue: String, in array: [String]) -> Int?
     {
         for (index, value) in array.enumerated()

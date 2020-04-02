@@ -20,7 +20,11 @@ extension CircularTableViewController: UISearchResultsUpdating {
 
 
 
-class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIGestureRecognizerDelegate {
+class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIGestureRecognizerDelegate,UITableViewDataSourcePrefetching {
+    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+        print("prefetching row of \(indexPaths)")
+    }
+    
     @IBOutlet var tableViewCirculares: UITableView!
    // @IBOutlet weak var barBusqueda: UISearchBar!
     
@@ -39,7 +43,7 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
         super.viewDidLoad()
         circulares.removeAll()
         self.hideKeyboardWhenTappedAround()
-        
+        tableViewCirculares.prefetchDataSource = self
         self.title="Circulares"
         selecMultiple=false
         circularesSeleccionadas.removeAll()
@@ -55,8 +59,8 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
         
      
         if ConexionRed.isConnectedToNetwork() == true {
-            self.borrarCirculares()
-            self.obtenerCirculares(limit:15)
+            self.delete()
+            self.obtenerCirculares(limit:50)
             //self.leerCirculares()
             
              
@@ -167,12 +171,12 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
     
     func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         var valorInicial:Int=1
-        var valorFinal:Int=15
+        var valorFinal:Int=5
         let ultimo = circulares.count - 1
         if indexPath.row == ultimo {
             //El método debe venir con top 15
             //del registro 1 al 15
-            valorFinal = valorFinal+15
+            valorFinal = valorFinal+5
            self.obtenerCirculares(limit:valorFinal)
             print("se pasó el último registro")
             }
@@ -196,6 +200,10 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
         return circulares.count
     //}
 }
+    
+    
+   
+    
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "celda", for: indexPath)
@@ -252,6 +260,10 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
             }
         }*/
 
+        if indexPath.row == self.circulares.count {
+          print("FONDO")
+          
+        }
         
         
         return cell
@@ -282,17 +294,20 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
     }
     
     func contextualFavAction(forRowAtIndexPath indexPath: IndexPath) -> UIContextualAction {
-        // 1
+        
         let circular = circulares[indexPath.row]
         // 2
         let action = UIContextualAction(style: .normal,
                                         title: "") { (contextAction: UIContextualAction, sourceView: UIView, completionHandler: (Bool) -> Void) in
                                             let idCircular:String = "\(circular.id)"
-                                            
+                                            if ConexionRed.isConnectedToNetwork() == true {
                                             self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: idCircular)
+                                            self.obtenerCirculares(limit:15)
+                                            }else{
+                                            var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
+                                            alert.show()
+                                        }
                                             
-                                            //self.tableViewCirculares.reloadRows(at: [indexPath], with: .none)
-                                          self.obtenerCirculares(limit:15)
                                             
             
         }
@@ -312,14 +327,17 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
            let action = UIContextualAction(style: .normal,
                                            title: "") { (contextAction: UIContextualAction, sourceView: UIView, completionHandler: (Bool) -> Void) in
                                                 let idCircular:String = "\(circular.id)"
-                                                                                         
+                                            if ConexionRed.isConnectedToNetwork() == true {
                                             self.noleerCircular(direccion: self.urlBase+self.noleerMetodo, usuario_id: self.idUsuario, circular_id: idCircular)
                                             self.obtenerCirculares(limit:15)
-                                               
+                                               }else{
+                                                  var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
+                                                  alert.show()
+                                     }
                
            }
            // 7
-           action.image = UIImage(named: "unread32")
+        action.image = UIImage(named: "unread32")
         action.backgroundColor = UIColor.blue
            
            return action
@@ -332,9 +350,13 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
         let action = UIContextualAction(style: .normal,
                                         title: "") { (contextAction: UIContextualAction, sourceView: UIView, completionHandler: (Bool) -> Void) in
                                             let idCircular:String = "\(circular.id)"
-                                            
+                                            if ConexionRed.isConnectedToNetwork() == true {
                                             self.delCircular(direccion: self.urlBase+"eliminarCircular.php", usuario_id: self.idUsuario, circular_id: idCircular)
                                             self.obtenerCirculares(limit:15)
+                                            }else{
+                                                var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
+                                                 alert.show()
+                                            }
                                             
             
         }
@@ -379,7 +401,7 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
             print("error opening database")
         }
         
-           let consulta = "SELECT * FROM appCirculares WHERE idUsuario=\(self.idUsuario);"
+           let consulta = "SELECT * FROM appCirculares"
            var queryStatement: OpaquePointer? = nil
         var imagen:UIImage
         imagen = UIImage.init(named: "appmenu05")!
@@ -401,7 +423,7 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
                 
                         var cont:String="";
                 
-                       if let contenido = sqlite3_column_text(queryStatement, 3) {
+                       if let contenido = sqlite3_column_text(queryStatement,3) {
                            cont = String(cString: contenido)
                           } else {
                            print("name not found")
@@ -456,7 +478,7 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
                 
                         let adj = sqlite3_column_int(queryStatement, 13)
                         if(Int(leida)>0){
-                           //imagen = UIImage.init(named: "leidas_azul")!
+                           imagen = UIImage.init(named: "circle_white")!
                          }
                         
                         if(Int(leida) == 1){
@@ -485,7 +507,7 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
                  */
                 
                 
-                self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo.uppercased(),fecha: fechaCircular,estado: 0,contenido:cont,adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel))
+                self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo.uppercased(),fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel))
               }
             
             self.tableViewCirculares.reloadData()
@@ -499,7 +521,8 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
        }
    
     
-    //Esta función se utiliza para limpiar la base de datos cuando se abra al tener conexión a internet
+    //Esta función se utiliza para limpiar
+    //la base de datos cuando se abra al tener conexión a internet
     func limpiarCirculares(){
         let fileUrl = try!
                    FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd.sqlite")
@@ -519,6 +542,16 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
                 
         }
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     func borrarCirculares(){
         let fileUrl = try!
@@ -542,6 +575,36 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
         }
         
     }
+    
+    
+    func delete() {
+        
+        let fileUrl = try!
+                   FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd.sqlite")
+               
+               if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
+                   print("Error en la base de datos")
+               }else{
+        
+      var deleteStatement: OpaquePointer?
+        var deleteStatementString="DELETE FROM appCirculares"
+      if sqlite3_prepare_v2(db, deleteStatementString, -1, &deleteStatement, nil) ==
+          SQLITE_OK {
+        if sqlite3_step(deleteStatement) == SQLITE_DONE {
+          print("BASE:Successfully deleted row.")
+        } else {
+          print("BASE:Could not delete row.")
+        }
+      } else {
+        print("BASE:DELETE statement could not be prepared")
+      }
+      
+      sqlite3_finalize(deleteStatement)
+        }
+    
+    }
+    
+    
     
     func guardarCirculares(idCircular:Int,idUsuario:Int,nombre:String, textoCircular:String,no_leida:Int, leida:Int,favorita:Int,compartida:Int,eliminada:Int,fecha:String,fechaIcs:String,horaInicioIcs:String,horaFinIcs:String,nivel:String,adjunto:Int){
         
@@ -741,15 +804,16 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
                         if(Int(adjunto)!==1){
                             adj=1
                         }
-                        
-                         print("Contenido: \(texto)")
+                       
+                        var str = texto.replacingOccurrences(of: "&lt;", with: "<").replacingOccurrences(of: "&gt;", with: ">")
+                        print("Contenido: "+str)
                         
                         self.circulares.append(CircularTodas(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo.uppercased(),fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? ""))
                         //Guardar las circulares
                         
                         
                         
-                        self.guardarCirculares(idCircular: Int(id)!, idUsuario: Int(self.idUsuario)!, nombre: titulo.uppercased(), textoCircular: texto, no_leida: noLeida, leida: Int(leido)!, favorita: Int(favorito)!, compartida: 0, eliminada: Int(eliminada)!,fecha: fecha,fechaIcs: fechaIcs,horaInicioIcs: horaInicioIcs,horaFinIcs: horaFinIcs,nivel: nv ?? "",adjunto:adj)
+                        self.guardarCirculares(idCircular: Int(id)!, idUsuario: Int(self.idUsuario)!, nombre: titulo.uppercased(), textoCircular: str, no_leida: noLeida, leida: Int(leido)!, favorita: Int(favorito)!, compartida: 0, eliminada: Int(eliminada)!,fecha: fecha,fechaIcs: fechaIcs,horaInicioIcs: horaInicioIcs,horaFinIcs: horaFinIcs,nivel: nv ?? "",adjunto:adj)
                     }
                     
                     self.tableViewCirculares.reloadData()
@@ -878,41 +942,64 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
     
     
     @objc func agregarFavoritos(){
+        
+          if ConexionRed.isConnectedToNetwork() == true {
+        
        circulares.removeAll()
           for c in circularesSeleccionadas{
           self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: "\(c)")
        }
-      self.obtenerCirculares(limit:15)
+      self.obtenerCirculares(limit:50)
        
        tableViewCirculares.reloadData()
+          }else{
+            var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
+             alert.show()
+        }
         
     }
     
     @objc func eliminar(){
+     if ConexionRed.isConnectedToNetwork() == true {
         circulares.removeAll()
         for c in circularesSeleccionadas{
               self.delCircular(direccion: self.urlBase+"eliminarCircular.php", usuario_id: self.idUsuario, circular_id: "\(c)")
         }
         
-       self.obtenerCirculares(limit:15)
+       self.obtenerCirculares(limit:50)
         //tableViewCirculares.reloadData()
         
-       }
+       } else{
+                  var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
+                   alert.show()
+        }
+        
+    }
     
     @objc func deshacer(){
+    if ConexionRed.isConnectedToNetwork() == true {
         circulares.removeAll()
-       self.obtenerCirculares(limit:15)
+       self.obtenerCirculares(limit:50)
         //tableViewCirculares.reloadData()
+          }else{
+                    var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
+                     alert.show()
           }
+    }
     
     @objc func noleer(){
+        if ConexionRed.isConnectedToNetwork() == true {
         circulares.removeAll()
            for c in circularesSeleccionadas{
            self.noleerCircular(direccion: self.urlBase+self.noleerMetodo, usuario_id: self.idUsuario, circular_id: "\(c)")
         }
-      self.obtenerCirculares(limit:15)
+      self.obtenerCirculares(limit:50)
         
         tableViewCirculares.reloadData()
+       }else{
+                       var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
+                        alert.show()
+             }
        }
 
     @objc func handleLongPress(_ gestureRecognizer: UILongPressGestureRecognizer){

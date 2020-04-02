@@ -273,17 +273,20 @@ class CircularesNoLeidasTableViewController: UITableViewController,UISearchBarDe
     }
     
     func contextualFavAction(forRowAtIndexPath indexPath: IndexPath) -> UIContextualAction {
-        // 1
+        
         let circular = circulares[indexPath.row]
         // 2
         let action = UIContextualAction(style: .normal,
                                         title: "") { (contextAction: UIContextualAction, sourceView: UIView, completionHandler: (Bool) -> Void) in
                                             let idCircular:String = "\(circular.id)"
-                                            
+                                            if ConexionRed.isConnectedToNetwork() == true {
                                             self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: idCircular)
+                                            self.obtenerCirculares(limit:15)
+                                            }else{
+                                            var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
+                                            alert.show()
+                                        }
                                             
-                                            //self.tableViewCirculares.reloadRows(at: [indexPath], with: .none)
-                                          self.obtenerCirculares(limit:15)
                                             
             
         }
@@ -303,14 +306,17 @@ class CircularesNoLeidasTableViewController: UITableViewController,UISearchBarDe
            let action = UIContextualAction(style: .normal,
                                            title: "") { (contextAction: UIContextualAction, sourceView: UIView, completionHandler: (Bool) -> Void) in
                                                 let idCircular:String = "\(circular.id)"
-                                                                                         
+                                            if ConexionRed.isConnectedToNetwork() == true {
                                             self.noleerCircular(direccion: self.urlBase+self.noleerMetodo, usuario_id: self.idUsuario, circular_id: idCircular)
                                             self.obtenerCirculares(limit:15)
-                                               
+                                               }else{
+                                                  var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
+                                                  alert.show()
+                                     }
                
            }
            // 7
-           action.image = UIImage(named: "unread32")
+        action.image = UIImage(named: "unread32")
         action.backgroundColor = UIColor.blue
            
            return action
@@ -323,9 +329,13 @@ class CircularesNoLeidasTableViewController: UITableViewController,UISearchBarDe
         let action = UIContextualAction(style: .normal,
                                         title: "") { (contextAction: UIContextualAction, sourceView: UIView, completionHandler: (Bool) -> Void) in
                                             let idCircular:String = "\(circular.id)"
-                                            
+                                            if ConexionRed.isConnectedToNetwork() == true {
                                             self.delCircular(direccion: self.urlBase+"eliminarCircular.php", usuario_id: self.idUsuario, circular_id: idCircular)
                                             self.obtenerCirculares(limit:15)
+                                            }else{
+                                                var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
+                                                 alert.show()
+                                            }
                                             
             
         }
@@ -766,6 +776,9 @@ class CircularesNoLeidasTableViewController: UITableViewController,UISearchBarDe
     
     
     @objc func agregarFavoritos(){
+        
+          if ConexionRed.isConnectedToNetwork() == true {
+        
        circulares.removeAll()
           for c in circularesSeleccionadas{
           self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: "\(c)")
@@ -773,10 +786,15 @@ class CircularesNoLeidasTableViewController: UITableViewController,UISearchBarDe
       self.obtenerCirculares(limit:15)
        
        tableViewCirculares.reloadData()
+          }else{
+            var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
+             alert.show()
+        }
         
     }
     
     @objc func eliminar(){
+     if ConexionRed.isConnectedToNetwork() == true {
         circulares.removeAll()
         for c in circularesSeleccionadas{
               self.delCircular(direccion: self.urlBase+"eliminarCircular.php", usuario_id: self.idUsuario, circular_id: "\(c)")
@@ -785,15 +803,26 @@ class CircularesNoLeidasTableViewController: UITableViewController,UISearchBarDe
        self.obtenerCirculares(limit:15)
         //tableViewCirculares.reloadData()
         
-       }
+       } else{
+                  var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
+                   alert.show()
+        }
+        
+    }
     
     @objc func deshacer(){
+    if ConexionRed.isConnectedToNetwork() == true {
         circulares.removeAll()
        self.obtenerCirculares(limit:15)
         //tableViewCirculares.reloadData()
+          }else{
+                    var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
+                     alert.show()
           }
+    }
     
     @objc func noleer(){
+        if ConexionRed.isConnectedToNetwork() == true {
         circulares.removeAll()
            for c in circularesSeleccionadas{
            self.noleerCircular(direccion: self.urlBase+self.noleerMetodo, usuario_id: self.idUsuario, circular_id: "\(c)")
@@ -801,7 +830,13 @@ class CircularesNoLeidasTableViewController: UITableViewController,UISearchBarDe
       self.obtenerCirculares(limit:15)
         
         tableViewCirculares.reloadData()
+       }else{
+                       var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
+                        alert.show()
+             }
        }
+    
+    
 
     @objc func handleLongPress(_ gestureRecognizer: UILongPressGestureRecognizer){
         if gestureRecognizer.state == .began {
