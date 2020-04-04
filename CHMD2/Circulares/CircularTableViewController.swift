@@ -25,24 +25,48 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
         print("prefetching row of \(indexPaths)")
     }
     
-    @IBOutlet var tableViewCirculares: UITableView!
-   // @IBOutlet weak var barBusqueda: UISearchBar!
-    
+   @IBOutlet var tableViewCirculares: UITableView!
+   @IBOutlet weak var barBusqueda: UISearchBar!
+   let searchController = UISearchController(searchResultsController: nil)
     
    
     
     var buscando=false
     var circulares = [CircularTodas]()
+    var circularesFiltradas = [CircularTodas]()
     var db: OpaquePointer?
     var idUsuario:String=""
     var urlBase:String="https://www.chmd.edu.mx/WebAdminCirculares/ws/"
     var noleerMetodo:String="noleerCircular.php"
     var selecMultiple=false
     var circularesSeleccionadas = [Int]()
+    
+    var isSearchBarEmpty: Bool {
+      return searchController.searchBar.text?.isEmpty ?? true
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(_:true)
+        if (self.isBeingDismissed) {
+         self.obtenerCirculares(limit: 15)
+        }
+        
+    }
+    
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         circulares.removeAll()
         self.hideKeyboardWhenTappedAround()
+        barBusqueda.delegate = self
+        self.title="Entrada"
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.placeholder = "Buscar circulares"
+        navigationItem.searchController = searchController
+        
+        
         tableViewCirculares.prefetchDataSource = self
         self.title="Circulares"
         selecMultiple=false
@@ -188,17 +212,18 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
         return 1
     }
     
-    func tableView(tableView: UITableView, titleForHeaderInSection section:Int) -> String?
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String?
     {
-      return "Circulares"
+        return "Entrada"
     }
+    
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        //if buscando{
-           //  return circularesFiltradas.count
-        //}else{
+        if buscando{
+             return circularesFiltradas.count
+        }else{
         return circulares.count
-    //}
+    }
 }
     
     
@@ -209,12 +234,14 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
         let cell = tableView.dequeueReusableCell(withIdentifier: "celda", for: indexPath)
             as! CircularTableViewCell
         let c = circulares[indexPath.row]
-        //if buscando{
-        //    let c = circularesFiltradas[indexPath.row]
-        //}
+        if buscando{
+            let c = circularesFiltradas[indexPath.row]
+        }
+    
         
         
-        cell.lblEncabezado.text? = "Circular No. \(c.id)"
+        //cell.lblEncabezado.text? = "Circular No. \(c.id)"
+        cell.lblEncabezado.text? = ""
         cell.lblTitulo.text? = c.nombre.uppercased()
         cell.chkSeleccionar.addTarget(self, action: #selector(seleccionMultiple), for: .touchUpInside)
         //var horaFecha = c.fecha.split{$0 == " "}.map(String.init)
@@ -302,7 +329,7 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
                                             let idCircular:String = "\(circular.id)"
                                             if ConexionRed.isConnectedToNetwork() == true {
                                             self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: idCircular)
-                                            self.obtenerCirculares(limit:15)
+                                                 self.obtenerCirculares(limit:15)
                                             }else{
                                             var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
                                             alert.show()
@@ -367,6 +394,10 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
         return action
     }
 
+    
+
+    
+    
     
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -807,8 +838,10 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
                        
                         var str = texto.replacingOccurrences(of: "&lt;", with: "<").replacingOccurrences(of: "&gt;", with: ">")
                         print("Contenido: "+str)
-                        
-                        self.circulares.append(CircularTodas(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo.uppercased(),fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? ""))
+                        if(Int(eliminada)!==0){
+                             self.circulares.append(CircularTodas(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo.uppercased(),fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? ""))
+                        }
+                       
                         //Guardar las circulares
                         
                         
@@ -1070,11 +1103,15 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
  }
     
     
-    /*
+    
+    
+    
+    
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         if(!(searchBar.text?.isEmpty)!){
             buscando=true
-            circulares = circulares.filter({$0.nombre.contains(searchBar.text!.uppercased())})
+            print("Buscar")
+            circularesFiltradas = circulares.filter({$0.nombre.contains(searchBar.text!.uppercased())})
             self.tableViewCirculares?.reloadData()
         }else{
             buscando=false
@@ -1090,18 +1127,19 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
         if searchBar.text==nil || searchBar.text==""{
             buscando=false
             view.endEditing(true)
-            let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesUsuarios.php?usuario_id=\(self.idUsuario)"
+            let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesUsuariosLazyLoad.php?usuario_id=\(self.idUsuario)&limit=15"
             let _url = URL(string: address);
-            self.obtenerCirculares(uri:address)
+            self.obtenerCirculares(limit:15)
             
         }else{
             buscando=true
-            circulares = circulares.filter({$0.nombre.contains(searchBar.text!.uppercased())})
+             print("Buscar")
+            circularesFiltradas = circulares.filter({$0.nombre.contains(searchBar.text!.uppercased())})
             self.tableViewCirculares?.reloadData()
             
         }
     }
-    */
+    
     
     
     @IBAction func unwindCirculares(segue:UIStoryboardSegue) {}

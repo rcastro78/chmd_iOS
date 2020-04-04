@@ -13,7 +13,7 @@ import SQLite3
 
 class EliminadasTableViewController: UITableViewController,UISearchBarDelegate,UIGestureRecognizerDelegate {
     @IBOutlet var tableViewCirculares: UITableView!
-   // @IBOutlet weak var barBusqueda: UISearchBar!
+   @IBOutlet weak var barBusqueda: UISearchBar!
     
     
    
@@ -30,7 +30,7 @@ class EliminadasTableViewController: UITableViewController,UISearchBarDelegate,U
         super.viewDidLoad()
         circulares.removeAll()
         self.hideKeyboardWhenTappedAround()
-        
+        barBusqueda.delegate=self
         self.title="Circulares"
         selecMultiple=false
         circularesSeleccionadas.removeAll()
@@ -174,9 +174,9 @@ class EliminadasTableViewController: UITableViewController,UISearchBarDelegate,U
         return 1
     }
     
-    func tableView(tableView: UITableView, titleForHeaderInSection section:Int) -> String?
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String?
     {
-      return "Circulares"
+        return "Papelera"
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -196,7 +196,8 @@ class EliminadasTableViewController: UITableViewController,UISearchBarDelegate,U
         //}
         
         
-        cell.lblEncabezado.text? = "Circular No. \(c.id)"
+         //cell.lblEncabezado.text? = "Circular No. \(c.id)"
+               cell.lblEncabezado.text? = ""
         cell.lblTitulo.text? = c.nombre.uppercased()
         cell.chkSeleccionar.addTarget(self, action: #selector(seleccionMultiple), for: .touchUpInside)
         //var horaFecha = c.fecha.split{$0 == " "}.map(String.init)
@@ -856,7 +857,7 @@ class EliminadasTableViewController: UITableViewController,UISearchBarDelegate,U
  }
     
     
-    /*
+    
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         if(!(searchBar.text?.isEmpty)!){
             buscando=true
@@ -876,9 +877,8 @@ class EliminadasTableViewController: UITableViewController,UISearchBarDelegate,U
         if searchBar.text==nil || searchBar.text==""{
             buscando=false
             view.endEditing(true)
-            let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesUsuarios.php?usuario_id=\(self.idUsuario)"
-            let _url = URL(string: address);
-            self.obtenerCirculares(uri:address)
+            
+            self.obtenerCirculares(limit:15)
             
         }else{
             buscando=true
@@ -887,7 +887,7 @@ class EliminadasTableViewController: UITableViewController,UISearchBarDelegate,U
             
         }
     }
-    */
+    
     
     
     @IBAction func unwindCirculares(segue:UIStoryboardSegue) {}

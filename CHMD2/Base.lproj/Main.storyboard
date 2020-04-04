@@ -163,11 +163,11 @@
         <scene sceneID="ahT-cF-yST">
             <objects>
                 <viewController id="CCr-gp-iFO" customClass="MiMaguenViewController" customModule="CHMD" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" ambiguous="YES" id="Epe-p9-nWg">
+                    <view key="view" contentMode="scaleToFill" id="Epe-p9-nWg">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <wkWebView contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PWW-lj-nkg">
+                            <wkWebView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PWW-lj-nkg">
                                 <rect key="frame" x="0.0" y="44" width="414" height="692"/>
                                 <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
@@ -323,13 +323,11 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <label key="tableHeaderView" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="   Entrada" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="yoS-TU-Yt1">
+                        <searchBar key="tableHeaderView" contentMode="redraw" id="CT0-Cn-pFG">
                             <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
-                            <autoresizingMask key="autoresizingMask"/>
-                            <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
-                            <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                            <nil key="highlightedColor"/>
-                        </label>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <textInputTraits key="textInputTraits"/>
+                        </searchBar>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="celda" rowHeight="93" id="Bwb-ie-gfm" customClass="CircularTableViewCell" customModule="CHMD" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="72" width="414" height="93"/>
@@ -420,13 +418,14 @@
                         </connections>
                     </tableView>
                     <tabBarItem key="tabBarItem" title="Todas" image="homeIconBar" id="G9l-u1-bd5"/>
-                    <navigationItem key="navigationItem" title="CIRCULARES" id="I8h-Ed-rl7">
+                    <navigationItem key="navigationItem" title="Entrada" id="I8h-Ed-rl7">
                         <barButtonItem key="backBarButtonItem" title="Circulares" id="skS-yt-g4a"/>
                         <barButtonItem key="rightBarButtonItem" title="Item" image="chmd_barra" id="Gj9-la-YAa">
                             <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="barBusqueda" destination="CT0-Cn-pFG" id="bG8-RW-EDT"/>
                         <outlet property="tableViewCirculares" destination="fgy-mY-EGs" id="vfb-hI-hpG"/>
                         <segue destination="WNa-wt-toA" kind="show" identifier="TcircularSegue" id="pUa-WZ-WHd"/>
                     </connections>
@@ -828,13 +827,11 @@ EENPTEVHSU8gSEVCUkVPIE1BR1VFTiBEQVZJRA
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <label key="tableHeaderView" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="   Favoritas" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="yPa-rk-Uo9">
+                        <searchBar key="tableHeaderView" contentMode="redraw" id="KD2-aA-SyW">
                             <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
-                            <autoresizingMask key="autoresizingMask"/>
-                            <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
-                            <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                            <nil key="highlightedColor"/>
-                        </label>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <textInputTraits key="textInputTraits"/>
+                        </searchBar>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="celda" rowHeight="93" id="jhk-Zj-0HH" customClass="CircularTableViewCell" customModule="CHMD" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="72" width="414" height="93"/>
@@ -932,6 +929,7 @@ EENPTEVHSU8gSEVCUkVPIE1BR1VFTiBEQVZJRA
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="barBusqueda" destination="KD2-aA-SyW" id="1aU-4G-p0U"/>
                         <outlet property="tableViewCirculares" destination="7ih-Fq-CSb" id="TSi-Xb-tzS"/>
                         <segue destination="WNa-wt-toA" kind="show" identifier="CircularFavoritaSegue" id="AvV-PJ-ifv"/>
                     </connections>
@@ -948,16 +946,14 @@ EENPTEVHSU8gSEVCUkVPIE1BR1VFTiBEQVZJRA
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <label key="tableHeaderView" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="   No Leídas" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="J0d-vx-zTB">
-                            <rect key="frame" x="0.0" y="0.0" width="414" height="29"/>
-                            <autoresizingMask key="autoresizingMask"/>
-                            <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
-                            <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                            <nil key="highlightedColor"/>
-                        </label>
+                        <searchBar key="tableHeaderView" contentMode="redraw" id="EsI-bI-XxB">
+                            <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <textInputTraits key="textInputTraits"/>
+                        </searchBar>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="celda" rowHeight="93" id="5gP-cn-tPX" customClass="CircularTableViewCell" customModule="CHMD" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="57" width="414" height="93"/>
+                                <rect key="frame" x="0.0" y="72" width="414" height="93"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="5gP-cn-tPX" id="6Uq-mu-8La">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="93"/>
@@ -1052,6 +1048,7 @@ EENPTEVHSU8gSEVCUkVPIE1BR1VFTiBEQVZJRA
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="barBusqueda" destination="EsI-bI-XxB" id="upa-mX-0d9"/>
                         <outlet property="tableViewCirculares" destination="6fJ-td-hEi" id="zug-aG-Jmk"/>
                         <segue destination="WNa-wt-toA" kind="show" identifier="CircularNoLeidaSegue" id="FQV-7X-McO"/>
                     </connections>
@@ -1068,16 +1065,14 @@ EENPTEVHSU8gSEVCUkVPIE1BR1VFTiBEQVZJRA
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <label key="tableHeaderView" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="   Papelera" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="LrV-HK-UYd">
-                            <rect key="frame" x="0.0" y="0.0" width="414" height="29"/>
-                            <autoresizingMask key="autoresizingMask"/>
-                            <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
-                            <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                            <nil key="highlightedColor"/>
-                        </label>
+                        <searchBar key="tableHeaderView" contentMode="redraw" id="htA-4Z-cIa">
+                            <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <textInputTraits key="textInputTraits"/>
+                        </searchBar>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="celda" rowHeight="93" id="64e-Gf-ArM" customClass="CircularTableViewCell" customModule="CHMD" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="57" width="414" height="93"/>
+                                <rect key="frame" x="0.0" y="72" width="414" height="93"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="64e-Gf-ArM" id="LHB-kv-uYE">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="93"/>
@@ -1172,6 +1167,7 @@ EENPTEVHSU8gSEVCUkVPIE1BR1VFTiBEQVZJRA
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="barBusqueda" destination="htA-4Z-cIa" id="eql-Tw-6Aw"/>
                         <outlet property="tableViewCirculares" destination="W9j-C7-TDM" id="zfk-Gj-4Rb"/>
                         <segue destination="WNa-wt-toA" kind="show" identifier="CircularEliminadaSegue" id="0GG-qJ-4qD"/>
                     </connections>
@@ -1206,6 +1202,6 @@ EENPTEVHSU8gSEVCUkVPIE1BR1VFTiBEQVZJRA
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="FQV-7X-McO"/>
-        <segue reference="emR-jD-vrJ"/>
+        <segue reference="OUN-JY-Tch"/>
     </inferredMetricsTieBreakers>
 </document>

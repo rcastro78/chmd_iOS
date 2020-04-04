@@ -347,18 +347,43 @@ class PrincipalTableViewController: UITableViewController {
             performSegue(withIdentifier: "webSegue", sender: self)
         }
         if(valor.id==3){
-                     GIDSignIn.sharedInstance()?.signOut()
-                     performSegue(withIdentifier: "unwindSegueToVC1", sender: self)
-                      UserDefaults.standard.set(0,forKey: "autenticado")
-                      UserDefaults.standard.set(0,forKey: "cuentaValida")
-                      UserDefaults.standard.set("", forKey: "nombre")
-                      UserDefaults.standard.set("", forKey: "email")
-                      DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                          UIApplication.shared.perform(#selector(NSXPCConnection.suspend))
-                           DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                            exit(0)
-                           }
-                      }
+            
+            
+            let dialogMessage = UIAlertController(title: "CHMD", message: "¿Deseas cerrar sesión?", preferredStyle: .alert)
+                       
+                       // Create OK button with action handler
+                       let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
+                           GIDSignIn.sharedInstance()?.signOut()
+                            
+                            UserDefaults.standard.set(0,forKey: "autenticado")
+                            UserDefaults.standard.set(0,forKey: "cuentaValida")
+                            UserDefaults.standard.set("", forKey: "nombre")
+                            UserDefaults.standard.set("", forKey: "email")
+                            self.performSegue(withIdentifier: "unwindSegueToVC1", sender: self)
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                                UIApplication.shared.perform(#selector(NSXPCConnection.suspend))
+                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                  exit(0)
+                                 }
+                            }
+                       })
+                       
+                       // Create Cancel button with action handlder
+                       let cancel = UIAlertAction(title: "Cancelar", style: .cancel) { (action) -> Void in
+                           
+                       }
+                       
+                       //Add OK and Cancel button to dialog message
+                       dialogMessage.addAction(ok)
+                       dialogMessage.addAction(cancel)
+                       
+                       // Present dialog message to user
+                       self.present(dialogMessage, animated: true, completion: nil)
+            
+            
+            
+            
+                     
         }
         
         if (valor.id==4){

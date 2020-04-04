@@ -47,7 +47,8 @@ class CircularesLeidasTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "celda", for: indexPath)
             as! CircularLeidaTableViewCell
         let c = circulares[indexPath.row]
-        cell.lblEncabezado.text? = "Circular No. \(c.id)"
+         //cell.lblEncabezado.text? = "Circular No. \(c.id)"
+               cell.lblEncabezado.text? = ""
         cell.lblTitulo.text? = c.nombre
         cell.lblFecha.text? = c.fecha
 
@@ -155,8 +156,8 @@ class CircularesLeidasTableViewController: UITableViewController {
         URLSession.shared.dataTask(with: url) {
             (data, response, error) in
             if let datos = try? JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String:Any]] {
-                if(!datos.isEmpty){
-                    for index in 0...((datos).count) - 1
+                if(!(datos.isEmpty ?? false)){
+                    for index in 0...((datos).count ?? 0) - 1
                     {
                         let obj = datos[index] as! [String : AnyObject]
                         let id = obj["id"] as! String

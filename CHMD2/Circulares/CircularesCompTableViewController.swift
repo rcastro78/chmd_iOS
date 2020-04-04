@@ -37,7 +37,8 @@ class CircularesCompTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "celda", for: indexPath)
             as! CircularCompartidaTableViewCell
         let c = circulares[indexPath.row]
-        cell.lblEncabezado.text? = "Circular No. \(c.id)"
+         //cell.lblEncabezado.text? = "Circular No. \(c.id)"
+               cell.lblEncabezado.text? = ""
         cell.lblTitulo.text? = c.nombre
         cell.lblFecha.text? = c.fecha
         
