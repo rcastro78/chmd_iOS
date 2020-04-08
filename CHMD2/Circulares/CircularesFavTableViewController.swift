@@ -15,7 +15,8 @@ class CircularesFavTableViewController: UITableViewController,UISearchBarDelegat
      @IBOutlet var tableViewCirculares: UITableView!
       @IBOutlet weak var barBusqueda: UISearchBar!
        
-       
+    @IBOutlet weak var menuButton: UIBarButtonItem!
+    
       
        
        var buscando=false
@@ -35,9 +36,11 @@ class CircularesFavTableViewController: UITableViewController,UISearchBarDelegat
            selecMultiple=false
            circularesSeleccionadas.removeAll()
            setupLongPressGesture()
-           //let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: "longPress:")
-           //self.view.addGestureRecognizer(longPressRecognizer)
-           //stackBotones.isHidden=true
+          if self.revealViewController() != nil {
+                     menuButton.target = self.revealViewController()
+                     menuButton.action = "revealToggle:"
+                     self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
+                 }
            idUsuario = UserDefaults.standard.string(forKey: "idUsuario") ?? "0"
            //idUsuario="1944"
            
@@ -174,10 +177,7 @@ class CircularesFavTableViewController: UITableViewController,UISearchBarDelegat
            return 1
        }
        
-       override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String?
-       {
-           return "Favoritas"
-       }
+       
        override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
            //if buscando{
               //  return circularesFiltradas.count

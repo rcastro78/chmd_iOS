@@ -27,7 +27,9 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
     
    @IBOutlet var tableViewCirculares: UITableView!
    @IBOutlet weak var barBusqueda: UISearchBar!
-   let searchController = UISearchController(searchResultsController: nil)
+   
+    @IBOutlet weak var menuButton: UIBarButtonItem!
+    let searchController = UISearchController(searchResultsController: nil)
     
    
     
@@ -61,10 +63,10 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
         self.hideKeyboardWhenTappedAround()
         barBusqueda.delegate = self
         self.title="Entrada"
-        searchController.searchResultsUpdater = self
+        /*searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.placeholder = "Buscar circulares"
-        navigationItem.searchController = searchController
+        navigationItem.searchController = searchController*/
         
         
         tableViewCirculares.prefetchDataSource = self
@@ -72,11 +74,16 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
         selecMultiple=false
         circularesSeleccionadas.removeAll()
         setupLongPressGesture()
-        //let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: "longPress:")
-        //self.view.addGestureRecognizer(longPressRecognizer)
-        //stackBotones.isHidden=true
+       
         idUsuario = UserDefaults.standard.string(forKey: "idUsuario") ?? "0"
-        //idUsuario="1944"
+        
+
+        if self.revealViewController() != nil {
+            menuButton.target = self.revealViewController()
+            menuButton.action = "revealToggle:"
+            self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
+        }
+        
         
         self.tableViewCirculares.allowsMultipleSelection = true
         self.tableViewCirculares.allowsMultipleSelectionDuringEditing = true
@@ -101,97 +108,14 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
       
         
         
-        //self.limpiarCirculares()
-        
-        //self.guardarCirculares(idCircular: 1, idUsuario: 1944, nombre: "TEST...", textoCircular: "<p>Este es el texto de la circular<p>", no_leida: 0, leida: 0, favorita: 0, compartida: 0, eliminada: 0)
-        
-         //self.guardarCirculares(idCircular: 2, idUsuario: 1944, nombre: "TEST 2...", textoCircular: "<p>Este es el texto de la circular número 2<p>", no_leida: 0, leida: 0, favorita: 0, compartida: 0, eliminada: 0)
-        
-        
-        //setupLongPressGesture()
-        
+       
         
     }
     
     
     
 
-    /*
-    func setupLongPressGesture() {
-        let longPressGesture:UILongPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(self.handleLongPress))
-        longPressGesture.minimumPressDuration = 2.0 // 1 second press
-        longPressGesture.delegate = self as? UIGestureRecognizerDelegate
-        self.tableViewCirculares.addGestureRecognizer(longPressGesture)
-    }
-    
-    @objc func handleLongPress(_ gestureRecognizer: UILongPressGestureRecognizer){
-        if gestureRecognizer.state == .ended {
-            let touchPoint = gestureRecognizer.location(in: self.tableViewCirculares)
-            if let indexPath = self.tableViewCirculares.indexPathForRow(at: touchPoint) {
-                let cell = tableView.dequeueReusableCell(withIdentifier: "celda", for: indexPath)
-                    as! CircularTableViewCell
-                let c = circulares[indexPath.row]
-                if cell.isSelected
-                {
-                    cell.isSelected = false
-                    if cell.accessoryType == UITableViewCell.AccessoryType.none
-                    {
-                        cell.accessoryType = UITableViewCell.AccessoryType.checkmark
-                        print(c.id)
-                        
-                    }
-                    else
-                    {
-                        cell.accessoryType = UITableViewCell.AccessoryType.none
-                    }
-                }
-                
-            }
-        }
-    }
-    */
-    
-    // MARK: - Table view data source
-
-    /*
-    @IBAction func pasarFavoritos(_ sender: UIButton) {
-        for circular in circularesSeleccionadas{
-            print(circular)
-        }
-    }
-    
-    @IBAction func pasarNoLeidas(_ sender: UIButton) {
-        for circular in circularesSeleccionadas{
-            print(circular)
-        }
-    }
-    
-    @IBAction func pasarBorrar(_ sender: UIButton) {
-        for circular in circularesSeleccionadas{
-            print(circular)
-        }
-    }
-    
-    
-    
-    
-    
-    func longPress(longPressGestureRecognizer: UILongPressGestureRecognizer) {
-        
-      if longPressGestureRecognizer.state == UIGestureRecognizer.State.began {
-        selecMultiple=true
-        //stackBotones.isHidden=false
-        let touchPoint = longPressGestureRecognizer.location(in: self.view)
-        if let indexPath = tableViewCirculares.indexPathForRow(at: touchPoint) {
-            // let c = circulares[indexPath.row]
-            //al tener la circular, agregarla al arreglo
-            //circularesSeleccionadas.append(c.id)
-        }
-    }
-        
-    }
-    
-    */
+   
     
     func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         var valorInicial:Int=1
@@ -212,18 +136,12 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
         return 1
     }
     
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String?
-    {
-        return "Entrada"
-    }
+   
     
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if buscando{
-             return circularesFiltradas.count
-        }else{
-        return circulares.count
-    }
+         return circulares.count
+    
 }
     
     
@@ -234,13 +152,6 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
         let cell = tableView.dequeueReusableCell(withIdentifier: "celda", for: indexPath)
             as! CircularTableViewCell
         let c = circulares[indexPath.row]
-        if buscando{
-            let c = circularesFiltradas[indexPath.row]
-        }
-    
-        
-        
-        //cell.lblEncabezado.text? = "Circular No. \(c.id)"
         cell.lblEncabezado.text? = ""
         cell.lblTitulo.text? = c.nombre.uppercased()
         cell.chkSeleccionar.addTarget(self, action: #selector(seleccionMultiple), for: .touchUpInside)
@@ -268,25 +179,7 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
         if(c.adjunto==0){
             cell.imgAdjunto.isHidden=true
         }
-        //cell.accessoryType = UITableViewCell.AccessoryType.none
-        /*let fuentePeq = UIFont(name: "Gotham Rounded", size: 12)
-        let fuenteTitulo = UIFont(name: "Gotham Rounded", size: 14)
-        cell.lblEncabezado.font = fuentePeq
-        cell.lblTitulo.font = fuenteTitulo
-        cell.lblFecha.font = fuentePeq*/
-        /*if cell.isSelected
-        {
-            cell.isSelected = false
-            if cell.accessoryType == UITableViewCell.AccessoryType.none
-            {
-                cell.accessoryType = UITableViewCell.AccessoryType.checkmark
-            }
-            else
-            {
-                cell.accessoryType = UITableViewCell.AccessoryType.none
-            }
-        }*/
-
+       
         if indexPath.row == self.circulares.count {
           print("FONDO")
           
@@ -418,9 +311,7 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
              
     }
     
-    /*
-     let crearTablaCirculares = "CREATE TABLE IF NOT EXISTS appCircular(idCircular INTEGER, idUsuario INTEGER, nombre TEXT, textoCircular TEXT, no_leida INTEGER, leida INTEGER, favorita INTEGER, compartida INTEGER, eliminada INTEGER)"
-     */
+  
     
     //Leer las circulares cuando no haya internet
     func leerCirculares(){
@@ -459,11 +350,7 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
                           } else {
                            print("name not found")
                        }
-                
-                /*
-                            idCircular 0, idUsuario 1, nombre 2, textoCircular 3, no_leida 4, leida 5, favorita 6, compartida 7, eliminada 8, created_at 9,fechaIcs 10, horaInicioIcs 11, horaFinIcs 12 , nivel 13, adjunto 14,updated_at  15
-                            */
-                
+              
                         let leida = sqlite3_column_int(queryStatement, 5)
                         let favorita = sqlite3_column_int(queryStatement, 6)
                         let eliminada = sqlite3_column_int(queryStatement, 8)
@@ -533,11 +420,7 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
                 }
                 
                 
-                /*
-                   self.circulares.append(CircularTodas(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo.uppercased(),fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? ""))
-                 */
-                
-                
+        
                 self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo.uppercased(),fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel))
               }
             
@@ -573,16 +456,6 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
                 
         }
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     func borrarCirculares(){
         let fileUrl = try!
@@ -872,7 +745,7 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
     }
     
     override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-       return 84
+       return 160
     }
     
     let footerView = UIView()
@@ -1039,23 +912,7 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
         if gestureRecognizer.state == .began {
             footerView.isHidden=false
             footerView.backgroundColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
-            /*let touchPoint = gestureRecognizer.location(in: self.tableViewCirculares)
-            if let indexPath = tableViewCirculares.indexPathForRow(at: touchPoint) {
-                   let c = circulares[indexPath.row]
-                
-             
-                                
-                let cell = tableViewCirculares.cellForRow(at: indexPath) as! CircularTableViewCell
-                             
-                              if(!cell.isSelected){
-                                cell.accessoryType = .checkmark
-                                print("Se seleccionó")
-                                cell.setSelected(true, animated: true)
-                              }
-                        
-                circularesSeleccionadas.append(c.id)
-            }*/
-            
+           
         }
     }
     
@@ -1111,7 +968,7 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
         if(!(searchBar.text?.isEmpty)!){
             buscando=true
             print("Buscar")
-            circularesFiltradas = circulares.filter({$0.nombre.contains(searchBar.text!.uppercased())})
+            circulares = circulares.filter({$0.nombre.contains(searchBar.text!.uppercased())})
             self.tableViewCirculares?.reloadData()
         }else{
             buscando=false
@@ -1134,7 +991,7 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
         }else{
             buscando=true
              print("Buscar")
-            circularesFiltradas = circulares.filter({$0.nombre.contains(searchBar.text!.uppercased())})
+            circulares = circulares.filter({$0.nombre.contains(searchBar.text!.uppercased())})
             self.tableViewCirculares?.reloadData()
             
         }

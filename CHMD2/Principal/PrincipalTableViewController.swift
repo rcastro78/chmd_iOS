@@ -37,6 +37,15 @@ class PrincipalTableViewController: UITableViewController {
     let base_url:String="https://www.chmd.edu.mx/WebAdminCirculares/ws/";
     let get_usuario:String="getUsuarioEmail.php";
     var email:String="";
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let backItem = UIBarButtonItem()
+        backItem.title = ""
+        navigationItem.backBarButtonItem = backItem
+        
+    }
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         //
@@ -490,5 +499,10 @@ class PrincipalTableViewController: UITableViewController {
      // Pass the selected object to the new view controller.
      }
      */
+    
+    
+    @IBAction func unwindToPrincipal(segue:UIStoryboardSegue) {
+        
+    }
     
 }

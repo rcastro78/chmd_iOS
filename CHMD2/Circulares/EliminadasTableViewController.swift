@@ -14,6 +14,7 @@ import SQLite3
 class EliminadasTableViewController: UITableViewController,UISearchBarDelegate,UIGestureRecognizerDelegate {
     @IBOutlet var tableViewCirculares: UITableView!
    @IBOutlet weak var barBusqueda: UISearchBar!
+    @IBOutlet weak var menuButton: UIBarButtonItem!
     
     
    
@@ -35,9 +36,13 @@ class EliminadasTableViewController: UITableViewController,UISearchBarDelegate,U
         selecMultiple=false
         circularesSeleccionadas.removeAll()
         setupLongPressGesture()
-        //let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: "longPress:")
-        //self.view.addGestureRecognizer(longPressRecognizer)
-        //stackBotones.isHidden=true
+        
+        if self.revealViewController() != nil {
+                   menuButton.target = self.revealViewController()
+                   menuButton.action = "revealToggle:"
+                   self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
+               }
+        
         idUsuario = UserDefaults.standard.string(forKey: "idUsuario") ?? "0"
         //idUsuario="1944"
         
@@ -174,10 +179,7 @@ class EliminadasTableViewController: UITableViewController,UISearchBarDelegate,U
         return 1
     }
     
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String?
-    {
-        return "Papelera"
-    }
+   
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         //if buscando{

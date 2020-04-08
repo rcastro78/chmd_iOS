@@ -16,7 +16,10 @@
 		53AB8077239C15890073833F /* GothamRoundedBook_21018.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E0E8293C230CDA4E005D5A6D /* GothamRoundedBook_21018.ttf */; };
 		53AB8078239C15890073833F /* GothamRoundedMedium_21022.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E0E8293D230CDA4F005D5A6D /* GothamRoundedMedium_21022.ttf */; };
 		53AB807B239C91AC0073833F /* ConexionRed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53AB807A239C91AC0073833F /* ConexionRed.swift */; };
+		53AC31AF243D1D6C00CD0678 /* MenuCircularesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53AC31AE243D1D6C00CD0678 /* MenuCircularesTableViewController.swift */; };
 		53DA15A723F24B2F006D3553 /* SignInWithApple.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53DA15A623F24B2F006D3553 /* SignInWithApple.swift */; };
+		53F6187B243D3E5A00A8B4A9 /* MenuCirculares.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53F6187A243D3E5A00A8B4A9 /* MenuCirculares.swift */; };
+		53F6187D243D40C900A8B4A9 /* MenuCircularTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53F6187C243D40C900A8B4A9 /* MenuCircularTableViewCell.swift */; };
 		53F799DD235E1BF600BB7E00 /* Responsable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53F799DC235E1BF500BB7E00 /* Responsable.swift */; };
 		B9963874D99CD24FFB612BFC /* Pods_CHMD2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1031D4270698A8B128362D8 /* Pods_CHMD2.framework */; };
 		E0090AED22EBE92B00BC236C /* CircularesLeidasTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0090AEC22EBE92B00BC236C /* CircularesLeidasTableViewController.swift */; };
@@ -58,7 +61,10 @@
 		53356BC023E2606D00C7A516 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		537E3758239B6DCF005838F1 /* EliminadasTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EliminadasTableViewController.swift; sourceTree = "<group>"; };
 		53AB807A239C91AC0073833F /* ConexionRed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConexionRed.swift; sourceTree = "<group>"; };
+		53AC31AE243D1D6C00CD0678 /* MenuCircularesTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuCircularesTableViewController.swift; sourceTree = "<group>"; };
 		53DA15A623F24B2F006D3553 /* SignInWithApple.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInWithApple.swift; sourceTree = "<group>"; };
+		53F6187A243D3E5A00A8B4A9 /* MenuCirculares.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuCirculares.swift; sourceTree = "<group>"; };
+		53F6187C243D40C900A8B4A9 /* MenuCircularTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuCircularTableViewCell.swift; sourceTree = "<group>"; };
 		53F799DC235E1BF500BB7E00 /* Responsable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Responsable.swift; sourceTree = "<group>"; };
 		78F9D2004DE22F66CCB80FB4 /* Pods-CHMD2.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CHMD2.debug.xcconfig"; path = "Target Support Files/Pods-CHMD2/Pods-CHMD2.debug.xcconfig"; sourceTree = "<group>"; };
 		B1031D4270698A8B128362D8 /* Pods_CHMD2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CHMD2.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -221,6 +227,7 @@
 				E0B1E48222E7FB4000CD8EE6 /* CircularTodas.swift */,
 				E0B1E48422E7FBF700CD8EE6 /* Circular.swift */,
 				53F799DC235E1BF500BB7E00 /* Responsable.swift */,
+				53F6187A243D3E5A00A8B4A9 /* MenuCirculares.swift */,
 			);
 			path = modelos;
 			sourceTree = "<group>";
@@ -250,6 +257,8 @@
 				E0090AF222EBEC8F00BC236C /* CircularesCompTableViewController.swift */,
 				E0090AF422EBF5A500BC236C /* CircularDetalleViewController.swift */,
 				537E3758239B6DCF005838F1 /* EliminadasTableViewController.swift */,
+				53AC31AE243D1D6C00CD0678 /* MenuCircularesTableViewController.swift */,
+				53F6187C243D40C900A8B4A9 /* MenuCircularTableViewCell.swift */,
 			);
 			path = Circulares;
 			sourceTree = "<group>";
@@ -433,6 +442,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E0090AEF22EBEBD500BC236C /* CircularesNoLeidasTableViewController.swift in Sources */,
+				53F6187D243D40C900A8B4A9 /* MenuCircularTableViewCell.swift in Sources */,
 				E0B1E47922E7F71D00CD8EE6 /* CircularNoLeidaTableViewCell.swift in Sources */,
 				E065778822D1126B0089A05A /* ViewController.swift in Sources */,
 				E0B1E48522E7FBF700CD8EE6 /* Circular.swift in Sources */,
@@ -440,9 +450,11 @@
 				E06577A722D148950089A05A /* MenuPrincipal.swift in Sources */,
 				E0B1E47D22E7F75B00CD8EE6 /* CircularTableViewCell.swift in Sources */,
 				E06577AE22D14DD60089A05A /* AlumnosTableViewController.swift in Sources */,
+				53F6187B243D3E5A00A8B4A9 /* MenuCirculares.swift in Sources */,
 				530EC2C823D409F300A8BDBD /* NotificacionesTableViewController.swift in Sources */,
 				E0090AF522EBF5A500BC236C /* CircularDetalleViewController.swift in Sources */,
 				53DA15A723F24B2F006D3553 /* SignInWithApple.swift in Sources */,
+				53AC31AF243D1D6C00CD0678 /* MenuCircularesTableViewController.swift in Sources */,
 				E065778622D1126A0089A05A /* AppDelegate.swift in Sources */,
 				E0B1E47F22E7F76F00CD8EE6 /* CircularCompartidaTableViewCell.swift in Sources */,
 				53AB807B239C91AC0073833F /* ConexionRed.swift in Sources */,
@@ -614,14 +626,14 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = CHMD2/CHMD2.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 14;
+				CURRENT_PROJECT_VERSION = 15;
 				DEVELOPMENT_TEAM = 3UAVXU6LK5;
 				INFOPLIST_FILE = CHMD2/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.13;
+				MARKETING_VERSION = 1.0.14;
 				PRODUCT_BUNDLE_IDENTIFIER = mx.edu.CHMD1;
 				PRODUCT_NAME = CHMD;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -640,14 +652,14 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = CHMD2/CHMD2.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 14;
+				CURRENT_PROJECT_VERSION = 15;
 				DEVELOPMENT_TEAM = 3UAVXU6LK5;
 				INFOPLIST_FILE = CHMD2/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.13;
+				MARKETING_VERSION = 1.0.14;
 				PRODUCT_BUNDLE_IDENTIFIER = mx.edu.CHMD1;
 				PRODUCT_NAME = CHMD;
 				SWIFT_COMPILATION_MODE = wholemodule;

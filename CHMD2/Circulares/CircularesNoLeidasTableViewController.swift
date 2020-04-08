@@ -14,6 +14,7 @@ class CircularesNoLeidasTableViewController: UITableViewController,UISearchBarDe
     @IBOutlet var tableViewCirculares: UITableView!
    @IBOutlet weak var barBusqueda: UISearchBar!
     
+    @IBOutlet weak var menuButton: UIBarButtonItem!
     
    
     
@@ -38,7 +39,11 @@ class CircularesNoLeidasTableViewController: UITableViewController,UISearchBarDe
         //self.view.addGestureRecognizer(longPressRecognizer)
         //stackBotones.isHidden=true
         idUsuario = UserDefaults.standard.string(forKey: "idUsuario") ?? "0"
-        //idUsuario="1944"
+         if self.revealViewController() != nil {
+                   menuButton.target = self.revealViewController()
+                   menuButton.action = "revealToggle:"
+                   self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
+               }
         
         self.tableViewCirculares.allowsMultipleSelection = true
         self.tableViewCirculares.allowsMultipleSelectionDuringEditing = true
@@ -173,10 +178,7 @@ class CircularesNoLeidasTableViewController: UITableViewController,UISearchBarDe
         return 1
     }
     
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String?
-    {
-        return "No leídas"
-    }
+   
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         //if buscando{
