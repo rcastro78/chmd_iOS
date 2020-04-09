@@ -533,7 +533,7 @@
                             <outlet property="delegate" destination="tzC-IS-eKq" id="DpM-6e-9tD"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Entrada" id="I8h-Ed-rl7">
+                    <navigationItem key="navigationItem" title="ENTRADA" id="I8h-Ed-rl7">
                         <barButtonItem key="backBarButtonItem" title="Circulares" id="skS-yt-g4a"/>
                         <barButtonItem key="leftBarButtonItem" image="ic_hamburguesa" id="ycF-kE-5hU">
                             <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -941,7 +941,7 @@ EENPTEVHSU8gSEVCUkVPIE1BR1VFTiBEQVZJRA
                                             </constraints>
                                         </imageView>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4Fo-Xg-AUE">
-                                            <rect key="frame" x="280" y="11" width="87" height="14"/>
+                                            <rect key="frame" x="280" y="11" width="87" height="12"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="87" id="h3u-s6-pr7"/>
                                             </constraints>
@@ -1002,7 +1002,7 @@ EENPTEVHSU8gSEVCUkVPIE1BR1VFTiBEQVZJRA
                             <outlet property="delegate" destination="wFq-ny-Fj0" id="Ic1-Kw-dkU"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Favoritas" id="nJE-sS-eZE">
+                    <navigationItem key="navigationItem" title="FAVORITAS" id="nJE-sS-eZE">
                         <barButtonItem key="backBarButtonItem" title="Circulares" id="tSi-gG-T1H"/>
                         <barButtonItem key="leftBarButtonItem" image="ic_hamburguesa" id="EVH-IT-AMt">
                             <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -1063,7 +1063,7 @@ EENPTEVHSU8gSEVCUkVPIE1BR1VFTiBEQVZJRA
                                             </constraints>
                                         </imageView>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hvO-sJ-HJ0">
-                                            <rect key="frame" x="280" y="11" width="87" height="14"/>
+                                            <rect key="frame" x="280" y="11" width="87" height="12"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="87" id="Zze-e4-Cad"/>
                                             </constraints>
@@ -1124,7 +1124,7 @@ EENPTEVHSU8gSEVCUkVPIE1BR1VFTiBEQVZJRA
                             <outlet property="delegate" destination="2aD-Z8-ZJT" id="8ge-gc-Cem"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="No Leídas" id="uox-SW-5yZ">
+                    <navigationItem key="navigationItem" title="NO LEÍDAS" id="uox-SW-5yZ">
                         <barButtonItem key="backBarButtonItem" title="Circulares" id="nwh-Mi-1MI"/>
                         <barButtonItem key="leftBarButtonItem" image="ic_hamburguesa" id="Vuk-G9-0rT">
                             <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -1185,7 +1185,7 @@ EENPTEVHSU8gSEVCUkVPIE1BR1VFTiBEQVZJRA
                                             </constraints>
                                         </imageView>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jt2-UQ-ZWI">
-                                            <rect key="frame" x="280" y="11" width="87" height="14"/>
+                                            <rect key="frame" x="280" y="11" width="87" height="12"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="87" id="dff-6Y-iQg"/>
                                             </constraints>
@@ -1246,7 +1246,7 @@ EENPTEVHSU8gSEVCUkVPIE1BR1VFTiBEQVZJRA
                             <outlet property="delegate" destination="lhn-aI-DQw" id="aLJ-bM-Yq9"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Papelera" id="YQd-wa-Fhr">
+                    <navigationItem key="navigationItem" title="PAPELERA" id="YQd-wa-Fhr">
                         <barButtonItem key="backBarButtonItem" title="Circulares" id="HiO-BA-tWy"/>
                         <barButtonItem key="leftBarButtonItem" image="ic_hamburguesa" id="pIT-Bn-4yY">
                             <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -1374,7 +1374,7 @@ EENPTEVHSU8gSEVCUkVPIE1BR1VFTiBEQVZJRA
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="PGh-mn-R5Z"/>
-        <segue reference="FQV-7X-McO"/>
+        <segue reference="pUa-WZ-WHd"/>
         <segue reference="HeJ-u6-V88"/>
     </inferredMetricsTieBreakers>
 </document>

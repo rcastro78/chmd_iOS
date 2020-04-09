@@ -57,16 +57,53 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
     
     
     
+    let btnFavs = UIButton(type: .custom)
+    let btnNoLeer = UIButton(type: .custom)
+    let btnEliminar = UIButton(type: .custom)
+    let btnDeshacer = UIButton(type: .custom)
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         circulares.removeAll()
         self.hideKeyboardWhenTappedAround()
-        barBusqueda.delegate = self
-        self.title="Entrada"
-        /*searchController.searchResultsUpdater = self
-        searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchBar.placeholder = "Buscar circulares"
-        navigationItem.searchController = searchController*/
+       btnFavs.isHidden=true
+       btnFavs.frame=CGRect(x: 300, y: 300, width: 64, height: 64)
+       btnFavs.setImage(UIImage(named:"estrella_fav"), for: .normal)
+       btnFavs.backgroundColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
+       btnFavs.clipsToBounds = true
+       btnFavs.layer.cornerRadius = 32
+       btnFavs.addTarget(self,action: #selector(agregarFavoritos), for: .touchUpInside)
+        
+   btnNoLeer.isHidden=true
+   btnNoLeer.frame=CGRect(x: 300, y: 380, width: 64, height: 64)
+   btnNoLeer.setImage(UIImage(named:"icono_noleido"), for: .normal)
+   btnNoLeer.backgroundColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
+   btnNoLeer.clipsToBounds = true
+   btnNoLeer.layer.cornerRadius = 32
+   btnNoLeer.addTarget(self,action: #selector(noleer), for: .touchUpInside)
+        
+        
+   btnEliminar.isHidden=true
+   btnEliminar.frame=CGRect(x: 300, y: 460, width: 64, height: 64)
+   btnEliminar.setImage(UIImage(named:"delIcon"), for: .normal)
+   btnEliminar.backgroundColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
+   btnEliminar.clipsToBounds = true
+   btnEliminar.layer.cornerRadius = 32
+   btnEliminar.addTarget(self,action: #selector(eliminar), for: .touchUpInside)
+        
+        
+   btnDeshacer.isHidden=true
+   btnDeshacer.frame=CGRect(x: 300, y: 540, width: 64, height: 64)
+   btnDeshacer.setImage(UIImage(named:"undo"), for: .normal)
+   btnDeshacer.backgroundColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
+   btnDeshacer.clipsToBounds = true
+   btnDeshacer.layer.cornerRadius = 32
+   btnDeshacer.addTarget(self,action: #selector(deshacer), for: .touchUpInside)
+        
+       self.view.addSubview(btnFavs)
+       self.view.addSubview(btnNoLeer)
+       self.view.addSubview(btnEliminar)
+       self.view.addSubview(btnDeshacer)
         
         
         tableViewCirculares.prefetchDataSource = self
@@ -111,8 +148,13 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
        
         
     }
-    
-    
+    //Función para mantener los botones flotando
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        btnFavs.frame.origin.y = 300 + scrollView.contentOffset.y
+        btnNoLeer.frame.origin.y = 380 + scrollView.contentOffset.y
+        btnEliminar.frame.origin.y = 460 + scrollView.contentOffset.y
+        btnDeshacer.frame.origin.y = 540 + scrollView.contentOffset.y
+    }
     
 
    
@@ -192,16 +234,17 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
     
     
     //Función para manejar el swipe
-    
+    //comentado RCASTRO 08/04/2020
+    //Si tiene un menú a la izquierda el leadingSwipe no funciona
     //El leadingSwipe es para manejar el swipe de izquierda a derecha
-    override func tableView(_ tableView: UITableView,
+    /*override func tableView(_ tableView: UITableView,
                    leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration?
     {
         
         let noleeAction = self.contextualUnreadAction(forRowAtIndexPath: indexPath)
         let swipeConfig = UISwipeActionsConfiguration(actions: [noleeAction])
         return swipeConfig
-    }
+    }*/
     
     
     
@@ -209,7 +252,8 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
     override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let eliminaAction = self.contextualDelAction(forRowAtIndexPath: indexPath)
         let favAction = self.contextualFavAction(forRowAtIndexPath: indexPath)
-        let swipeConfig = UISwipeActionsConfiguration(actions: [eliminaAction,favAction])
+        let noleeAction = self.contextualUnreadAction(forRowAtIndexPath: indexPath)
+        let swipeConfig = UISwipeActionsConfiguration(actions: [eliminaAction,favAction,noleeAction])
         return swipeConfig
     }
     
@@ -272,7 +316,10 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
                                             let idCircular:String = "\(circular.id)"
                                             if ConexionRed.isConnectedToNetwork() == true {
                                             self.delCircular(direccion: self.urlBase+"eliminarCircular.php", usuario_id: self.idUsuario, circular_id: idCircular)
-                                            self.obtenerCirculares(limit:15)
+                                            //self.obtenerCirculares(limit:15)
+                                            self.circulares.remove(at: indexPath.row)
+                                            self.tableViewCirculares.reloadData()
+                                        
                                             }else{
                                                 var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
                                                  alert.show()
@@ -796,7 +843,7 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
         //btnDeshacer.layer.cornerRadius = 32
         //btnDeshacer.layer.borderColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
        
-        btnDeshacer.addTarget(self,action: #selector(eliminar), for: .touchUpInside)
+        btnDeshacer.addTarget(self,action: #selector(deshacer), for: .touchUpInside)
         
         
        footerView.addSubview(btnFavoritos)
@@ -819,8 +866,13 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
         let cell = superView as! CircularTableViewCell
         if let indexpath = tableView.indexPath(for: cell){
             if(cell.chkSeleccionar.isChecked){
-                footerView.isHidden=false;
+                //footerView.isHidden=false;
                 //let c = tableViewCirculares.cellForRow(at: indexpath) as! CircularTableViewCell
+                btnFavs.isHidden=false
+                btnNoLeer.isHidden=false
+                btnEliminar.isHidden=false
+                btnDeshacer.isHidden=false
+                tableViewCirculares.allowsSelection = true
                 let c = circulares[indexpath.row]
                 //print("Seleccionado: \(c.id)")
                 circularesSeleccionadas.append(c.id)
@@ -836,7 +888,12 @@ class CircularTableViewController: UITableViewController,UISearchBarDelegate,UIG
                 }
                 
                 if(circularesSeleccionadas.count<=0){
-                      footerView.isHidden=true;
+                      btnFavs.isHidden=true
+                      btnNoLeer.isHidden=true
+                      btnEliminar.isHidden=true
+                      btnDeshacer.isHidden=true
+                    
+                    tableViewCirculares.allowsSelection = false
                 }
                          
               

@@ -25,8 +25,17 @@ class CircularesFavTableViewController: UITableViewController,UISearchBarDelegat
        var idUsuario:String=""
        var urlBase:String="https://www.chmd.edu.mx/WebAdminCirculares/ws/"
        var noleerMetodo:String="noleerCircular.php"
+       var leerMetodo:String="leerCircular.php"
        var selecMultiple=false
        var circularesSeleccionadas = [Int]()
+    
+    
+       let btnLeer = UIButton(type: .custom)
+       let btnNoLeer = UIButton(type: .custom)
+       let btnEliminar = UIButton(type: .custom)
+       let btnDeshacer = UIButton(type: .custom)
+    
+    
        override func viewDidLoad() {
            super.viewDidLoad()
            circulares.removeAll()
@@ -42,7 +51,48 @@ class CircularesFavTableViewController: UITableViewController,UISearchBarDelegat
                      self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
                  }
            idUsuario = UserDefaults.standard.string(forKey: "idUsuario") ?? "0"
-           //idUsuario="1944"
+           
+        
+        
+              btnLeer.isHidden=true
+              btnLeer.frame=CGRect(x: 300, y: 300, width: 64, height: 64)
+              btnLeer.setImage(UIImage(named:"icono_noleido"), for: .normal)
+              btnLeer.backgroundColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
+              btnLeer.clipsToBounds = true
+              btnLeer.layer.cornerRadius = 32
+              btnLeer.addTarget(self,action: #selector(leer), for: .touchUpInside)
+               
+          btnNoLeer.isHidden=true
+          btnNoLeer.frame=CGRect(x: 300, y: 380, width: 64, height: 64)
+          btnNoLeer.setImage(UIImage(named:"icono_noleido"), for: .normal)
+          btnNoLeer.backgroundColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
+          btnNoLeer.clipsToBounds = true
+          btnNoLeer.layer.cornerRadius = 32
+          btnNoLeer.addTarget(self,action: #selector(noleer), for: .touchUpInside)
+               
+               
+          btnEliminar.isHidden=true
+          btnEliminar.frame=CGRect(x: 300, y: 460, width: 64, height: 64)
+          btnEliminar.setImage(UIImage(named:"delIcon"), for: .normal)
+          btnEliminar.backgroundColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
+          btnEliminar.clipsToBounds = true
+          btnEliminar.layer.cornerRadius = 32
+          btnEliminar.addTarget(self,action: #selector(eliminar), for: .touchUpInside)
+               
+               
+          btnDeshacer.isHidden=true
+          btnDeshacer.frame=CGRect(x: 300, y: 540, width: 64, height: 64)
+          btnDeshacer.setImage(UIImage(named:"undo"), for: .normal)
+          btnDeshacer.backgroundColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
+          btnDeshacer.clipsToBounds = true
+          btnDeshacer.layer.cornerRadius = 32
+          btnDeshacer.addTarget(self,action: #selector(deshacer), for: .touchUpInside)
+               
+              self.view.addSubview(btnLeer)
+              self.view.addSubview(btnNoLeer)
+              self.view.addSubview(btnEliminar)
+              self.view.addSubview(btnDeshacer)
+        
            
            self.tableViewCirculares.allowsMultipleSelection = true
            self.tableViewCirculares.allowsMultipleSelectionDuringEditing = true
@@ -254,7 +304,8 @@ class CircularesFavTableViewController: UITableViewController,UISearchBarDelegat
        //Función para manejar el swipe
        
        //El leadingSwipe es para manejar el swipe de izquierda a derecha
-       override func tableView(_ tableView: UITableView,
+    /*
+    override func tableView(_ tableView: UITableView,
                       leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration?
        {
            
@@ -262,14 +313,14 @@ class CircularesFavTableViewController: UITableViewController,UISearchBarDelegat
            let swipeConfig = UISwipeActionsConfiguration(actions: [noleeAction])
            return swipeConfig
        }
-       
+       */
        
        
        //El trailingSwipe es para manejar el swipe de derecha a izquierda
        override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
            let eliminaAction = self.contextualDelAction(forRowAtIndexPath: indexPath)
-           let favAction = self.contextualFavAction(forRowAtIndexPath: indexPath)
-           let swipeConfig = UISwipeActionsConfiguration(actions: [eliminaAction,favAction])
+           let noleeAction = self.contextualUnreadAction(forRowAtIndexPath: indexPath)
+           let swipeConfig = UISwipeActionsConfiguration(actions: [eliminaAction,noleeAction])
            return swipeConfig
        }
        
@@ -332,7 +383,8 @@ class CircularesFavTableViewController: UITableViewController,UISearchBarDelegat
                                               let idCircular:String = "\(circular.id)"
                                               if ConexionRed.isConnectedToNetwork() == true {
                                               self.delCircular(direccion: self.urlBase+"eliminarCircular.php", usuario_id: self.idUsuario, circular_id: idCircular)
-                                              self.obtenerCirculares(limit:15)
+                                                  self.circulares.remove(at: indexPath.row)
+                                                  self.tableViewCirculares.reloadData()
                                               }else{
                                                   var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
                                                    alert.show()
@@ -716,8 +768,14 @@ class CircularesFavTableViewController: UITableViewController,UISearchBarDelegat
            let cell = superView as! CircularTableViewCell
            if let indexpath = tableView.indexPath(for: cell){
                if(cell.chkSeleccionar.isChecked){
-                   footerView.isHidden=false;
-                   //let c = tableViewCirculares.cellForRow(at: indexpath) as! CircularTableViewCell
+                   //footerView.isHidden=false;
+                   
+                               btnLeer.isHidden=false
+                               btnNoLeer.isHidden=false
+                               btnEliminar.isHidden=false
+                               btnDeshacer.isHidden=false
+                
+                
                    let c = circulares[indexpath.row]
                    //print("Seleccionado: \(c.id)")
                    circularesSeleccionadas.append(c.id)
@@ -734,6 +792,10 @@ class CircularesFavTableViewController: UITableViewController,UISearchBarDelegat
                    
                    if(circularesSeleccionadas.count<=0){
                          footerView.isHidden=true;
+                        btnLeer.isHidden=true
+                        btnNoLeer.isHidden=true
+                        btnEliminar.isHidden=true
+                        btnDeshacer.isHidden=true
                    }
                             
                  
@@ -789,6 +851,23 @@ class CircularesFavTableViewController: UITableViewController,UISearchBarDelegat
                      alert.show()
           }
     }
+    
+    
+    @objc func leer(){
+           if ConexionRed.isConnectedToNetwork() == true {
+           circulares.removeAll()
+              for c in circularesSeleccionadas{
+              self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: "\(c)")
+           }
+         self.obtenerCirculares(limit:15)
+           
+           tableViewCirculares.reloadData()
+          }else{
+                          var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
+                           alert.show()
+                }
+          }
+    
     
     @objc func noleer(){
         if ConexionRed.isConnectedToNetwork() == true {
@@ -847,6 +926,20 @@ class CircularesFavTableViewController: UITableViewController,UISearchBarDelegat
            }
        }
        
+    
+    func leerCircular(direccion:String, usuario_id:String, circular_id:String){
+              let parameters: Parameters = ["usuario_id": usuario_id, "circular_id": circular_id]      //This will be your parameter
+              Alamofire.request(direccion, method: .post, parameters: parameters).responseJSON { response in
+                  switch (response.result) {
+                  case .success:
+                      print(response)
+                      break
+                  case .failure:
+                      print(Error.self)
+                  }
+              }
+          }
+    
        
        func noleerCircular(direccion:String, usuario_id:String, circular_id:String){
               let parameters: Parameters = ["usuario_id": usuario_id, "circular_id": circular_id]      //This will be your parameter
