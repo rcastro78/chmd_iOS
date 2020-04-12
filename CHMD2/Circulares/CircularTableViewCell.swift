@@ -11,7 +11,7 @@ import UIKit
 class CircularTableViewCell: UITableViewCell {
 
     @IBOutlet weak var imgCircular: UIImageView!
-    @IBOutlet weak var lblEncabezado: UILabel!
+   
     @IBOutlet weak var lblTitulo: UILabel!
     @IBOutlet weak var lblFecha: UILabel!
     @IBOutlet weak var lblHora: UILabel!

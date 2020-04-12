@@ -22,70 +22,79 @@ class ValidarCorreoViewController: UIViewController {
     var deviceToken = ""
     let v = UIView()
     @IBOutlet weak var lblMensaje: UILabel!
+    @IBOutlet weak var btnContinuar: UIButton!
     override func viewDidLoad() {
         super.viewDidLoad()
         email = UserDefaults.standard.string(forKey: "email") ?? ""
-        Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { (timer) in
-                                         self.v.isHidden = true
-                                     }
+        let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/validarEmail.php?correo=\(self.email)"
+        let _url = URL(string: address)!
+        validarEmail(url: _url)
+        btnContinuar.isHidden=false
+        
+        let existe:String = UserDefaults.standard.string(forKey: "valida") ?? "0"
+        let valida = Int(existe) ?? 0
+        
+        
+        
      }
     
-   func finish(){
-   var navigationArray = self.navigationController?.viewControllers //To get all UIViewController stack as Array
-   navigationArray!.remove(at: (navigationArray?.count)! - 2) // To remove previous UIViewController
-   self.navigationController?.viewControllers = navigationArray!
-   }
+   
+    
+    
+    func validarEmail(url:URL)->Int{
+           var valida:Int=0
+           self.lblMensaje.text="Validando cuenta de correo"
+           URLSession.shared.dataTask(with: url) {
+               (data, response, error) in
+               if let datos = try? JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String:Any]] {
+                   
+                   let obj = datos[0] as! [String : AnyObject]
+                       let existe = obj["existe"] as! String
+                       print("existe: "+existe)
+                       valida = Int(existe) ?? 0
+                       print("valida: \(valida)")
+                       UserDefaults.standard.set(existe, forKey: "valida")
+               
+                    
+               }
+               
+               }.resume()
+             
+           //if (valida==1){
+           //TODO: Cuando pase a produccion
+          
+           
+           return valida
+           
+       }
+       
     
     
     override func viewDidAppear(_ animated: Bool) {
         print(email)
-                
-        if(ConexionRed.isConnectedToNetwork()){
-            let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/validarEmail.php?correo=\(self.email)"
-            let _url = URL(string: address)!
-            validarEmail(url: _url)
+        let existe:String = UserDefaults.standard.string(forKey: "valida") ?? "0"
+        let valida = Int(existe) ?? 0
+        if(valida==0){
+            self.lblMensaje.text="La cuenta no es válida"
+            self.btnContinuar.setTitle("Salir", for: .normal)
+          
         }else{
-            var existe:String = UserDefaults.standard.string(forKey: "valida") ?? "0"
-            let valida = Int(existe) ?? 0
-            if(valida==1){
-                performSegue(withIdentifier: "validarSegue", sender: self)
-                finish()
-               
-                
-            }else{
-               
-            }
-                
-           
-            
+            self.lblMensaje.text="La cuenta es válida"
+            self.btnContinuar.setTitle("Continuar", for: .normal)
         }
         
-               
-  
-    }
         
-     
-    
-    
-    func validarEmail(url:URL){
-        var valida:Int=0
-        self.lblMensaje.text="Validando cuenta de correo"
-        URLSession.shared.dataTask(with: url) {
-            (data, response, error) in
-            if let datos = try? JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String:Any]] {
-                
-                let obj = datos[0] as! [String : AnyObject]
-                    let existe = obj["existe"] as! String
-                    print("existe: "+existe)
-                    valida = Int(existe) ?? 0
-                    print("valida: \(valida)")
-                    UserDefaults.standard.set(existe, forKey: "valida")
-                
-                
-                if(valida==1){
-                    
-                    self.performSegue(withIdentifier: "validarSegue", sender: self)
-                }else{
+        
+       /* if(ConexionRed.isConnectedToNetwork()){
+            let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/validarEmail.php?correo=\(self.email)"
+            let _url = URL(string: address)!
+            if(validarEmail(url: _url)==1){
+                 print("Cuenta valida!")
+                self.lblMensaje.text="Cuenta de correo validada..."
+                return
+            }else{
+                self.lblMensaje.text="La cuenta de correo no es válida"
+                btnContinuar.isHidden=true
                     let dialogMessage = UIAlertController(title: "CHMD", message: "Esta cuenta de correo no está registrada en nuestra base de datos.", preferredStyle: .alert)
                                                     
                                                     // Create OK button with action handler
@@ -98,7 +107,7 @@ class ValidarCorreoViewController: UIViewController {
                                                        UserDefaults.standard.set("", forKey: "nombre")
                                                        UserDefaults.standard.set("", forKey: "email")
                                                        //Retornar al login
-                                                       self.performSegue(withIdentifier: "unwindSegueToVC1", sender: self)
+                                                       //self.performSegue(withIdentifier: "unwindSegueToVC1", sender: self)
                                                        
                                                     })
                                                     
@@ -108,25 +117,34 @@ class ValidarCorreoViewController: UIViewController {
                                                     
                                                     // Present dialog message to user
                                                     self.present(dialogMessage, animated: true, completion: nil)
+ 
                 }
-                
-                
-            }
-            
-            }.resume()
-        print(valida)
-        //if (valida==1){
-        //TODO: Cuando pase a produccion
-        if (valida==1){
-           
             
         }else{
-            //Crear y presentar un cuadro de alerta cuando no se encuentre el email en la base
-          
+            var existe:String = UserDefaults.standard.string(forKey: "valida") ?? "0"
+            let valida = Int(existe) ?? 0
+            if(valida==1){
+                self.btnContinuar.isHidden=false
+            }else{
+                self.btnContinuar.isHidden=true
+            }
+                
+           
+            
         }
+        
+            
+  */
+    }
+        
+     
+    @IBAction func continuar(_ sender: UIButton) {
+        performSegue(withIdentifier: "validarSegue", sender: self)
         
     }
     
+    
+   
     
     
     
