@@ -39,9 +39,11 @@
                                 </constraints>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2qb-gc-Zp7">
-                                <rect key="frame" x="20" y="576" width="96" height="96"/>
+                                <rect key="frame" x="20" y="668" width="47" height="48"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="96" id="7aO-xN-AUu"/>
+                                    <constraint firstAttribute="height" constant="48" id="NsD-T3-3wx"/>
+                                    <constraint firstAttribute="width" constant="47" id="gKn-gg-Vc3"/>
+                                    <constraint firstAttribute="width" secondItem="2qb-gc-Zp7" secondAttribute="height" multiplier="47:48" id="m1o-2A-6Lk"/>
                                 </constraints>
                                 <state key="normal" title="Button" image="boton_apple"/>
                                 <connections>
@@ -53,11 +55,12 @@
                         <constraints>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="LJw-Qv-rlh" secondAttribute="bottom" constant="64" id="1kN-Vg-xIM"/>
                             <constraint firstItem="oIA-DI-Sdu" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="48" id="9ug-5t-nNI"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="2qb-gc-Zp7" secondAttribute="bottom" constant="20" id="DV1-8V-ey4"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="LJw-Qv-rlh" secondAttribute="trailing" constant="56" id="KAL-Og-RqZ"/>
+                            <constraint firstItem="2qb-gc-Zp7" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="668" id="OIS-32-2KJ"/>
+                            <constraint firstItem="LJw-Qv-rlh" firstAttribute="leading" secondItem="2qb-gc-Zp7" secondAttribute="trailing" constant="195" id="W9g-uv-DRd"/>
+                            <constraint firstItem="2qb-gc-Zp7" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="aei-o8-7K8"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="oIA-DI-Sdu" secondAttribute="trailing" constant="106" id="e93-Jz-by8"/>
-                            <constraint firstItem="2qb-gc-Zp7" firstAttribute="top" secondItem="LJw-Qv-rlh" secondAttribute="top" id="k86-Ly-Rk7"/>
-                            <constraint firstItem="2qb-gc-Zp7" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="sp2-Xu-rGl"/>
-                            <constraint firstItem="2qb-gc-Zp7" firstAttribute="bottom" secondItem="LJw-Qv-rlh" secondAttribute="bottom" id="x0X-Q4-BZZ"/>
                             <constraint firstItem="oIA-DI-Sdu" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="107" id="xHD-ib-uwa"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
@@ -145,7 +148,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="tableViewMenu" destination="nsq-dY-nGg" id="2gm-j5-gHM"/>
-                        <segue destination="SnO-VD-w00" kind="show" identifier="webSegue" id="Fjw-er-z3L"/>
+                        <segue destination="SnO-VD-w00" kind="presentation" identifier="webSegue" id="Fjw-er-z3L"/>
                         <segue destination="IOe-4N-pQX" kind="unwind" identifier="unwindSegueToVC1" unwindAction="unwindToVC1WithSegue:" id="IAJ-rw-QCy"/>
                         <segue destination="fpj-hr-Kgn" kind="show" identifier="credencialSegue" id="02A-vp-4cE"/>
                         <segue destination="jUB-T7-sv3" kind="show" identifier="inicioSegue" id="TIO-S5-3pi"/>
@@ -161,7 +164,7 @@
             <objects>
                 <viewController modalPresentationStyle="fullScreen" id="CCr-gp-iFO" customClass="MiMaguenViewController" customModule="CHMD" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" ambiguous="YES" id="Epe-p9-nWg">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="716"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <wkWebView contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PWW-lj-nkg">
@@ -187,12 +190,19 @@
                     </view>
                     <navigationItem key="navigationItem" title="Mi Maguen" id="191-g3-1DF">
                         <barButtonItem key="backBarButtonItem" title="Retornar" id="ADG-1h-UfQ"/>
+                        <barButtonItem key="leftBarButtonItem" title="Retornar" id="E1b-PI-liK">
+                            <connections>
+                                <segue destination="bHL-Gj-snQ" kind="unwind" unwindAction="unwindToPrincipalWithSegue:" id="JCM-EX-5YY"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="webView" destination="PWW-lj-nkg" id="RiC-iS-PQ4"/>
+                        <segue destination="bHL-Gj-snQ" kind="unwind" unwindAction="unwindToPrincipalWithSegue:" id="KtY-cn-0U5"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="TB5-6u-oJY" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="bHL-Gj-snQ" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="1803" y="1346"/>
         </scene>
@@ -299,16 +309,24 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="ATw-A2-BV2"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Mi Credencial" id="SQN-wQ-huR"/>
+                    <navigationItem key="navigationItem" title="Mi Credencial" id="SQN-wQ-huR">
+                        <barButtonItem key="leftBarButtonItem" title="Retornar" id="GR6-O8-DMn">
+                            <connections>
+                                <segue destination="75o-qc-IKJ" kind="unwind" unwindAction="unwindToPrincipalWithSegue:" id="ffT-RA-PbM"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="imgFotoPadre" destination="Edf-Bd-j24" id="XtT-RU-Oca"/>
                         <outlet property="lblNombre" destination="7cb-FF-6Ku" id="KWt-N0-fUP"/>
                         <outlet property="lblNumFamilia" destination="Trv-Bi-P0J" id="BHB-5e-BZZ"/>
                         <outlet property="lblParentesco" destination="lfI-db-BVT" id="sfT-nK-jld"/>
                         <outlet property="qrImage" destination="yq1-pM-Ot3" id="WzV-A2-Aax"/>
+                        <segue destination="75o-qc-IKJ" kind="unwind" unwindAction="unwindToPrincipalWithSegue:" id="jR2-sH-CAB"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KPh-pm-1XX" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <exit id="75o-qc-IKJ" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="3607" y="1346"/>
         </scene>
@@ -1259,7 +1277,7 @@ EENPTEVHSU8gSEVCUkVPIE1BR1VFTiBEQVZJRA
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" modalPresentationStyle="fullScreen" id="SnO-VD-w00" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="KWP-89-LrN">
-                        <barButtonItem key="backBarButtonItem" title="Menu" id="RVj-ES-buZ"/>
+                        <barButtonItem key="backBarButtonItem" title="Volver" id="RVj-ES-buZ"/>
                     </navigationItem>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="0xN-nj-LGN">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
@@ -1759,6 +1777,6 @@ EENPTEVHSU8gSEVCUkVPIE1BR1VFTiBEQVZJRA
     <inferredMetricsTieBreakers>
         <segue reference="Rfy-LS-0qo"/>
         <segue reference="1CB-74-YjN"/>
-        <segue reference="xjp-Eu-iMj"/>
+        <segue reference="mtg-fp-Lb4"/>
     </inferredMetricsTieBreakers>
 </document>
