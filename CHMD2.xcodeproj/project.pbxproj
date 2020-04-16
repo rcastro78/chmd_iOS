@@ -13,7 +13,6 @@
 		530EC2CA23D40A3200A8BDBD /* NotificacionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 530EC2C923D40A3200A8BDBD /* NotificacionTableViewCell.swift */; };
 		531AF3752442888F000E0282 /* NoLeidasCircularesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531AF3742442888F000E0282 /* NoLeidasCircularesViewController.swift */; };
 		5321DB7A242FC5D80027FCA7 /* CheckBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5321DB79242FC5D80027FCA7 /* CheckBox.swift */; };
-		53356BC223E2606E00C7A516 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 53356BC023E2606D00C7A516 /* GoogleService-Info.plist */; };
 		5397ED832442939A009E3588 /* PapeleraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5397ED822442939A009E3588 /* PapeleraViewController.swift */; };
 		53A8658E24417C53000C19AA /* FavCircularesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53A8658D24417C52000C19AA /* FavCircularesViewController.swift */; };
 		53AB8076239C15890073833F /* GothamRoundedBold_21016.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E0E8293B230CDA4E005D5A6D /* GothamRoundedBold_21016.ttf */; };
@@ -21,6 +20,7 @@
 		53AB8078239C15890073833F /* GothamRoundedMedium_21022.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E0E8293D230CDA4F005D5A6D /* GothamRoundedMedium_21022.ttf */; };
 		53AB807B239C91AC0073833F /* ConexionRed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53AB807A239C91AC0073833F /* ConexionRed.swift */; };
 		53AC31AF243D1D6C00CD0678 /* MenuCircularesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53AC31AE243D1D6C00CD0678 /* MenuCircularesTableViewController.swift */; };
+		53ACC4952449145900BA64BF /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 53ACC4942449145800BA64BF /* GoogleService-Info.plist */; };
 		53DA15A723F24B2F006D3553 /* SignInWithApple.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53DA15A623F24B2F006D3553 /* SignInWithApple.swift */; };
 		53F6187B243D3E5A00A8B4A9 /* MenuCirculares.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53F6187A243D3E5A00A8B4A9 /* MenuCirculares.swift */; };
 		53F6187D243D40C900A8B4A9 /* MenuCircularTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53F6187C243D40C900A8B4A9 /* MenuCircularTableViewCell.swift */; };
@@ -63,11 +63,11 @@
 		530EC2C923D40A3200A8BDBD /* NotificacionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificacionTableViewCell.swift; sourceTree = "<group>"; };
 		531AF3742442888F000E0282 /* NoLeidasCircularesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoLeidasCircularesViewController.swift; sourceTree = "<group>"; };
 		5321DB79242FC5D80027FCA7 /* CheckBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckBox.swift; sourceTree = "<group>"; };
-		53356BC023E2606D00C7A516 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5397ED822442939A009E3588 /* PapeleraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PapeleraViewController.swift; sourceTree = "<group>"; };
 		53A8658D24417C52000C19AA /* FavCircularesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavCircularesViewController.swift; sourceTree = "<group>"; };
 		53AB807A239C91AC0073833F /* ConexionRed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConexionRed.swift; sourceTree = "<group>"; };
 		53AC31AE243D1D6C00CD0678 /* MenuCircularesTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuCircularesTableViewController.swift; sourceTree = "<group>"; };
+		53ACC4942449145800BA64BF /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		53DA15A623F24B2F006D3553 /* SignInWithApple.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInWithApple.swift; sourceTree = "<group>"; };
 		53F6187A243D3E5A00A8B4A9 /* MenuCirculares.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuCirculares.swift; sourceTree = "<group>"; };
 		53F6187C243D40C900A8B4A9 /* MenuCircularTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuCircularTableViewCell.swift; sourceTree = "<group>"; };
@@ -182,7 +182,7 @@
 		E065778422D1126A0089A05A /* CHMD2 */ = {
 			isa = PBXGroup;
 			children = (
-				53356BC023E2606D00C7A516 /* GoogleService-Info.plist */,
+				53ACC4942449145800BA64BF /* GoogleService-Info.plist */,
 				530EC2C623D407D600A8BDBD /* Notificaciones */,
 				53AB8079239C915D0073833F /* Utilerias */,
 				E0F7AD0A2356A00D002ECB1B /* Padres */,
@@ -371,7 +371,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				53AB8076239C15890073833F /* GothamRoundedBold_21016.ttf in Resources */,
-				53356BC223E2606E00C7A516 /* GoogleService-Info.plist in Resources */,
+				53ACC4952449145900BA64BF /* GoogleService-Info.plist in Resources */,
 				53AB8077239C15890073833F /* GothamRoundedBook_21018.ttf in Resources */,
 				53AB8078239C15890073833F /* GothamRoundedMedium_21022.ttf in Resources */,
 				E0D4A66522DAE52900589B2A /* video_app.mp4 in Resources */,
