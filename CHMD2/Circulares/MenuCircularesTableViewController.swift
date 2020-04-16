@@ -10,6 +10,10 @@ import UIKit
 
 class MenuCircularesTableViewController: UITableViewController {
 
+    @IBOutlet weak var lblCorreo: UILabel!
+    @IBOutlet weak var lblUsuario: UILabel!
+    @IBOutlet weak var lblNumFamilia: UILabel!
+    
     @IBOutlet var tableViewMenu: UITableView!
      var menu = [MenuCirculares]()
     override func viewDidLoad() {
@@ -20,6 +24,15 @@ class MenuCircularesTableViewController: UITableViewController {
           menu.append(MenuCirculares(id: 3, nombre: "No leídos", imagen:#imageLiteral(resourceName: "appmenu05")))
           menu.append(MenuCirculares(id: 4, nombre: "Papelera", imagen:#imageLiteral(resourceName: "appmenu07")))
           menu.append(MenuCirculares(id: 5, nombre: "Menú principal", imagen:#imageLiteral(resourceName: "appmenu09")))
+        
+               var nombre = UserDefaults.standard.string(forKey: "nombreUsuario") ?? ""
+                var email = UserDefaults.standard.string(forKey: "email") ?? ""
+               var familia = UserDefaults.standard.string(forKey: "numeroUsuario") ?? ""
+        
+        lblUsuario.text=nombre
+        lblNumFamilia.text=familia
+        lblCorreo.text=email
+        
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 

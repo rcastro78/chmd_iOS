@@ -55,8 +55,8 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
          if ConexionRed.isConnectedToNetwork() == true {
          self.obtenerCirculares(limit:50)
          }else{
-            var alert = UIAlertView(title: "No está conectado a Internet", message: "Se muestran las últimas circulares registradas", delegate: nil, cancelButtonTitle: "Aceptar")
-            alert.show()
+          
+           
             self.leerCirculares()
         }
         //self.tableViewCirculares.reloadData()
@@ -256,7 +256,11 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                             let idCircular:String = "\(circular.id)"
                                             if ConexionRed.isConnectedToNetwork() == true {
                                             self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: idCircular)
-                                                 self.obtenerCirculares(limit:15)
+                                                
+                                                self.viewDidLoad()
+                                                self.viewWillAppear(true)
+                                                
+                                                
                                             }else{
                                             var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
                                             alert.show()
@@ -283,7 +287,8 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                                 let idCircular:String = "\(circular.id)"
                                             if ConexionRed.isConnectedToNetwork() == true {
                                             self.noleerCircular(direccion: self.urlBase+self.noleerMetodo, usuario_id: self.idUsuario, circular_id: idCircular)
-                                            self.obtenerCirculares(limit:15)
+                                                self.viewDidLoad()
+                                                self.viewWillAppear(true)
                                                }else{
                                                   var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
                                                   alert.show()
@@ -334,9 +339,18 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
        
         
         if(!editando){
+            
+            
+            /*
+             guard let fecha = diccionario["updated_at"] as? String else {
+                 print("No se pudo obtener la fecha")
+                 return
+             }
+             */
+            
         let c = circulares[indexPath.row]
         let cell = tableView.cellForRow(at: indexPath)
-        
+            UserDefaults.standard.set(indexPath.row,forKey:"posicion")
             UserDefaults.standard.set(c.id,forKey:"id")
             UserDefaults.standard.set(c.nombre,forKey:"nombre")
             UserDefaults.standard.set(c.fecha,forKey:"fecha")
@@ -587,12 +601,12 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             if sqlite3_bind_int(statement,2,Int32(idUsuario)) != SQLITE_OK {
                 print("Error campo 2")
             }
-            
-            if sqlite3_bind_text(statement,3,nombre, -1, nil) != SQLITE_OK {
+            let n = nombre as NSString
+            if sqlite3_bind_text(statement,3,n.utf8String, -1, nil) != SQLITE_OK {
                 print("Error campo 3")
             }
-            
-            if sqlite3_bind_text(statement,4,textoCircular, -1, nil) != SQLITE_OK {
+            let texto = textoCircular as NSString
+            if sqlite3_bind_text(statement,4,texto.utf8String, -1, nil) != SQLITE_OK {
                 print("Error campo 4")
             }
             
@@ -757,6 +771,12 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                         }
                         
                         var str = texto.replacingOccurrences(of: "&lt;", with: "<").replacingOccurrences(of: "&gt;", with: ">")
+                        .replacingOccurrences(of: "&amp;aacute;", with: "á")
+                        .replacingOccurrences(of: "&amp;eacute;", with: "é")
+                        .replacingOccurrences(of: "&amp;iacute;", with: "í")
+                        .replacingOccurrences(of: "&amp;oacute;", with: "ó")
+                        .replacingOccurrences(of: "&amp;uacute;", with: "ú")
+                        .replacingOccurrences(of: "&amp;ordm;", with: "o.")
                         print("Contenido: "+str)
                         if(Int(eliminada)!==0){
                              self.circulares.append(CircularTodas(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo.uppercased(),fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? ""))

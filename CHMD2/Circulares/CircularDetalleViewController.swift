@@ -13,6 +13,7 @@ import EventKit
 import Firebase
 import BitlySDK
 import MarqueeLabel
+import SQLite3
 
 extension UIView {
 
@@ -65,6 +66,8 @@ class CircularDetalleViewController: UIViewController {
     var contenido:String=""
     let eventStore = EKEventStore()
     var circulares = [CircularTodas]()
+    var idCirculares = [Int]()
+    var db: OpaquePointer?
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -86,7 +89,7 @@ class CircularDetalleViewController: UIViewController {
         
         if(horaInicialIcs != "00:00:00"){
             imbCalendario.isHidden=false
-        }
+         }
          lblNivel.text = nivel
         
         if (viaNotif == 0){
@@ -117,8 +120,11 @@ class CircularDetalleViewController: UIViewController {
              if(ConexionRed.isConnectedToNetwork()){
                self.lblTituloParte1.isHidden=true
                self.lblTituloParte1?.visiblity(gone: true, dimension: 0)
+                
              }else{
              self.lblTituloParte1.text = titulo.uppercased()
+             posicion = UserDefaults.standard.integer(forKey:"posicion")
+             leerCirculares()
             }
             
                    
@@ -174,7 +180,7 @@ class CircularDetalleViewController: UIViewController {
             
             
            /* let messageString = "<!DOCTYPE html><html><body><h3>"+contenido+"</h3></p></body></html>"
-            
+             webView.loadHTMLString("<html><head><meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=5, minimum-scale=1.0, user-scalable=yes'><meta  http-equiv='X-UA-Compatible'  content='IE=edge,chrome=1'><meta name='HandheldFriendly' content='true'></head><body {color: #005188;}><h3>\(contenido)</h3></p></body></html>", baseURL: nil)
             
             let htmlData = NSString(string: messageString).data(using: String.Encoding.utf8.rawValue)
             let options = [NSAttributedString.DocumentReadingOptionKey.documentType: NSAttributedString.DocumentType.html]
@@ -339,11 +345,15 @@ class CircularDetalleViewController: UIViewController {
     
     @IBAction func btnNextClick(_ sender: UIButton) {
        //obtener la posición del elemento cargado
-        posicion = posicion+1
         
-        print("Cuenta: \(ids.count)")
+  
+        
+       if(ConexionRed.isConnectedToNetwork()){
         
         if(posicion<ids.count){
+            posicion = posicion+1
+           
+           
             var nextId = ids[posicion]
             var nextTitulo = titulos[posicion]
             var nextFecha = fechas[posicion]
@@ -390,65 +400,144 @@ class CircularDetalleViewController: UIViewController {
             posicion = 0
             id = UserDefaults.standard.string(forKey: "id") ?? ""
         }
+            
+            
+        
+       
+        
+    }else{
+        //No hay conexion
+        
+        if(posicion<circulares.count){
+           posicion = posicion+1
+            if(posicion>=circulares.count){
+                posicion = 0
+            }
+            lblTituloParte1.text = circulares[posicion].nombre
+            lblNivel.text = circulares[posicion].nivel
+            
+            let anio = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
+            let mes = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
+            let dia = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
+            
+            
+            var nextHoraIniIcs = circulares[posicion].horaInicialIcs
+            var nextHoraFinIcs = circulares[posicion].horaFinalIcs
+            var nextFechaIcs = circulares[posicion].fechaIcs
+            if(nextHoraIniIcs != "00:00:00"){
+                       imbCalendario.isHidden=false
+            }else{
+                       imbCalendario.isHidden=true
+            }
+            
+           let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "dd/MM/yyyy"
+            dateFormatter.locale = Locale(identifier: "es_ES_POSIX")
+            let date1 = dateFormatter.date(from: "\(dia)/\(mes)/\(anio)")
+            dateFormatter.dateFormat = "d 'de' MMMM 'de' YYYY"
+            let d = dateFormatter.string(from: date1!)
+            lblFechaCircular.text = d
+            
+            webView.loadHTMLString("<html><head><meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=5, minimum-scale=1.0, user-scalable=yes'><meta  http-equiv='X-UA-Compatible'  content='IE=edge,chrome=1'><meta name='HandheldFriendly' content='true'><meta content='text/html;charset=utf-8'></head><body {color: #005188;}><h3>\(circulares[posicion].contenido)</h3></p></body></html>", baseURL: nil)
+            
+        
+        }
+      
         
     }
         
-        
+    }
         
         
     
     
     
     @IBAction func btnAntClick(_ sender: UIButton) {
-        posicion = posicion-1
-        print("Anterior...")
-        if(posicion>=0){
-            var nextId = ids[posicion]
-            var nextTitulo = titulos[posicion]
-            var nextFecha = fechas[posicion]
-            
-            var nextHoraIniIcs = horasInicioIcs[posicion]
-            var nextHoraFinIcs = horasFinIcs[posicion]
-            var nextFechaIcs = fechasIcs[posicion]
-            var nextNivel = niveles[posicion]
-            
-            if(nextHoraIniIcs != "00:00:00"){
-                imbCalendario.isHidden=false
+        
+        if(ConexionRed.isConnectedToNetwork()){
+            posicion = posicion-1
+            print("Anterior...")
+            if(posicion>=0){
+                var nextId = ids[posicion]
+                var nextTitulo = titulos[posicion]
+                var nextFecha = fechas[posicion]
+                
+                var nextHoraIniIcs = horasInicioIcs[posicion]
+                var nextHoraFinIcs = horasFinIcs[posicion]
+                var nextFechaIcs = fechasIcs[posicion]
+                var nextNivel = niveles[posicion]
+                
+                if(nextHoraIniIcs != "00:00:00"){
+                    imbCalendario.isHidden=false
+                }
+                
+                lblNivel.text = nextNivel
+                
+                
+                 circularTitulo = nextTitulo
+                let link = URL(string:urlBase+"getCircularId4.php?id=\(nextId)")!
+                circularUrl = urlBase+"getCircularId4.php?id=\(nextId)"
+                let request = URLRequest(url: link)
+                webView.load(request)
+                self.title = "Circular"
+               let anio = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
+               let mes = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
+               let dia = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
+               //self.lblFechaCircular.text = "\(dia)/\(mes)/\(anio)"
+                
+                          let dateFormatter = DateFormatter()
+                          dateFormatter.dateFormat = "dd/MM/yyyy"
+                          dateFormatter.locale = Locale(identifier: "es_ES_POSIX")
+                          let date1 = dateFormatter.date(from: "\(dia)/\(mes)/\(anio)")
+                          dateFormatter.dateFormat = "d 'de' MMMM 'de' YYYY"
+                          let d = dateFormatter.string(from: date1!)
+                          lblFechaCircular.text = d
+                
+                
+                if(ConexionRed.isConnectedToNetwork()){
+                    self.lblTituloParte1.isHidden=true
+                    self.lblTituloParte1?.visiblity(gone: true, dimension: 0)
+                }
+                
+                //self.lblTituloParte1.text=nextTitulo /*partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())*/
+                id = nextId
+            }else{
+                posicion = ids.count
             }
-            
-            lblNivel.text = nextNivel
-            
-            
-             circularTitulo = nextTitulo
-            let link = URL(string:urlBase+"getCircularId4.php?id=\(nextId)")!
-            circularUrl = urlBase+"getCircularId4.php?id=\(nextId)"
-            let request = URLRequest(url: link)
-            webView.load(request)
-            self.title = "Circular"
-           let anio = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
-           let mes = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
-           let dia = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
-           //self.lblFechaCircular.text = "\(dia)/\(mes)/\(anio)"
-            
-                      let dateFormatter = DateFormatter()
-                      dateFormatter.dateFormat = "dd/MM/yyyy"
-                      dateFormatter.locale = Locale(identifier: "es_ES_POSIX")
-                      let date1 = dateFormatter.date(from: "\(dia)/\(mes)/\(anio)")
-                      dateFormatter.dateFormat = "d 'de' MMMM 'de' YYYY"
-                      let d = dateFormatter.string(from: date1!)
-                      lblFechaCircular.text = d
-            
-            
-            if(ConexionRed.isConnectedToNetwork()){
-                self.lblTituloParte1.isHidden=true
-                self.lblTituloParte1?.visiblity(gone: true, dimension: 0)
-            }
-            
-            //self.lblTituloParte1.text=nextTitulo /*partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())*/
-            id = nextId
         }else{
-            posicion = ids.count
-        }
+               
+               posicion = posicion-1
+            if(posicion>0){
+                lblTituloParte1.text = circulares[posicion].nombre
+                               lblNivel.text = circulares[posicion].nivel
+                               
+                               let anio = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
+                               let mes = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
+                               let dia = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
+                               
+                              let dateFormatter = DateFormatter()
+                               dateFormatter.dateFormat = "dd/MM/yyyy"
+                               dateFormatter.locale = Locale(identifier: "es_ES_POSIX")
+                               let date1 = dateFormatter.date(from: "\(dia)/\(mes)/\(anio)")
+                               dateFormatter.dateFormat = "d 'de' MMMM 'de' YYYY"
+                               let d = dateFormatter.string(from: date1!)
+                               lblFechaCircular.text = d
+                               var nextHoraIniIcs = circulares[posicion].horaInicialIcs
+                                          var nextHoraFinIcs = circulares[posicion].horaFinalIcs
+                                          var nextFechaIcs = circulares[posicion].fechaIcs
+                                          if(nextHoraIniIcs != "00:00:00"){
+                                                     imbCalendario.isHidden=false
+                                          }else{
+                                                     imbCalendario.isHidden=true
+                                          }
+                               webView.loadHTMLString("<html><head><meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=5, minimum-scale=1.0, user-scalable=yes'><meta  http-equiv='X-UA-Compatible'  content='IE=edge,chrome=1'><meta name='HandheldFriendly' content='true'><meta content='text/html;charset=utf-8'></head><body {color: #005188;}><h3>\(circulares[posicion].contenido.replacingOccurrences(of: "&aacute;", with: "á").replacingOccurrences(of: "&eacute;", with: "é").replacingOccurrences(of: "&iacute;", with: "í").replacingOccurrences(of: "&oacute;", with: "ó").replacingOccurrences(of: "&uacute;", with: "ú").replacingOccurrences(of: "&ordm;", with: "o."))</h3></p></body></html>", baseURL: nil)
+                            
+                       }
+            }
+               
+        
+        
+        
         
     }
     
@@ -725,7 +814,124 @@ class CircularDetalleViewController: UIViewController {
     */
     
     
+    func leerCirculares(){
+     
+     let fileUrl = try!
+                FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd.sqlite")
+     
+     if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
+         print("error opening database")
+     }
+     
+        let consulta = "SELECT * FROM appCirculares"
+        var queryStatement: OpaquePointer? = nil
+     var imagen:UIImage
+     imagen = UIImage.init(named: "appmenu05")!
+     
+     if sqlite3_prepare_v2(db, consulta, -1, &queryStatement, nil) == SQLITE_OK {
     
+        
+         
+          while(sqlite3_step(queryStatement) == SQLITE_ROW) {
+                  let id = sqlite3_column_int(queryStatement, 0)
+                     var titulo:String="";
+             
+                    if let name = sqlite3_column_text(queryStatement, 2) {
+                        titulo = String(cString: name).uppercased()
+                       } else {
+                        print("name not found")
+                    }
+             
+             
+                     var cont:String="";
+             
+                    if let contenido = sqlite3_column_text(queryStatement,3) {
+                        cont = String(cString: contenido)
+                       } else {
+                        print("name not found")
+                    }
+           
+                     let leida = sqlite3_column_int(queryStatement, 5)
+                     let favorita = sqlite3_column_int(queryStatement, 6)
+                     let eliminada = sqlite3_column_int(queryStatement, 8)
+                     
+             
+                                     var fechaIcs:String="";
+                                     if let fIcs = sqlite3_column_text(queryStatement, 10) {
+                                       fechaIcs = String(cString: fIcs)
+                                      } else {
+                                       print("name not found")
+                                   }
+             
+                            
+                                 
+             
+                    
+               var hIniIcs:String="";
+               if  let horaInicioIcs = sqlite3_column_text(queryStatement, 11) {
+                 hIniIcs = String(cString: horaInicioIcs)
+                } else {
+                 print("name not found")
+             }
+                     
+             
+              var hFinIcs:String="";
+              if  let horaFinIcs = sqlite3_column_text(queryStatement, 12) {
+                  hFinIcs = String(cString: horaFinIcs)
+                  } else {
+                    print("name not found")
+                  }
+             
+             
+             
+                     
+                     
+             
+             var nivel:String="";
+             if  let nv = sqlite3_column_text(queryStatement, 12) {
+                 nivel = String(cString: nv)
+                 } else {
+                   print("name not found")
+                 }
+             
+                     let adj = sqlite3_column_int(queryStatement, 13)
+                     if(Int(leida)>0){
+                        imagen = UIImage.init(named: "circle_white")!
+                      }
+                     
+                     if(Int(leida) == 1){
+                 
+                     }
+             
+                     if(Int(favorita)==1){
+                        imagen = UIImage.init(named: "star")!
+                       }
+                     var noLeida:Int = 0
+                     if(Int(leida) == 0){
+                         noLeida = 1
+                         imagen = UIImage.init(named: "circle")!
+                        }
+             var fechaCircular="";
+             if let fecha = sqlite3_column_text(queryStatement, 8) {
+                 fechaCircular = String(cString: fecha)
+                 print("fecha c: \(fechaCircular)")
+                } else {
+                 print("name not found")
+             }
+             
+             
+             self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo.uppercased(),fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel))
+           }
+         
+       
+
+          }
+         else {
+          print("SELECT statement could not be prepared")
+        }
+
+        sqlite3_finalize(queryStatement)
+    }
     
     
     

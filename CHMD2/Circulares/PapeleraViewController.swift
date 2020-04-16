@@ -270,12 +270,41 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     //El trailingSwipe es para manejar el swipe de derecha a izquierda
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let eliminaAction = self.contextualDelAction(forRowAtIndexPath: indexPath)
+        let favAction = self.contextualFavAction(forRowAtIndexPath: indexPath)
         let leeAction = self.contextualReadAction(forRowAtIndexPath: indexPath)
         let noleeAction = self.contextualUnreadAction(forRowAtIndexPath: indexPath)
-        let swipeConfig = UISwipeActionsConfiguration(actions: [eliminaAction,leeAction,noleeAction])
+        let swipeConfig = UISwipeActionsConfiguration(actions: [leeAction,favAction,noleeAction])
         return swipeConfig
     }
+    
+    func contextualFavAction(forRowAtIndexPath indexPath: IndexPath) -> UIContextualAction {
+    
+         let circular = circulares[indexPath.row]
+         let action = UIContextualAction(style: .normal,
+                                         title: "") { (contextAction: UIContextualAction, sourceView: UIView, completionHandler: (Bool) -> Void) in
+                                             let idCircular:String = "\(circular.id)"
+                                             if ConexionRed.isConnectedToNetwork() == true {
+                                             self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: idCircular)
+                                                 
+                                                 self.viewDidLoad()
+                                                 self.viewWillAppear(true)
+                                                 
+                                                 
+                                             }else{
+                                             var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
+                                             alert.show()
+                                         }
+                                             
+                                             
+             
+         }
+         // 7
+         action.image = UIImage(named: "fav32")
+         action.backgroundColor = UIColor.orange
+         
+         return action
+     }
+    
     
     /*func contextualFavAction(forRowAtIndexPath indexPath: IndexPath) -> UIContextualAction {
    
@@ -311,7 +340,8 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                              let idCircular:String = "\(circular.id)"
                                          if ConexionRed.isConnectedToNetwork() == true {
                                          self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: idCircular)
-                                         self.obtenerCirculares(limit:15)
+                                          self.viewDidLoad()
+                                          self.viewWillAppear(true)
                                             }else{
                                                var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
                                                alert.show()
@@ -337,7 +367,8 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                                 let idCircular:String = "\(circular.id)"
                                             if ConexionRed.isConnectedToNetwork() == true {
                                             self.noleerCircular(direccion: self.urlBase+self.noleerMetodo, usuario_id: self.idUsuario, circular_id: idCircular)
-                                            self.obtenerCirculares(limit:15)
+                                             self.viewDidLoad()
+                                             self.viewWillAppear(true)
                                                }else{
                                                   var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
                                                   alert.show()
@@ -388,7 +419,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         if(!editando){
         let c = circulares[indexPath.row]
         let cell = tableView.cellForRow(at: indexPath)
-        
+        UserDefaults.standard.set(indexPath.row,forKey:"posicion")
             UserDefaults.standard.set(c.id,forKey:"id")
             UserDefaults.standard.set(c.nombre,forKey:"nombre")
             UserDefaults.standard.set(c.fecha,forKey:"fecha")
@@ -511,10 +542,12 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                     print("name not found")
                 }
                 
-                
+                imagen = UIImage.init(named: "appmenu07")!
+                if(Int(eliminada) == 0){
         
                 self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo.uppercased(),fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel))
               }
+        }
             
             self.tableViewCirculares.reloadData()
 
@@ -729,7 +762,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                         
                         
                         var imagen:UIImage
-                        imagen = UIImage.init(named: "appmenu05")!
+                        imagen = UIImage.init(named: "appmenu07")!
                         
                         
                         guard let leido = diccionario["leido"] as? String else {
@@ -802,6 +835,8 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                         if(Int(favorito)!>0){
                             imagen = UIImage.init(named: "star")!
                         }
+                        
+                        imagen=UIImage.init(named:"appmenu07")!
                         
                         var str = texto.replacingOccurrences(of: "&lt;", with: "<").replacingOccurrences(of: "&gt;", with: ">")
                         print("Contenido: "+str)

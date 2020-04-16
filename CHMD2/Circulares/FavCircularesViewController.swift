@@ -311,7 +311,8 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                              let idCircular:String = "\(circular.id)"
                                          if ConexionRed.isConnectedToNetwork() == true {
                                          self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: idCircular)
-                                         self.obtenerCirculares(limit:15)
+                                           self.circulares.remove(at: indexPath.row)
+                                           self.tableViewCirculares.reloadData()
                                             }else{
                                                var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
                                                alert.show()
@@ -337,7 +338,8 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                                 let idCircular:String = "\(circular.id)"
                                             if ConexionRed.isConnectedToNetwork() == true {
                                             self.noleerCircular(direccion: self.urlBase+self.noleerMetodo, usuario_id: self.idUsuario, circular_id: idCircular)
-                                            self.obtenerCirculares(limit:15)
+                                            self.circulares.remove(at: indexPath.row)
+                                            self.tableViewCirculares.reloadData()
                                                }else{
                                                   var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
                                                   alert.show()
@@ -388,7 +390,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
          if(!editando){
         let c = circulares[indexPath.row]
         let cell = tableView.cellForRow(at: indexPath)
-        
+        UserDefaults.standard.set(indexPath.row,forKey:"posicion")
             UserDefaults.standard.set(c.id,forKey:"id")
             UserDefaults.standard.set(c.nombre,forKey:"nombre")
             UserDefaults.standard.set(c.fecha,forKey:"fecha")
@@ -512,8 +514,10 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                 }
                 
                 
-        
+                imagen = UIImage.init(named: "star")!
+                if(Int(favorita)==1){
                 self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo.uppercased(),fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel))
+                }
               }
             
             self.tableViewCirculares.reloadData()
