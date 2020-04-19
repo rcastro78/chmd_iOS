@@ -277,7 +277,14 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
     
     @IBAction func appleLogin(_ sender: UIButton) {
         if #available(iOS 13.0, *){
-            actionHandleAppleSignin()
+            //Esta función maneja el login via Apple
+            //actionHandleAppleSignin()
+            
+            let alert = UIAlertController(title: "CHMD", message: "Esta opción estará disponible muy pronto", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Cerrar", style: .cancel, handler: nil))
+            self.present(alert, animated: true)
+            
+            
         }else{
             let alert = UIAlertController(title: "CHMD", message: "Esta opción sólo está disponible a partir de iOS 13", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Cerrar", style: .cancel, handler: nil))

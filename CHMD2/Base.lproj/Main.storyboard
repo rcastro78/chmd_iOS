@@ -880,6 +880,9 @@ EENPTEVHSU8gSEVCUkVPIE1BR1VFTiBEQVZJRA
                                                     <constraint firstAttribute="width" secondItem="nsw-ZP-x35" secondAttribute="height" multiplier="1:1" id="m7l-wp-qeQ"/>
                                                 </constraints>
                                                 <state key="normal" image="flecha_izq_icono"/>
+                                                <connections>
+                                                    <action selector="btnAnteriorClick:" destination="WNa-wt-toA" eventType="touchUpInside" id="BYk-Xs-4ny"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                         <color key="backgroundColor" red="0.0" green="0.31764705879999999" blue="0.53725490200000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -906,6 +909,9 @@ EENPTEVHSU8gSEVCUkVPIE1BR1VFTiBEQVZJRA
                                                     <constraint firstAttribute="width" secondItem="BHM-RH-3QR" secondAttribute="height" multiplier="1:1" id="dgt-fQ-VVX"/>
                                                 </constraints>
                                                 <state key="normal" image="flecha_der_icono"/>
+                                                <connections>
+                                                    <action selector="btnSiguienteClick:" destination="WNa-wt-toA" eventType="touchUpInside" id="HEq-d1-sd7"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                         <color key="backgroundColor" red="0.0" green="0.31764705879999999" blue="0.53725490200000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -934,6 +940,9 @@ EENPTEVHSU8gSEVCUkVPIE1BR1VFTiBEQVZJRA
                                                 <state key="normal" image="calendar_blanco">
                                                     <color key="titleShadowColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 </state>
+                                                <connections>
+                                                    <action selector="btnCalendarioClick:" destination="WNa-wt-toA" eventType="touchUpInside" id="I71-b7-mVe"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                         <color key="backgroundColor" red="0.0" green="0.31764705879999999" blue="0.53725490200000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -960,6 +969,9 @@ EENPTEVHSU8gSEVCUkVPIE1BR1VFTiBEQVZJRA
                                                     <constraint firstAttribute="width" secondItem="iwC-7W-79M" secondAttribute="height" multiplier="1:1" id="X6y-WQ-Twe"/>
                                                 </constraints>
                                                 <state key="normal" image="estrella_fav_icono"/>
+                                                <connections>
+                                                    <action selector="btnFavoritoClick:" destination="WNa-wt-toA" eventType="touchUpInside" id="2BR-6w-j4v"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                         <color key="backgroundColor" red="0.0" green="0.31764705879999999" blue="0.53725490200000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -983,6 +995,9 @@ EENPTEVHSU8gSEVCUkVPIE1BR1VFTiBEQVZJRA
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GsH-JW-Ubc">
                                                 <rect key="frame" x="22" y="25" width="24" height="24"/>
                                                 <state key="normal" image="eliminar_blanco64"/>
+                                                <connections>
+                                                    <action selector="btnEliminaClick:" destination="WNa-wt-toA" eventType="touchUpInside" id="kf1-j6-nCR"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                         <color key="backgroundColor" red="0.0" green="0.31764705879999999" blue="0.53725490200000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

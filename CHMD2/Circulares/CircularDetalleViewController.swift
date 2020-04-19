@@ -274,6 +274,8 @@ class CircularDetalleViewController: UIViewController {
     
     
     
+    @IBAction func btnCalendarioClick(_ sender: Any) {
+    }
     @IBAction func insertaEventoClick(_ sender: UIButton) {
        
         
@@ -342,11 +344,108 @@ class CircularDetalleViewController: UIViewController {
     
         
  
+    @IBAction func btnSiguienteClick(_ sender: Any) {
+        if(ConexionRed.isConnectedToNetwork()){
+            
+            if(posicion<ids.count){
+                posicion = posicion+1
+               
+               
+                var nextId = ids[posicion]
+                var nextTitulo = titulos[posicion]
+                var nextFecha = fechas[posicion]
+                
+                var nextHoraIniIcs = horasInicioIcs[posicion]
+                var nextHoraFinIcs = horasFinIcs[posicion]
+                var nextFechaIcs = fechasIcs[posicion]
+                var nextNivel = niveles[posicion]
+                
+                if(nextHoraIniIcs != "00:00:00"){
+                    imbCalendario.isHidden=false
+                }
+                 lblNivel.text = nextNivel
+                
+                circularTitulo = nextTitulo
+                let link = URL(string:urlBase+"getCircularId4.php?id=\(nextId)")!
+                let request = URLRequest(url: link)
+                circularUrl = urlBase+"getCircularId4.php?id=\(nextId)"
+                webView.load(request)
+                self.title = "Circular"
+                //nextTitulo.uppercased()
+                
+                let anio = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
+                let mes = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
+                let dia = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
+                //self.lblFechaCircular.text = "\(dia)/\(mes)/\(anio)"
+                
+                let dateFormatter = DateFormatter()
+                          dateFormatter.dateFormat = "dd/MM/yyyy"
+                          dateFormatter.locale = Locale(identifier: "es_ES_POSIX")
+                          let date1 = dateFormatter.date(from: "\(dia)/\(mes)/\(anio)")
+                          dateFormatter.dateFormat = "d 'de' MMMM 'de' YYYY"
+                          let d = dateFormatter.string(from: date1!)
+                          lblFechaCircular.text = d
+                
+                if(ConexionRed.isConnectedToNetwork()){
+                    self.lblTituloParte1.isHidden=true
+                    self.lblTituloParte1?.visiblity(gone: true, dimension: 0)
+                }
+                
+                //self.lblTituloParte1.text=nextTitulo /*partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())*/
+                id = nextId;
+            }else{
+                posicion = 0
+                id = UserDefaults.standard.string(forKey: "id") ?? ""
+            }
+                
+                
+            
+           
+            
+        }else{
+            //No hay conexion
+            
+            if(posicion<circulares.count){
+               posicion = posicion+1
+                if(posicion>=circulares.count){
+                    posicion = 0
+                }
+                lblTituloParte1.text = circulares[posicion].nombre
+                lblNivel.text = circulares[posicion].nivel
+                
+                let anio = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
+                let mes = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
+                let dia = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
+                
+                
+                var nextHoraIniIcs = circulares[posicion].horaInicialIcs
+                var nextHoraFinIcs = circulares[posicion].horaFinalIcs
+                var nextFechaIcs = circulares[posicion].fechaIcs
+                if(nextHoraIniIcs != "00:00:00"){
+                           imbCalendario.isHidden=false
+                }else{
+                           imbCalendario.isHidden=true
+                }
+                
+               let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "dd/MM/yyyy"
+                dateFormatter.locale = Locale(identifier: "es_ES_POSIX")
+                let date1 = dateFormatter.date(from: "\(dia)/\(mes)/\(anio)")
+                dateFormatter.dateFormat = "d 'de' MMMM 'de' YYYY"
+                let d = dateFormatter.string(from: date1!)
+                lblFechaCircular.text = d
+                
+                webView.loadHTMLString("<html><head><meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=5, minimum-scale=1.0, user-scalable=yes'><meta  http-equiv='X-UA-Compatible'  content='IE=edge,chrome=1'><meta name='HandheldFriendly' content='true'><meta content='text/html;charset=utf-8'></head><body {color: #005188;}><h3>\(circulares[posicion].contenido)</h3></p></body></html>", baseURL: nil)
+                
+            
+            }
+          
+            
+        }
+    }
     
     @IBAction func btnNextClick(_ sender: UIButton) {
        //obtener la posición del elemento cargado
-        
-  
         
        if(ConexionRed.isConnectedToNetwork()){
         
@@ -451,6 +550,88 @@ class CircularDetalleViewController: UIViewController {
         
     
     
+    @IBAction func btnAnteriorClick(_ sender: Any) {
+        if(ConexionRed.isConnectedToNetwork()){
+                   posicion = posicion-1
+                   print("Anterior...")
+                   if(posicion>=0){
+                       var nextId = ids[posicion]
+                       var nextTitulo = titulos[posicion]
+                       var nextFecha = fechas[posicion]
+                       
+                       var nextHoraIniIcs = horasInicioIcs[posicion]
+                       var nextHoraFinIcs = horasFinIcs[posicion]
+                       var nextFechaIcs = fechasIcs[posicion]
+                       var nextNivel = niveles[posicion]
+                       
+                       if(nextHoraIniIcs != "00:00:00"){
+                           imbCalendario.isHidden=false
+                       }
+                       
+                       lblNivel.text = nextNivel
+                       
+                       
+                        circularTitulo = nextTitulo
+                       let link = URL(string:urlBase+"getCircularId4.php?id=\(nextId)")!
+                       circularUrl = urlBase+"getCircularId4.php?id=\(nextId)"
+                       let request = URLRequest(url: link)
+                       webView.load(request)
+                       self.title = "Circular"
+                      let anio = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
+                      let mes = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
+                      let dia = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
+                      //self.lblFechaCircular.text = "\(dia)/\(mes)/\(anio)"
+                       
+                                 let dateFormatter = DateFormatter()
+                                 dateFormatter.dateFormat = "dd/MM/yyyy"
+                                 dateFormatter.locale = Locale(identifier: "es_ES_POSIX")
+                                 let date1 = dateFormatter.date(from: "\(dia)/\(mes)/\(anio)")
+                                 dateFormatter.dateFormat = "d 'de' MMMM 'de' YYYY"
+                                 let d = dateFormatter.string(from: date1!)
+                                 lblFechaCircular.text = d
+                       
+                       
+                       if(ConexionRed.isConnectedToNetwork()){
+                           self.lblTituloParte1.isHidden=true
+                           self.lblTituloParte1?.visiblity(gone: true, dimension: 0)
+                       }
+                       
+                       //self.lblTituloParte1.text=nextTitulo /*partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())*/
+                       id = nextId
+                   }else{
+                       posicion = ids.count
+                   }
+               }else{
+                      
+                      posicion = posicion-1
+                   if(posicion>0){
+                       lblTituloParte1.text = circulares[posicion].nombre
+                                      lblNivel.text = circulares[posicion].nivel
+                                      
+                                      let anio = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
+                                      let mes = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
+                                      let dia = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
+                                      
+                                     let dateFormatter = DateFormatter()
+                                      dateFormatter.dateFormat = "dd/MM/yyyy"
+                                      dateFormatter.locale = Locale(identifier: "es_ES_POSIX")
+                                      let date1 = dateFormatter.date(from: "\(dia)/\(mes)/\(anio)")
+                                      dateFormatter.dateFormat = "d 'de' MMMM 'de' YYYY"
+                                      let d = dateFormatter.string(from: date1!)
+                                      lblFechaCircular.text = d
+                                      var nextHoraIniIcs = circulares[posicion].horaInicialIcs
+                                                 var nextHoraFinIcs = circulares[posicion].horaFinalIcs
+                                                 var nextFechaIcs = circulares[posicion].fechaIcs
+                                                 if(nextHoraIniIcs != "00:00:00"){
+                                                            imbCalendario.isHidden=false
+                                                 }else{
+                                                            imbCalendario.isHidden=true
+                                                 }
+                                      webView.loadHTMLString("<html><head><meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=5, minimum-scale=1.0, user-scalable=yes'><meta  http-equiv='X-UA-Compatible'  content='IE=edge,chrome=1'><meta name='HandheldFriendly' content='true'><meta content='text/html;charset=utf-8'></head><body {color: #005188;}><h3>\(circulares[posicion].contenido.replacingOccurrences(of: "&aacute;", with: "á").replacingOccurrences(of: "&eacute;", with: "é").replacingOccurrences(of: "&iacute;", with: "í").replacingOccurrences(of: "&oacute;", with: "ó").replacingOccurrences(of: "&uacute;", with: "ú").replacingOccurrences(of: "&ordm;", with: "o."))</h3></p></body></html>", baseURL: nil)
+                                   
+                              }
+                   }
+    }
     
     @IBAction func btnAntClick(_ sender: UIButton) {
         
@@ -541,8 +722,35 @@ class CircularDetalleViewController: UIViewController {
         
     }
     
-    //419 33 166
-    //383 33 231
+   
+    
+    @IBAction func btnFavoritoClick(_ sender: Any) {
+        if(ConexionRed.isConnectedToNetwork()){
+                   let dialogMessage = UIAlertController(title: "CHMD", message: "¿Deseas agregar esta circular a tus favoritas?", preferredStyle: .alert)
+                   
+                   // Create OK button with action handler
+                   let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
+                       self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: self.id)
+                   })
+                   
+                   // Create Cancel button with action handlder
+                   let cancel = UIAlertAction(title: "Cancelar", style: .cancel) { (action) -> Void in
+                       
+                   }
+                   
+                   //Add OK and Cancel button to dialog message
+                   dialogMessage.addAction(ok)
+                   dialogMessage.addAction(cancel)
+                   
+                   // Present dialog message to user
+                   self.present(dialogMessage, animated: true, completion: nil)
+               }else{
+                   var alert = UIAlertView(title: "No está conectado a Internet", message: "Esta opción solo funciona con una conexión a Internet", delegate: nil, cancelButtonTitle: "Aceptar")
+                              alert.show()
+               }
+    }
+    
+    
     @IBAction func btnFavClick(_ sender: UIButton) {
         //Hacer favorita la circular
         
@@ -651,6 +859,80 @@ class CircularDetalleViewController: UIViewController {
         
     }
     
+    @IBAction func btnEliminaClick(_ sender: Any) {
+        if(ConexionRed.isConnectedToNetwork()){
+            let dialogMessage = UIAlertController(title: "CHMD", message: "¿Deseas eliminar esta circular?", preferredStyle: .alert)
+            
+            // Create OK button with action handler
+            let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
+                self.delCircular(direccion: self.urlBase+self.delMetodo, usuario_id:self.idUsuario, circular_id: self.id)
+                
+                //Pasar a la siguiente
+                
+                self.posicion = self.posicion+1
+                
+              
+                
+                if(self.posicion<self.ids.count){
+                    var nextId = self.ids[self.posicion]
+                    var nextTitulo = self.titulos[self.posicion]
+                    var nextFecha = self.fechas[self.posicion]
+                    
+                    var nextHoraIniIcs = self.horasInicioIcs[self.posicion]
+                    var nextHoraFinIcs = self.horasFinIcs[self.posicion]
+                    var nextFechaIcs = self.fechasIcs[self.posicion]
+                    var nextNivel = self.niveles[self.posicion]
+                    
+                    if(nextHoraIniIcs != "00:00:00"){
+                        self.imbCalendario.isHidden=false
+                    }
+                     self.lblNivel.text = nextNivel
+                    
+                    self.circularTitulo = nextTitulo
+                    let link = URL(string:self.urlBase+"getCircularId4.php?id=\(nextId)")!
+                    let request = URLRequest(url: link)
+                    self.circularUrl = self.urlBase+"getCircularId4.php?id=\(nextId)"
+                    self.webView.load(request)
+                    self.title = "Circular"
+                    //nextTitulo.uppercased()
+                    
+                    let anio = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
+                    let mes = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
+                    let dia = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
+                    self.lblFechaCircular.text = "\(dia)/\(mes)/\(anio)"
+                    
+                    if(ConexionRed.isConnectedToNetwork()){
+                        self.lblTituloParte1.isHidden=true
+                        self.lblTituloParte1?.visiblity(gone: true, dimension: 0)
+                    }
+                    
+                    //self.lblTituloParte1.text=nextTitulo /*partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())*/
+                    self.id = nextId;
+                }else{
+                    self.posicion = 0
+                    self.id = UserDefaults.standard.string(forKey: "id") ?? ""
+                }
+                
+                
+                
+            })
+            
+            // Create Cancel button with action handlder
+            let cancel = UIAlertAction(title: "Cancelar", style: .cancel) { (action) -> Void in
+                
+            }
+            
+            //Add OK and Cancel button to dialog message
+            dialogMessage.addAction(ok)
+            dialogMessage.addAction(cancel)
+            
+            // Present dialog message to user
+            self.present(dialogMessage, animated: true, completion: nil)
+        }else{
+            var alert = UIAlertView(title: "No está conectado a Internet", message: "Esta opción solo funciona con una conexión a Internet", delegate: nil, cancelButtonTitle: "Aceptar")
+                                             alert.show()
+        }
+    }
     
     @IBAction func btnEliminarClick(_ sender: UIButton) {
         
