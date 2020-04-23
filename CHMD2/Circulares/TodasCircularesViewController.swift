@@ -25,6 +25,9 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     @IBOutlet weak var btnMarcarFavoritas: UIButton!
     @IBOutlet weak var btnMarcarNoLeidas: UIButton!
     @IBOutlet weak var btnMarcarEliminadas: UIButton!
+    @IBOutlet weak var btnMarcarLeidas: UIButton!
+    
+    
     
     @IBOutlet weak var btnEditar: UIBarButtonItem!
     
@@ -40,6 +43,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     var idUsuario:String=""
     var urlBase:String="https://www.chmd.edu.mx/WebAdminCirculares/ws/"
     var noleerMetodo:String="noleerCircular.php"
+    var leerMetodo:String="leerCircular.php"
     var selecMultiple=false
     var circularesSeleccionadas = [Int]()
     var seleccion=[Int]()
@@ -76,10 +80,12 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         
         btnMarcarFavoritas.isHidden=true
         btnMarcarNoLeidas.isHidden=true
+        btnMarcarLeidas.isHidden=true
         btnMarcarEliminadas.isHidden=true
         
         btnMarcarFavoritas.addTarget(self,action: #selector(agregarFavoritos), for: .touchUpInside)
         btnMarcarNoLeidas.addTarget(self,action: #selector(noleer), for: .touchUpInside)
+         btnMarcarNoLeidas.addTarget(self,action: #selector(leer), for: .touchUpInside)
         btnMarcarEliminadas.addTarget(self,action: #selector(eliminar), for: .touchUpInside)
    
         
@@ -243,10 +249,36 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let eliminaAction = self.contextualDelAction(forRowAtIndexPath: indexPath)
         let favAction = self.contextualFavAction(forRowAtIndexPath: indexPath)
+        let leeAction = self.contextualReadAction(forRowAtIndexPath: indexPath)
         let noleeAction = self.contextualUnreadAction(forRowAtIndexPath: indexPath)
-        let swipeConfig = UISwipeActionsConfiguration(actions: [eliminaAction,favAction,noleeAction])
+        let swipeConfig = UISwipeActionsConfiguration(actions: [eliminaAction,favAction,leeAction,noleeAction])
         return swipeConfig
     }
+    
+    func contextualReadAction(forRowAtIndexPath indexPath: IndexPath) -> UIContextualAction {
+           // 1
+           let circular = circulares[indexPath.row]
+           // 2
+           let action = UIContextualAction(style: .normal,
+                                           title: "") { (contextAction: UIContextualAction, sourceView: UIView, completionHandler: (Bool) -> Void) in
+                                                let idCircular:String = "\(circular.id)"
+                                            if ConexionRed.isConnectedToNetwork() == true {
+                                            self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: idCircular)
+                                              self.circulares.remove(at: indexPath.row)
+                                              self.tableViewCirculares.reloadData()
+                                               }else{
+                                                  var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
+                                                  alert.show()
+                                     }
+               
+           }
+           // 7
+        action.image = UIImage(named: "read32")
+        action.backgroundColor = UIColor.blue
+           
+           return action
+       }
+    
     
     func contextualFavAction(forRowAtIndexPath indexPath: IndexPath) -> UIContextualAction {
    
@@ -303,7 +335,9 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
        }
     
     func contextualDelAction(forRowAtIndexPath indexPath: IndexPath) -> UIContextualAction {
-        // 1
+        
+      
+        
         let circular = circulares[indexPath.row]
         // 2
         let action = UIContextualAction(style: .normal,
@@ -887,6 +921,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                 //let c = tableViewCirculares.cellForRow(at: indexpath) as! CircularTableViewCell
                 btnMarcarFavoritas.isHidden=false
                 btnMarcarNoLeidas.isHidden=false
+                btnMarcarLeidas.isHidden=false
                 btnMarcarEliminadas.isHidden=false
                 
                 /*btnFavs.isHidden=false
@@ -919,6 +954,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                       btnDeshacer.isHidden=true*/
                     btnMarcarFavoritas.isHidden=true
                     btnMarcarNoLeidas.isHidden=true
+                    btnMarcarLeidas.isHidden=true
                     btnMarcarEliminadas.isHidden=true
                     tableViewCirculares.allowsSelection = false
                 }
@@ -956,22 +992,68 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         }
         
     }
+    @objc func leer(){
+        
+        
+          if ConexionRed.isConnectedToNetwork() == true {
+          for c in circularesSeleccionadas{
+            print("circular: \(c)")
+            self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: "\(c)")
+          
+          }
+            
+            seleccion.removeAll()
+            circularesSeleccionadas.removeAll()
+           
+           self.viewDidLoad()
+           self.viewWillAppear(true)
+            
+            self.obtenerCirculares(limit:50)
+            tableViewCirculares.reloadData()
+            
+          }else{
+            var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
+             alert.show()
+        }
+        
+    }
     
     @objc func eliminar(){
      if ConexionRed.isConnectedToNetwork() == true {
-        circulares.removeAll()
-        for c in circularesSeleccionadas{
-              self.delCircular(direccion: self.urlBase+"eliminarCircular.php", usuario_id: self.idUsuario, circular_id: "\(c)")
-        }
         
-        seleccion.removeAll()
-        circularesSeleccionadas.removeAll()
-                
-                self.viewDidLoad()
-                self.viewWillAppear(true)
-                 
-                 self.obtenerCirculares(limit:50)
-                 tableViewCirculares.reloadData()
+        
+         
+                                self.circulares.removeAll()
+                                for c in self.circularesSeleccionadas{
+                                      self.delCircular(direccion: self.urlBase+"eliminarCircular.php", usuario_id: self.idUsuario, circular_id: "\(c)")
+                                }
+                                
+                                self.seleccion.removeAll()
+                                self.circularesSeleccionadas.removeAll()
+                                        
+                                        self.viewDidLoad()
+                                        self.viewWillAppear(true)
+                                         
+                                         self.obtenerCirculares(limit:50)
+                                self.tableViewCirculares.reloadData()
+                            /*})
+                            
+                            // Create Cancel button with action handlder
+                            let cancel = UIAlertAction(title: "Cancelar", style: .cancel) { (action) -> Void in
+                                
+                            }
+                            
+                            //Add OK and Cancel button to dialog message
+                            dialogMessage.addAction(ok)
+                            dialogMessage.addAction(cancel)
+                            
+                            // Present dialog message to user
+                            self.present(dialogMessage, animated: true, completion: nil)*/
+            
+            
+            
+        
+        
         
        } else{
                   var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
@@ -1032,6 +1114,18 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         }
     }
     
+    func leerCircular(direccion:String, usuario_id:String, circular_id:String){
+           let parameters: Parameters = ["usuario_id": usuario_id, "circular_id": circular_id]      //This will be your parameter
+           Alamofire.request(direccion, method: .post, parameters: parameters).responseJSON { response in
+               switch (response.result) {
+               case .success:
+                   print(response)
+                   break
+               case .failure:
+                   print(Error.self)
+               }
+           }
+       }
     
     func noleerCircular(direccion:String, usuario_id:String, circular_id:String){
            let parameters: Parameters = ["usuario_id": usuario_id, "circular_id": circular_id]      //This will be your parameter
@@ -1047,7 +1141,10 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
        }
     
  func delCircular(direccion:String, usuario_id:String, circular_id:String){
-     let parameters: Parameters = ["usuario_id": usuario_id, "circular_id": circular_id]      //This will be your parameter
+     
+    
+    
+    let parameters: Parameters = ["usuario_id": usuario_id, "circular_id": circular_id]      //This will be your parameter
      Alamofire.request(direccion, method: .post, parameters: parameters).responseJSON { response in
          switch (response.result) {
          case .success:
@@ -1118,6 +1215,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             seleccion.removeAll()
             self.btnEditar.title="Editar"
             btnMarcarFavoritas.isHidden=true
+            btnMarcarLeidas.isHidden=true
             btnMarcarNoLeidas.isHidden=true
             btnMarcarEliminadas.isHidden=true
         }

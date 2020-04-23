@@ -1063,6 +1063,8 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     }
     
     
+    
+    
     func noleerCircular(direccion:String, usuario_id:String, circular_id:String){
            let parameters: Parameters = ["usuario_id": usuario_id, "circular_id": circular_id]      //This will be your parameter
            Alamofire.request(direccion, method: .post, parameters: parameters).responseJSON { response in

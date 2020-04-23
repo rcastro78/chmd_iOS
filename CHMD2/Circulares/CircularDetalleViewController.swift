@@ -52,6 +52,7 @@ class CircularDetalleViewController: UIViewController {
     var id:String=""
     var idUsuario=""
     var horaInicialIcs=""
+    var nextHoraIcs=""
     var horaFinalIcs=""
     var fechaIcs=""
     var nivel=""
@@ -145,15 +146,22 @@ class CircularDetalleViewController: UIViewController {
             webView.isHidden=true
             lblContenidoHTML.attributedText=attributedString
             */
-           
+         
+            
             
           lblContenidoHTML.isHidden=true
           webView.isHidden=false
             
             let link = URL(string:urlBase+"getCircularId4.php?id=\(id)")!
                   let request = URLRequest(url: link)
+                  //webView = WKWebView(frame: .zero, configuration: webConfiguration)
                   webView.load(request)
-                  
+                  webView.scrollView.isScrollEnabled = true
+                  webView.scrollView.bounces = false
+                  webView.allowsBackForwardNavigationGestures = false
+                  webView.contentMode = .scaleToFill
+                    
+            
                   let address=urlBase+"getCircularesUsuarios.php?usuario_id=\(idUsuario)"
                   circularUrl = address
                   if ConexionRed.isConnectedToNetwork() == true {
@@ -356,6 +364,7 @@ class CircularDetalleViewController: UIViewController {
                 var nextFecha = fechas[posicion]
                 
                 var nextHoraIniIcs = horasInicioIcs[posicion]
+                nextHoraIcs = nextHoraIniIcs
                 var nextHoraFinIcs = horasFinIcs[posicion]
                 var nextFechaIcs = fechasIcs[posicion]
                 var nextNivel = niveles[posicion]
@@ -461,7 +470,7 @@ class CircularDetalleViewController: UIViewController {
             var nextHoraFinIcs = horasFinIcs[posicion]
             var nextFechaIcs = fechasIcs[posicion]
             var nextNivel = niveles[posicion]
-            
+             nextHoraIcs = nextHoraIniIcs
             if(nextHoraIniIcs != "00:00:00"){
                 imbCalendario.isHidden=false
             }
@@ -563,7 +572,7 @@ class CircularDetalleViewController: UIViewController {
                        var nextHoraFinIcs = horasFinIcs[posicion]
                        var nextFechaIcs = fechasIcs[posicion]
                        var nextNivel = niveles[posicion]
-                       
+                        nextHoraIcs = nextHoraIniIcs
                        if(nextHoraIniIcs != "00:00:00"){
                            imbCalendario.isHidden=false
                        }
@@ -647,7 +656,7 @@ class CircularDetalleViewController: UIViewController {
                 var nextHoraFinIcs = horasFinIcs[posicion]
                 var nextFechaIcs = fechasIcs[posicion]
                 var nextNivel = niveles[posicion]
-                
+                 nextHoraIcs = nextHoraIniIcs
                 if(nextHoraIniIcs != "00:00:00"){
                     imbCalendario.isHidden=false
                 }
@@ -1074,16 +1083,37 @@ class CircularDetalleViewController: UIViewController {
     }
     
     func delCircular(direccion:String, usuario_id:String, circular_id:String){
-        let parameters: Parameters = ["usuario_id": usuario_id, "circular_id": circular_id]      //This will be your parameter
-        Alamofire.request(direccion, method: .post, parameters: parameters).responseJSON { response in
-            switch (response.result) {
-            case .success:
-                print(response)
-                break
-            case .failure:
-                print(Error.self)
+        
+        let dialogMessage = UIAlertController(title: "CHMD", message: "¿Deseas eliminar esta circular?", preferredStyle: .alert)
+        
+        // Create OK button with action handler
+        let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
+            let parameters: Parameters = ["usuario_id": usuario_id, "circular_id": circular_id]      //This will be your parameter
+            Alamofire.request(direccion, method: .post, parameters: parameters).responseJSON { response in
+                switch (response.result) {
+                case .success:
+                    print(response)
+                    break
+                case .failure:
+                    print(Error.self)
+                }
             }
+        })
+        
+        // Create Cancel button with action handlder
+        let cancel = UIAlertAction(title: "Cancelar", style: .cancel) { (action) -> Void in
+            
         }
+        
+        //Add OK and Cancel button to dialog message
+        dialogMessage.addAction(ok)
+        dialogMessage.addAction(cancel)
+        
+        // Present dialog message to user
+        self.present(dialogMessage, animated: true, completion: nil)
+        
+        
+        
     }
     /*
     // MARK: - Navigation
@@ -1373,6 +1403,223 @@ class CircularDetalleViewController: UIViewController {
             label1.text = titulo
         }
     }
+   
+    
+    
+    
+    @IBAction func mostrarMenu(_ sender: UIBarButtonItem) {
+        let alertController = UIAlertController(title: "Opciones", message: "Elige la opción que deseas", preferredStyle: .actionSheet)
+        let actionFav = UIAlertAction(title: "Agregar a favoritas", style: .default) { (action:UIAlertAction) in
+           if(ConexionRed.isConnectedToNetwork()){
+               let dialogMessage = UIAlertController(title: "CHMD", message: "¿Deseas agregar esta circular a tus favoritas?", preferredStyle: .alert)
+               
+               // Create OK button with action handler
+               let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
+                   self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: self.id)
+               })
+               
+               // Create Cancel button with action handlder
+               let cancel = UIAlertAction(title: "Cancelar", style: .cancel) { (action) -> Void in
+                   
+               }
+               
+               //Add OK and Cancel button to dialog message
+               dialogMessage.addAction(ok)
+               dialogMessage.addAction(cancel)
+               
+               // Present dialog message to user
+               self.present(dialogMessage, animated: true, completion: nil)
+           }else{
+               var alert = UIAlertView(title: "No está conectado a Internet", message: "Esta opción solo funciona con una conexión a Internet", delegate: nil, cancelButtonTitle: "Aceptar")
+                          alert.show()
+           }
+        }
+        
+        let actionNoLeer = UIAlertAction(title: "Marcar como no leída", style: .default) { (action:UIAlertAction) in
+           if(ConexionRed.isConnectedToNetwork()){
+                      let dialogMessage = UIAlertController(title: "CHMD", message: "¿Deseas marcar esta circular como no leída?", preferredStyle: .alert)
+                      
+                      // Create OK button with action handler
+                      let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
+                          self.noleerCircular(direccion: self.urlBase+self.noleerMetodo, usuario_id: self.idUsuario, circular_id: self.id)
+                      })
+                      
+                      // Create Cancel button with action handlder
+                      let cancel = UIAlertAction(title: "Cancelar", style: .cancel) { (action) -> Void in
+                          
+                      }
+                      
+                      //Add OK and Cancel button to dialog message
+                      dialogMessage.addAction(ok)
+                      dialogMessage.addAction(cancel)
+                      
+                      // Present dialog message to user
+                      self.present(dialogMessage, animated: true, completion: nil)
+                   }else{
+                      var alert = UIAlertView(title: "No está conectado a Internet", message: "Esta opción solo funciona con una conexión a Internet", delegate: nil, cancelButtonTitle: "Aceptar")
+                                            alert.show()
+                  }
+        }
+        
+        
+        let actionEliminar = UIAlertAction(title: "Eliminar esta circular", style: .destructive) { (action:UIAlertAction) in
+           if(ConexionRed.isConnectedToNetwork()){
+               let dialogMessage = UIAlertController(title: "CHMD", message: "¿Deseas eliminar esta circular?", preferredStyle: .alert)
+               
+               // Create OK button with action handler
+               let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
+                   self.delCircular(direccion: self.urlBase+self.delMetodo, usuario_id:self.idUsuario, circular_id: self.id)
+                   
+                   //Pasar a la siguiente
+                   
+                   self.posicion = self.posicion+1
+                   
+                 
+                   
+                   if(self.posicion<self.ids.count){
+                       var nextId = self.ids[self.posicion]
+                       var nextTitulo = self.titulos[self.posicion]
+                       var nextFecha = self.fechas[self.posicion]
+                       
+                       var nextHoraIniIcs = self.horasInicioIcs[self.posicion]
+                       var nextHoraFinIcs = self.horasFinIcs[self.posicion]
+                       var nextFechaIcs = self.fechasIcs[self.posicion]
+                       var nextNivel = self.niveles[self.posicion]
+                       
+                       if(nextHoraIniIcs != "00:00:00"){
+                           self.imbCalendario.isHidden=false
+                       }
+                        self.lblNivel.text = nextNivel
+                       
+                       self.circularTitulo = nextTitulo
+                       let link = URL(string:self.urlBase+"getCircularId4.php?id=\(nextId)")!
+                       let request = URLRequest(url: link)
+                       self.circularUrl = self.urlBase+"getCircularId4.php?id=\(nextId)"
+                       self.webView.load(request)
+                       self.title = "Circular"
+                       //nextTitulo.uppercased()
+                       
+                       let anio = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
+                       let mes = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
+                       let dia = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
+                       self.lblFechaCircular.text = "\(dia)/\(mes)/\(anio)"
+                       
+                       if(ConexionRed.isConnectedToNetwork()){
+                           self.lblTituloParte1.isHidden=true
+                           self.lblTituloParte1?.visiblity(gone: true, dimension: 0)
+                       }
+                       
+                       //self.lblTituloParte1.text=nextTitulo /*partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())*/
+                       self.id = nextId;
+                   }else{
+                       self.posicion = 0
+                       self.id = UserDefaults.standard.string(forKey: "id") ?? ""
+                   }
+                   
+                   
+                   
+               })
+               
+               // Create Cancel button with action handlder
+               let cancel = UIAlertAction(title: "Cancelar", style: .cancel) { (action) -> Void in
+                   
+               }
+               
+               //Add OK and Cancel button to dialog message
+               dialogMessage.addAction(ok)
+               dialogMessage.addAction(cancel)
+               
+               // Present dialog message to user
+               self.present(dialogMessage, animated: true, completion: nil)
+           }else{
+               var alert = UIAlertView(title: "No está conectado a Internet", message: "Esta opción solo funciona con una conexión a Internet", delegate: nil, cancelButtonTitle: "Aceptar")
+                                                alert.show()
+           }
+        }
+        
+        let actionCompartir = UIAlertAction(title: "Eliminar esta circular", style: .default) { (action:UIAlertAction) in
+            
+        }
+        
+        let actionCalendario = UIAlertAction(title: "Agregar al calendario", style: .default) { (action:UIAlertAction) in
+                   if(ConexionRed.isConnectedToNetwork()){
+                              let dialogMessage = UIAlertController(title: "CHMD", message: "¿Deseas agregar este evento a tu calendario?", preferredStyle: .alert)
+                              
+                              // Create OK button with action handler
+                              let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
+                                
+                                  
+                                  
+                                  let eventStore = EKEventStore()
+                                             switch EKEventStore.authorizationStatus(for: .event) {
+                                             case .authorized:
+                                              self.insertarEvento(store: eventStore, titulo: self.circularTitulo, fechaIcs: self.fechaIcs, horaInicioIcs: self.horaInicialIcs, horaFinIcs: self.horaFinalIcs, ubicacionIcs: "")
+                                                 case .denied:
+                                                     print("Acceso denegado")
+                                                 case .notDetermined:
+                                                 // 3
+                                                     eventStore.requestAccess(to: .event, completion:
+                                                       {[weak self] (granted: Bool, error: Error?) -> Void in
+                                                           if granted {
+                                                              self?.insertarEvento(store: eventStore, titulo: self?.circularTitulo ?? "", fechaIcs: self?.fechaIcs ?? "", horaInicioIcs: self?.horaInicialIcs ?? "", horaFinIcs: self?.horaFinalIcs ?? "", ubicacionIcs: "")
+                                                           } else {
+                                                                 print("Acceso denegado")
+                                                           }
+                                                     })
+                                                     default:
+                                                         print("Case default")
+                                      
+                                      
+                                  }
+                                  
+                                  
+                                  
+                                  
+                              })
+                              
+                              // Create Cancel button with action handlder
+                              let cancel = UIAlertAction(title: "Cancelar", style: .cancel) { (action) -> Void in
+                                  
+                              }
+                              
+                              //Add OK and Cancel button to dialog message
+                              dialogMessage.addAction(ok)
+                              dialogMessage.addAction(cancel)
+                              
+                              // Present dialog message to user
+                              self.present(dialogMessage, animated: true, completion: nil)
+                          }else{
+                              var alert = UIAlertView(title: "No está conectado a Internet", message: "Esta opción solo funciona con una conexión a Internet", delegate: nil, cancelButtonTitle: "Aceptar")
+                                         alert.show()
+                          }
+               }
+        
+        let actionCancelar = UIAlertAction(title: "Cancelar", style:.cancel) { (action:UIAlertAction) in
+                  self.dismiss(animated: true, completion: nil)
+              }
+        
+        /*
+         let action3 = UIAlertAction(title: "Destructive", style: .destructive) { (action:UIAlertAction) in
+             print("You've pressed the destructive");
+         }
+         */
+        
+        alertController.addAction(actionFav)
+        alertController.addAction(actionNoLeer)
+        if(horaInicialIcs != "00:00:00" || nextHoraIcs != "00:00:00"){
+           alertController.addAction(actionCalendario)
+         }
+        alertController.addAction(actionCompartir)
+        alertController.addAction(actionEliminar)
+        alertController.addAction(actionCancelar)
+        
+        self.present(alertController, animated: true, completion: nil)
+        
+    }
+    
+    
+    
+    
     
 }
 
