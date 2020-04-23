@@ -1080,6 +1080,7 @@ EENPTEVHSU8gSEVCUkVPIE1BR1VFTiBEQVZJRA
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="btnCalendario" destination="XSw-vL-p3S" id="UFh-U2-5QX"/>
                         <outlet property="imbCalendario" destination="tIX-Vb-Lf7" id="6DY-ty-Nyr"/>
                         <outlet property="lblContenidoHTML" destination="l0X-PD-ezs" id="BvY-rr-vq1"/>
                         <outlet property="lblFechaCircular" destination="8xd-aK-Nt6" id="2So-3S-Zje"/>

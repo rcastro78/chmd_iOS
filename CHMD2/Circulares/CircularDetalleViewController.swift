@@ -37,6 +37,7 @@ class CircularDetalleViewController: UIViewController {
     @IBOutlet weak var lblTituloNivel: UILabel!
     @IBOutlet weak var imbCalendario: UIButton!
    
+    @IBOutlet weak var btnCalendario: UIButton!
     @IBOutlet weak var lblContenidoHTML: UITextView!
     @IBOutlet weak var lblNivel: UILabel!
     var ids = [String]()
@@ -83,7 +84,7 @@ class CircularDetalleViewController: UIViewController {
         
         idUsuario = UserDefaults.standard.string(forKey: "idUsuario") ?? "0"
         viaNotif = UserDefaults.standard.integer(forKey: "viaNotif")
-        horaInicialIcs = UserDefaults.standard.string(forKey: "horaInicialIcs") ?? "0"
+        horaInicialIcs = UserDefaults.standard.string(forKey: "horaInicialIcs") ?? "00:00:00"
         horaFinalIcs = UserDefaults.standard.string(forKey: "horaFinalIcs") ?? "0"
         fechaIcs = UserDefaults.standard.string(forKey: "fechaIcs") ?? "0"
         nivel = UserDefaults.standard.string(forKey: "nivel") ?? "0"
@@ -339,12 +340,6 @@ class CircularDetalleViewController: UIViewController {
                        alert.show()
         }
         
-        
-        
-        
-        
-        
-        
     }
     
     
@@ -354,17 +349,23 @@ class CircularDetalleViewController: UIViewController {
  
     @IBAction func btnSiguienteClick(_ sender: Any) {
         if(ConexionRed.isConnectedToNetwork()){
+            if(posicion == ids.count){
+                posicion=0;
+            }
             
             if(posicion<ids.count){
                 posicion = posicion+1
                
                
                 var nextId = ids[posicion]
+                
+              
+                
                 var nextTitulo = titulos[posicion]
                 var nextFecha = fechas[posicion]
                 
                 var nextHoraIniIcs = horasInicioIcs[posicion]
-                nextHoraIcs = nextHoraIniIcs
+                nextHoraIcs = horasInicioIcs[posicion]
                 var nextHoraFinIcs = horasFinIcs[posicion]
                 var nextFechaIcs = fechasIcs[posicion]
                 var nextNivel = niveles[posicion]
@@ -431,9 +432,11 @@ class CircularDetalleViewController: UIViewController {
                 var nextHoraFinIcs = circulares[posicion].horaFinalIcs
                 var nextFechaIcs = circulares[posicion].fechaIcs
                 if(nextHoraIniIcs != "00:00:00"){
-                           imbCalendario.isHidden=false
+                    imbCalendario.isHidden=false
+                    btnCalendario.isHidden=false
                 }else{
-                           imbCalendario.isHidden=true
+                    imbCalendario.isHidden=true
+                    btnCalendario.isHidden=true
                 }
                 
                let dateFormatter = DateFormatter()
@@ -457,12 +460,17 @@ class CircularDetalleViewController: UIViewController {
        //obtener la posición del elemento cargado
         
        if(ConexionRed.isConnectedToNetwork()){
-        
+        if(posicion == ids.count){
+            posicion=0;
+        }
         if(posicion<ids.count){
             posicion = posicion+1
-           
+            
            
             var nextId = ids[posicion]
+            print("id siguiente: \(nextId)")
+            print("pos siguiente: \(posicion)")
+            
             var nextTitulo = titulos[posicion]
             var nextFecha = fechas[posicion]
             
@@ -470,9 +478,13 @@ class CircularDetalleViewController: UIViewController {
             var nextHoraFinIcs = horasFinIcs[posicion]
             var nextFechaIcs = fechasIcs[posicion]
             var nextNivel = niveles[posicion]
-             nextHoraIcs = nextHoraIniIcs
+            nextHoraIcs = horasInicioIcs[posicion]
             if(nextHoraIniIcs != "00:00:00"){
                 imbCalendario.isHidden=false
+                btnCalendario.isHidden=false
+            }else{
+                imbCalendario.isHidden=true
+                btnCalendario.isHidden=true
             }
              lblNivel.text = nextNivel
             
@@ -533,9 +545,11 @@ class CircularDetalleViewController: UIViewController {
             var nextHoraFinIcs = circulares[posicion].horaFinalIcs
             var nextFechaIcs = circulares[posicion].fechaIcs
             if(nextHoraIniIcs != "00:00:00"){
-                       imbCalendario.isHidden=false
+                imbCalendario.isHidden=false
+                btnCalendario.isHidden=false
             }else{
-                       imbCalendario.isHidden=true
+                imbCalendario.isHidden=true
+                btnCalendario.isHidden=true
             }
             
            let dateFormatter = DateFormatter()
@@ -562,6 +576,9 @@ class CircularDetalleViewController: UIViewController {
     @IBAction func btnAnteriorClick(_ sender: Any) {
         if(ConexionRed.isConnectedToNetwork()){
                    posicion = posicion-1
+                    if(posicion<0){
+                        posicion=0;
+                    }
                    print("Anterior...")
                    if(posicion>=0){
                        var nextId = ids[posicion]
@@ -572,9 +589,13 @@ class CircularDetalleViewController: UIViewController {
                        var nextHoraFinIcs = horasFinIcs[posicion]
                        var nextFechaIcs = fechasIcs[posicion]
                        var nextNivel = niveles[posicion]
-                        nextHoraIcs = nextHoraIniIcs
+                       nextHoraIcs = horasInicioIcs[posicion]
                        if(nextHoraIniIcs != "00:00:00"){
                            imbCalendario.isHidden=false
+                           btnCalendario.isHidden=false
+                       }else{
+                           imbCalendario.isHidden=true
+                           btnCalendario.isHidden=true
                        }
                        
                        lblNivel.text = nextNivel
@@ -646,7 +667,9 @@ class CircularDetalleViewController: UIViewController {
         
         if(ConexionRed.isConnectedToNetwork()){
             posicion = posicion-1
-            print("Anterior...")
+            if(posicion<0){
+                posicion=0;
+            }
             if(posicion>=0){
                 var nextId = ids[posicion]
                 var nextTitulo = titulos[posicion]
@@ -656,9 +679,13 @@ class CircularDetalleViewController: UIViewController {
                 var nextHoraFinIcs = horasFinIcs[posicion]
                 var nextFechaIcs = fechasIcs[posicion]
                 var nextNivel = niveles[posicion]
-                 nextHoraIcs = nextHoraIniIcs
+                nextHoraIcs = horasInicioIcs[posicion]
                 if(nextHoraIniIcs != "00:00:00"){
                     imbCalendario.isHidden=false
+                    btnCalendario.isHidden=false
+                }else{
+                    imbCalendario.isHidden=true
+                    btnCalendario.isHidden=true
                 }
                 
                 lblNivel.text = nextNivel
@@ -1299,16 +1326,20 @@ class CircularDetalleViewController: UIViewController {
                                                                      }else{
                                                                          nv=diccionario["nivel"] as? String
                                                                      }
-                        
-                        
-                     self.ids.append(id)
-                     self.titulos.append(titulo)
-                     self.fechas.append(fecha)
-                        
-                    self.fechasIcs.append(fechaIcs)
-                    self.horasInicioIcs.append(horaInicioIcs)
-                    self.horasFinIcs.append(horaFinIcs)
-                    self.niveles.append(nv ?? "")
+                        guard let eliminada = diccionario["eliminado"] as? String else {
+                                                   return
+                                               }
+                        if(Int(eliminada) == 0){
+                                               self.ids.append(id)
+                                               self.titulos.append(titulo)
+                                               self.fechas.append(fecha)
+                                                  
+                                              self.fechasIcs.append(fechaIcs)
+                                              self.horasInicioIcs.append(horaInicioIcs)
+                                              self.horasFinIcs.append(horaFinIcs)
+                                              self.niveles.append(nv ?? "")
+                        }
+                   
                 }
                 
                 
@@ -1537,7 +1568,33 @@ class CircularDetalleViewController: UIViewController {
            }
         }
         
-        let actionCompartir = UIAlertAction(title: "Eliminar esta circular", style: .default) { (action:UIAlertAction) in
+        let actionCompartir = UIAlertAction(title: "Compartir esta circular", style: .default) { (action:UIAlertAction) in
+            
+            let circularUrl = "https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularId4.php?id=\(self.id)"
+            guard let link = URL(string: circularUrl) else { return }
+            let dynamicLinksDomainURIPrefix = "https://chmd1.page.link"
+            let linkBuilder = DynamicLinkComponents(link: link, domainURIPrefix: dynamicLinksDomainURIPrefix)
+            linkBuilder?.iOSParameters = DynamicLinkIOSParameters(bundleID: "mx.edu.CHMD1")
+            linkBuilder?.androidParameters = DynamicLinkAndroidParameters(packageName: "mx.edu.CHMD1")
+
+            
+               let options = DynamicLinkComponentsOptions()
+               options.pathLength = .short
+               linkBuilder?.options = options
+
+               linkBuilder?.shorten { (shortURL, warnings, error) in
+
+                   if let error = error {
+                       print(error.localizedDescription)
+                       return
+                   }
+
+                   let shortLink = shortURL
+                   self.compartir(message: "Comparto la circular del colegio", link: "\(shortLink!)")
+               }
+            
+            
+            
             
         }
         
@@ -1595,7 +1652,7 @@ class CircularDetalleViewController: UIViewController {
                }
         
         let actionCancelar = UIAlertAction(title: "Cancelar", style:.cancel) { (action:UIAlertAction) in
-                  self.dismiss(animated: true, completion: nil)
+                 // self.dismiss(animated: true, completion: nil)
               }
         
         /*
@@ -1603,12 +1660,9 @@ class CircularDetalleViewController: UIViewController {
              print("You've pressed the destructive");
          }
          */
-        
+      
         alertController.addAction(actionFav)
         alertController.addAction(actionNoLeer)
-        if(horaInicialIcs != "00:00:00" || nextHoraIcs != "00:00:00"){
-           alertController.addAction(actionCalendario)
-         }
         alertController.addAction(actionCompartir)
         alertController.addAction(actionEliminar)
         alertController.addAction(actionCancelar)

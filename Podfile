@@ -17,5 +17,6 @@ pod 'Alamofire'
 pod 'FMDB'
 pod 'SDWebImage'
 pod 'BitlySDK'
-
+pod 'Firebase/Analytics'
+pod 'Firebase/DynamicLinks'  
 end
