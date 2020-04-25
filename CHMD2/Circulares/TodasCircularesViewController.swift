@@ -31,10 +31,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     @IBOutlet weak var btnEditar: UIBarButtonItem!
     
-    
-    
-    
-    
+    var indexEliminar:Int=0
     var buscando=false
     var editando=false
     var circulares = [CircularTodas]()
@@ -346,8 +343,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                             if ConexionRed.isConnectedToNetwork() == true {
                                             self.delCircular(direccion: self.urlBase+"eliminarCircular.php", usuario_id: self.idUsuario, circular_id: idCircular)
                                             //self.obtenerCirculares(limit:15)
-                                            self.circulares.remove(at: indexPath.row)
-                                            self.tableViewCirculares.reloadData()
+                                                self.indexEliminar=indexPath.row
                                         
                                             }else{
                                                 var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
@@ -1025,7 +1021,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
          
                                 self.circulares.removeAll()
                                 for c in self.circularesSeleccionadas{
-                                      self.delCircular(direccion: self.urlBase+"eliminarCircular.php", usuario_id: self.idUsuario, circular_id: "\(c)")
+                                      self.delCircularTodas(direccion: self.urlBase+"eliminarCircular.php", usuario_id: self.idUsuario, circular_id: "\(c)")
                                 }
                                 
                                 self.seleccion.removeAll()
@@ -1140,20 +1136,58 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
            }
        }
     
+    
+    func delCircularTodas(direccion:String, usuario_id:String, circular_id:String){
+        let parameters: Parameters = ["usuario_id": usuario_id, "circular_id": circular_id]      //This will be your parameter
+        Alamofire.request(direccion, method: .post, parameters: parameters).responseJSON { response in
+            switch (response.result) {
+            case .success:
+                print(response)
+                break
+            case .failure:
+                print(Error.self)
+            }
+        }
+    }
+    
  func delCircular(direccion:String, usuario_id:String, circular_id:String){
      
+    //Preguntar
+    let dialogMessage = UIAlertController(title: "CHMD", message: "¿Deseas eliminar esta circular?", preferredStyle: .alert)
+               
+               // Create OK button with action handler
+               let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
+                
+                
+                let parameters: Parameters = ["usuario_id": usuario_id, "circular_id": circular_id]      //This will be your parameter
+                    Alamofire.request(direccion, method: .post, parameters: parameters).responseJSON { response in
+                        switch (response.result) {
+                        case .success:
+                            print(response)
+                            self.circulares.remove(at: self.indexEliminar)
+                            self.tableViewCirculares.reloadData()
+                            break
+                        case .failure:
+                            print(Error.self)
+                        }
+                    }
+                
+                
+                
+                })
     
     
-    let parameters: Parameters = ["usuario_id": usuario_id, "circular_id": circular_id]      //This will be your parameter
-     Alamofire.request(direccion, method: .post, parameters: parameters).responseJSON { response in
-         switch (response.result) {
-         case .success:
-             print(response)
-             break
-         case .failure:
-             print(Error.self)
-         }
-     }
+    let cancel = UIAlertAction(title: "Cancelar", style: .cancel) { (action) -> Void in
+                   
+               }
+               
+               //Add OK and Cancel button to dialog message
+               dialogMessage.addAction(ok)
+               dialogMessage.addAction(cancel)
+               
+               // Present dialog message to user
+               self.present(dialogMessage, animated: true, completion: nil)
+    
  }
     
     
