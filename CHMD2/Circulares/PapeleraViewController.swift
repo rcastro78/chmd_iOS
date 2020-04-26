@@ -27,6 +27,13 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     @IBOutlet weak var btnMarcarNoLeidas: UIButton!
     @IBOutlet weak var btnMarcarFavoritas: UIButton!
     
+    @IBOutlet weak var lblLeidas: UILabel!
+    
+    @IBOutlet weak var lblNoLeidas: UILabel!
+    
+    @IBOutlet weak var lblFavoritas: UILabel!
+    
+    
     @IBAction func deseleccionar(_ sender: UIBarButtonItem) {
         if ConexionRed.isConnectedToNetwork() == true {
         circulares.removeAll()
@@ -51,6 +58,9 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             btnMarcarLeidas.isHidden=true
             btnMarcarNoLeidas.isHidden=true
             btnMarcarFavoritas.isHidden=true
+            lblFavoritas.isHidden=true
+            lblNoLeidas.isHidden=true
+            lblLeidas.isHidden=true
             
         //tableViewCirculares.reloadData()
            }else{
@@ -102,6 +112,9 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         btnMarcarLeidas.isHidden=true
         btnMarcarNoLeidas.isHidden=true
         btnMarcarFavoritas.isHidden=true
+        lblFavoritas.isHidden=true
+        lblNoLeidas.isHidden=true
+        lblLeidas.isHidden=true
         
         btnMarcarLeidas.addTarget(self,action: #selector(leer), for: .touchUpInside)
         btnMarcarNoLeidas.addTarget(self,action: #selector(noleer), for: .touchUpInside)
@@ -949,7 +962,9 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                 btnMarcarLeidas.isHidden=false
                 btnMarcarNoLeidas.isHidden=false
                 btnMarcarFavoritas.isHidden=false
-                
+                lblFavoritas.isHidden=false
+                lblNoLeidas.isHidden=false
+                lblLeidas.isHidden=false
                 /*btnFavs.isHidden=false
                 btnNoLeer.isHidden=false
                 btnEliminar.isHidden=false
@@ -981,6 +996,9 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                     btnMarcarLeidas.isHidden=true
                     btnMarcarNoLeidas.isHidden=true
                     btnMarcarFavoritas.isHidden=true
+                    lblFavoritas.isHidden=true
+                    lblNoLeidas.isHidden=true
+                    lblLeidas.isHidden=true
                     tableViewCirculares.allowsSelection = false
                 }
                          

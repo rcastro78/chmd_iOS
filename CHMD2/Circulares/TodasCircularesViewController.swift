@@ -9,6 +9,7 @@
 import UIKit
 import Alamofire
 import SQLite3
+import Firebase
 
 class TodasCircularesViewController: UIViewController,UITableViewDelegate, UITableViewDataSource,UISearchBarDelegate,UIGestureRecognizerDelegate,UITableViewDataSourcePrefetching {
 func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
@@ -27,7 +28,11 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     @IBOutlet weak var btnMarcarEliminadas: UIButton!
     @IBOutlet weak var btnMarcarLeidas: UIButton!
     
+    @IBOutlet weak var lblNoLeidas: UILabel!
+    @IBOutlet weak var lblLeidas: UILabel!
+    @IBOutlet weak var lblEliminar: UILabel!
     
+    @IBOutlet weak var lblFavoritas: UILabel!
     
     @IBOutlet weak var btnEditar: UIBarButtonItem!
     
@@ -79,6 +84,11 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         btnMarcarNoLeidas.isHidden=true
         btnMarcarLeidas.isHidden=true
         btnMarcarEliminadas.isHidden=true
+        lblFavoritas.isHidden=true
+        lblNoLeidas.isHidden=true
+        lblLeidas.isHidden=true
+        lblEliminar.isHidden=true
+        
         
         btnMarcarFavoritas.addTarget(self,action: #selector(agregarFavoritos), for: .touchUpInside)
         btnMarcarNoLeidas.addTarget(self,action: #selector(noleer), for: .touchUpInside)
@@ -177,8 +187,9 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         let c = circulares[indexPath.row]
         //cell.lblEncabezado.text? = ""
         cell.lblTitulo.text? = c.nombre.uppercased()
+        
+        cell.btnModificarEstado.addTarget(self, action: #selector(hacerFavorita), for: .touchUpInside)
         cell.chkSeleccionar.addTarget(self, action: #selector(seleccionMultiple), for: .touchUpInside)
-       
        
         
          if(c.fecha != "")
@@ -245,10 +256,10 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     //El trailingSwipe es para manejar el swipe de derecha a izquierda
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let eliminaAction = self.contextualDelAction(forRowAtIndexPath: indexPath)
-        let favAction = self.contextualFavAction(forRowAtIndexPath: indexPath)
-        let leeAction = self.contextualReadAction(forRowAtIndexPath: indexPath)
-        let noleeAction = self.contextualUnreadAction(forRowAtIndexPath: indexPath)
-        let swipeConfig = UISwipeActionsConfiguration(actions: [eliminaAction,favAction,leeAction,noleeAction])
+        let masAction = self.contextualMasAction(forRowAtIndexPath: indexPath)
+        //let leeAction = self.contextualReadAction(forRowAtIndexPath: indexPath)
+        //let noleeAction = self.contextualUnreadAction(forRowAtIndexPath: indexPath)
+        let swipeConfig = UISwipeActionsConfiguration(actions: [eliminaAction,masAction])
         return swipeConfig
     }
     
@@ -277,7 +288,109 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
        }
     
     
-    func contextualFavAction(forRowAtIndexPath indexPath: IndexPath) -> UIContextualAction {
+    func contextualMasAction(forRowAtIndexPath indexPath: IndexPath) -> UIContextualAction {
+    
+         let circular = circulares[indexPath.row]
+         let action = UIContextualAction(style: .normal,
+                                         title: "") { (contextAction: UIContextualAction, sourceView: UIView, completionHandler: (Bool) -> Void) in
+                                             let idCircular:String = "\(circular.id)"
+                                             if ConexionRed.isConnectedToNetwork() == true {
+                                             
+                                                //Mostrar el alert
+                                                let alertController = UIAlertController(title: "Opciones", message: "Elige la opción que deseas", preferredStyle: .actionSheet)
+                                                let actionLeer = UIAlertAction(title: "Agregar a leídas", style: .default) { (action:UIAlertAction) in
+                                                    
+                                                    if(ConexionRed.isConnectedToNetwork()){
+                                                                                                          
+                                                        //capturar la celda
+                                                           let cell = self.tableViewCirculares.dequeueReusableCell(withIdentifier: "celda", for: indexPath) as! CircularTableViewCell
+                                                               self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: idCircular)
+                                                                   self.viewDidLoad()
+                                                                   self.viewWillAppear(true)
+                                                                   //Modificar la imagen de la celda
+                                                                    cell.imgCircular.image = UIImage(named:"circle_white")
+                                                                    }else{
+                                                                    var alert = UIAlertView(title: "No está conectado a Internet", message: "Esta opción solo funciona con una conexión a Internet", delegate: nil, cancelButtonTitle: "Aceptar")
+                                                                alert.show()
+                                                           }
+                                                    
+                                                    }
+                                                
+                                                let actionNoLeer = UIAlertAction(title: "Agregar a no leídas", style: .default) { (action:UIAlertAction) in
+                                                
+                                                    
+                                                    
+                                                    if(ConexionRed.isConnectedToNetwork()){
+                                                                                                          
+                                                        //capturar la celda
+                                                           let cell = self.tableViewCirculares.dequeueReusableCell(withIdentifier: "celda", for: indexPath) as! CircularTableViewCell
+                                                               self.noleerCircular(direccion: self.urlBase+self.noleerMetodo, usuario_id: self.idUsuario, circular_id: idCircular)
+                                                                   self.viewDidLoad()
+                                                                   self.viewWillAppear(true)
+                                                                   //Modificar la imagen de la celda
+                                                                    cell.imgCircular.image = UIImage(named:"circle")
+                                                                    }else{
+                                                                    var alert = UIAlertView(title: "No está conectado a Internet", message: "Esta opción solo funciona con una conexión a Internet", delegate: nil, cancelButtonTitle: "Aceptar")
+                                                                alert.show()
+                                                           }
+                                                    
+                                                }
+                                                    
+                                                
+                                                let actionCompartir = UIAlertAction(title: "Compartir", style: .default) { (action:UIAlertAction) in
+                                                
+                                                    let circularUrl = "https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularId4.php?id=\(idCircular)"
+                                                    guard let link = URL(string: circularUrl) else { return }
+                                                    let dynamicLinksDomainURIPrefix = "https://chmd1.page.link"
+                                                    let linkBuilder = DynamicLinkComponents(link: link, domainURIPrefix: dynamicLinksDomainURIPrefix)
+                                                    linkBuilder?.iOSParameters = DynamicLinkIOSParameters(bundleID: "mx.edu.CHMD1")
+                                                    linkBuilder?.androidParameters = DynamicLinkAndroidParameters(packageName: "mx.edu.CHMD1")
+
+                                                    
+                                                       let options = DynamicLinkComponentsOptions()
+                                                       options.pathLength = .short
+                                                       linkBuilder?.options = options
+
+                                                       linkBuilder?.shorten { (shortURL, warnings, error) in
+
+                                                           if let error = error {
+                                                               print(error.localizedDescription)
+                                                               return
+                                                           }
+
+                                                           let shortLink = shortURL
+                                                           self.compartir(message: "Comparto la circular del colegio", link: "\(shortLink!)")
+                                                       }
+                                                
+                                                }
+                                                let actionCancelar = UIAlertAction(title: "Cancelar", style:.cancel) { (action:UIAlertAction) in
+                                                              // self.dismiss(animated: true, completion: nil)
+                                                           }
+                                                
+                                                alertController.addAction(actionLeer)
+                                                alertController.addAction(actionNoLeer)
+                                                alertController.addAction(actionCompartir)
+                                                alertController.addAction(actionCancelar)
+                                                self.present(alertController, animated: true, completion: nil)
+                                                
+                                             }else{
+                                             var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
+                                             alert.show()
+                                         }
+                                             
+                                             
+             
+         }
+         // 7
+         action.image = UIImage(named: "mas32")
+        action.backgroundColor = UIColor.gray
+         
+         return action
+     }
+    
+    
+    
+    /*func contextualFavAction(forRowAtIndexPath indexPath: IndexPath) -> UIContextualAction {
    
         let circular = circulares[indexPath.row]
         let action = UIContextualAction(style: .normal,
@@ -303,7 +416,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         action.backgroundColor = UIColor.orange
         
         return action
-    }
+    }*/
     
     
     
@@ -371,12 +484,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         if(!editando){
             
             
-            /*
-             guard let fecha = diccionario["updated_at"] as? String else {
-                 print("No se pudo obtener la fecha")
-                 return
-             }
-             */
+            
             
         let c = circulares[indexPath.row]
         let cell = tableView.cellForRow(at: indexPath)
@@ -904,6 +1012,40 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     }
     */
     //el pie
+    
+    
+   
+    
+    
+    @objc func hacerFavorita(_ sender:UIButton){
+           var superView = sender.superview
+           
+           while !(superView is UITableViewCell) {
+               superView = superView?.superview
+           }
+           let cell = superView as! CircularTableViewCell
+           if let indexpath = tableViewCirculares.indexPath(for: cell){
+            
+                let c = circulares[indexpath.row]
+                let idCircular = c.id
+                if ConexionRed.isConnectedToNetwork() == true {
+                    /*self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: String(idCircular))*/
+                    self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: String(idCircular))
+                        self.viewDidLoad()
+                        self.viewWillAppear(true)
+                    }else{
+                    var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
+                    alert.show()
+                }
+            
+            
+            }else{
+            
+        }
+        
+    }
+    
+    
      @objc func seleccionMultiple(_ sender:UIButton){
         var superView = sender.superview
         
@@ -919,6 +1061,11 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                 btnMarcarNoLeidas.isHidden=false
                 btnMarcarLeidas.isHidden=false
                 btnMarcarEliminadas.isHidden=false
+                
+                lblFavoritas.isHidden=false
+                lblNoLeidas.isHidden=false
+                lblLeidas.isHidden=false
+                lblEliminar.isHidden=false
                 
                 /*btnFavs.isHidden=false
                 btnNoLeer.isHidden=false
@@ -952,6 +1099,12 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                     btnMarcarNoLeidas.isHidden=true
                     btnMarcarLeidas.isHidden=true
                     btnMarcarEliminadas.isHidden=true
+                    
+                    lblFavoritas.isHidden=true
+                                  lblNoLeidas.isHidden=true
+                                  lblLeidas.isHidden=true
+                                  lblEliminar.isHidden=true
+                    
                     tableViewCirculares.allowsSelection = false
                 }
                          
@@ -1252,9 +1405,20 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             btnMarcarLeidas.isHidden=true
             btnMarcarNoLeidas.isHidden=true
             btnMarcarEliminadas.isHidden=true
+            
+            lblFavoritas.isHidden=true
+                          lblNoLeidas.isHidden=true
+                          lblLeidas.isHidden=true
+                          lblEliminar.isHidden=true
         }
         
     }
     
-    
+    func compartir(message: String, link: String) {
+          if let link = NSURL(string: link) {
+              let objectsToShare = [message,link] as [Any]
+              let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
+              self.present(activityVC, animated: true, completion: nil)
+          }
+      }
 }
