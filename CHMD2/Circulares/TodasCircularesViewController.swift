@@ -17,6 +17,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     }
     
+    
     @IBOutlet weak var btnDeshacer: UIBarButtonItem!
     
    @IBOutlet var tableViewCirculares: UITableView!
@@ -69,6 +70,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     }
     
     override func viewDidLoad() {
+        
         super.viewDidLoad()
         circulares.removeAll()
         self.hideKeyboardWhenTappedAround()
@@ -1055,7 +1057,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         let cell = superView as! CircularTableViewCell
         if let indexpath = tableViewCirculares.indexPath(for: cell){
             if(cell.chkSeleccionar.isChecked){
-                //footerView.isHidden=false;
+               
                 //let c = tableViewCirculares.cellForRow(at: indexpath) as! CircularTableViewCell
                 btnMarcarFavoritas.isHidden=false
                 btnMarcarNoLeidas.isHidden=false

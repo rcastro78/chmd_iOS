@@ -120,9 +120,9 @@ class CircularDetalleViewController: UIViewController {
                    self.title = "Circular"
             
              if(ConexionRed.isConnectedToNetwork()){
-               self.lblTituloParte1.isHidden=true
-               self.lblTituloParte1?.visiblity(gone: true, dimension: 0)
-                
+               //self.lblTituloParte1.isHidden=true
+               //self.lblTituloParte1?.visiblity(gone: true, dimension: 0)
+              self.lblTituloParte1.text = circularTitulo.uppercased()
              }else{
              self.lblTituloParte1.text = titulo.uppercased()
              posicion = UserDefaults.standard.integer(forKey:"posicion")
@@ -397,11 +397,11 @@ class CircularDetalleViewController: UIViewController {
                           lblFechaCircular.text = d
                 
                 if(ConexionRed.isConnectedToNetwork()){
-                    self.lblTituloParte1.isHidden=true
-                    self.lblTituloParte1?.visiblity(gone: true, dimension: 0)
+                    //self.lblTituloParte1.isHidden=true
+                    //self.lblTituloParte1?.visiblity(gone: true, dimension: 0)
                 }
                 
-                //self.lblTituloParte1.text=nextTitulo /*partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())*/
+                self.lblTituloParte1.text=nextTitulo /*partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())*/
                 id = nextId;
             }else{
                 posicion = 0
@@ -510,11 +510,11 @@ class CircularDetalleViewController: UIViewController {
                       lblFechaCircular.text = d
             
             if(ConexionRed.isConnectedToNetwork()){
-                self.lblTituloParte1.isHidden=true
-                self.lblTituloParte1?.visiblity(gone: true, dimension: 0)
+                //self.lblTituloParte1.isHidden=true
+                //self.lblTituloParte1?.visiblity(gone: true, dimension: 0)
             }
             
-            //self.lblTituloParte1.text=nextTitulo /*partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())*/
+            self.lblTituloParte1.text=nextTitulo /*partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())*/
             id = nextId;
         }else{
             posicion = 0
@@ -622,11 +622,11 @@ class CircularDetalleViewController: UIViewController {
                        
                        
                        if(ConexionRed.isConnectedToNetwork()){
-                           self.lblTituloParte1.isHidden=true
-                           self.lblTituloParte1?.visiblity(gone: true, dimension: 0)
+                           //self.lblTituloParte1.isHidden=true
+                           //self.lblTituloParte1?.visiblity(gone: true, dimension: 0)
                        }
                        
-                       //self.lblTituloParte1.text=nextTitulo /*partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())*/
+                       self.lblTituloParte1.text=nextTitulo /*partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())*/
                        id = nextId
                    }else{
                        posicion = ids.count
@@ -712,11 +712,11 @@ class CircularDetalleViewController: UIViewController {
                 
                 
                 if(ConexionRed.isConnectedToNetwork()){
-                    self.lblTituloParte1.isHidden=true
-                    self.lblTituloParte1?.visiblity(gone: true, dimension: 0)
+                    //self.lblTituloParte1.isHidden=true
+                    //self.lblTituloParte1?.visiblity(gone: true, dimension: 0)
                 }
                 
-                //self.lblTituloParte1.text=nextTitulo /*partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())*/
+                self.lblTituloParte1.text=nextTitulo /*partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())*/
                 id = nextId
             }else{
                 posicion = ids.count
@@ -938,8 +938,8 @@ class CircularDetalleViewController: UIViewController {
                     self.lblFechaCircular.text = "\(dia)/\(mes)/\(anio)"
                     
                     if(ConexionRed.isConnectedToNetwork()){
-                        self.lblTituloParte1.isHidden=true
-                        self.lblTituloParte1?.visiblity(gone: true, dimension: 0)
+                        //self.lblTituloParte1.isHidden=true
+                        //self.lblTituloParte1?.visiblity(gone: true, dimension: 0)
                     }
                     
                     //self.lblTituloParte1.text=nextTitulo /*partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())*/
