@@ -227,6 +227,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
        
         if(editando){
             let isEditing: Bool = self.isEditing
+            cell.chkSeleccionar.visiblity(gone: true, dimension: 0)
             cell.chkSeleccionar.isHidden = !isEditing
         }else{
             let isEditing: Bool = false

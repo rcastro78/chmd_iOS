@@ -349,12 +349,13 @@ class CircularDetalleViewController: UIViewController {
  
     @IBAction func btnSiguienteClick(_ sender: Any) {
         if(ConexionRed.isConnectedToNetwork()){
-            if(posicion == ids.count){
+             posicion = posicion+1
+            if(posicion >= ids.count){
                 posicion=0;
             }
             
             if(posicion<ids.count){
-                posicion = posicion+1
+               
                
                
                 var nextId = ids[posicion]
@@ -460,13 +461,12 @@ class CircularDetalleViewController: UIViewController {
        //obtener la posición del elemento cargado
         
        if(ConexionRed.isConnectedToNetwork()){
-        if(posicion == ids.count){
+       posicion = posicion+1
+        if(posicion >= ids.count){
             posicion=0;
         }
         if(posicion<ids.count){
-            posicion = posicion+1
             
-           
             var nextId = ids[posicion]
             print("id siguiente: \(nextId)")
             print("pos siguiente: \(posicion)")
@@ -856,11 +856,26 @@ class CircularDetalleViewController: UIViewController {
     
     
    func compartir(message: String, link: String) {
-       if let link = NSURL(string: link) {
+       /*if let link = NSURL(string: link) {
            let objectsToShare = [message,link] as [Any]
            let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
            self.present(activityVC, animated: true, completion: nil)
-       }
+       }*/
+    
+    let date = Date()
+    let msg = message
+    let urlWhats = "whatsapp://send?text=\(msg+"\n"+link)"
+
+    if let urlString = urlWhats.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed) {
+        if let whatsappURL = NSURL(string: urlString) {
+            if UIApplication.shared.canOpenURL(whatsappURL as URL) {
+                UIApplication.shared.openURL(whatsappURL as URL)
+            } else {
+                print("Por favor instale whatsapp")
+            }
+        }
+    }
+    
    }
     
     

@@ -1096,14 +1096,27 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
           
           }
             
-            seleccion.removeAll()
-            circularesSeleccionadas.removeAll()
+           for s in seleccion{
+                      let indexPath = IndexPath(row:s, section:0)
+                           print("index: \(indexPath.row)")
+                           var r = indexPath.row
+                           if r>0{
+                               r = r - 1
+                           }
+                           print("index: \(r)")
+                           self.circulares.remove(at: r)
+                          
+           }
+           circularesSeleccionadas.removeAll()
+           seleccion.removeAll()
+           self.tableViewCirculares.reloadData()
            
-           self.viewDidLoad()
-           self.viewWillAppear(true)
-            
-            self.obtenerCirculares(limit:50)
-            tableViewCirculares.reloadData()
+           btnMarcarLeidas.isHidden=true
+           btnMarcarNoLeidas.isHidden=true
+           btnMarcarEliminadas.isHidden=true
+           lblNoLeidas.isHidden=true
+           lblNoLeidas.isHidden=true
+           lblEliminar.isHidden=true
             
           }else{
             var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
@@ -1119,14 +1132,27 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
               self.delCircularTodas(direccion: self.urlBase+"eliminarCircular.php", usuario_id: self.idUsuario, circular_id: "\(c)")
         }
         
-        seleccion.removeAll()
-        circularesSeleccionadas.removeAll()
-                
-                self.viewDidLoad()
-                self.viewWillAppear(true)
-                 
-                 self.obtenerCirculares(limit:50)
-                 tableViewCirculares.reloadData()
+       for s in seleccion{
+                  let indexPath = IndexPath(row:s, section:0)
+                       print("index: \(indexPath.row)")
+                       var r = indexPath.row
+                       if r>0{
+                           r = r - 1
+                       }
+                       print("index: \(r)")
+                       self.circulares.remove(at: r)
+                      
+       }
+       circularesSeleccionadas.removeAll()
+       seleccion.removeAll()
+       self.tableViewCirculares.reloadData()
+       
+       btnMarcarLeidas.isHidden=true
+       btnMarcarNoLeidas.isHidden=true
+       btnMarcarEliminadas.isHidden=true
+       lblNoLeidas.isHidden=true
+       lblNoLeidas.isHidden=true
+       lblEliminar.isHidden=true
         
        } else{
                   var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
@@ -1146,14 +1172,27 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
            self.noleerCircular(direccion: self.urlBase+self.noleerMetodo, usuario_id: self.idUsuario, circular_id: "\(c)")
         }
       
-             seleccion.removeAll()
+            for s in seleccion{
+                        let indexPath = IndexPath(row:s, section:0)
+                             print("index: \(indexPath.row)")
+                             var r = indexPath.row
+                             if r>0{
+                                 r = r - 1
+                             }
+                             print("index: \(r)")
+                             self.circulares.remove(at: r)
+                            
+             }
              circularesSeleccionadas.removeAll()
-                     
-                     self.viewDidLoad()
-                     self.viewWillAppear(true)
-                      
-                      self.obtenerCirculares(limit:50)
-                      tableViewCirculares.reloadData()
+             seleccion.removeAll()
+             self.tableViewCirculares.reloadData()
+             
+             btnMarcarLeidas.isHidden=true
+             btnMarcarNoLeidas.isHidden=true
+             btnMarcarEliminadas.isHidden=true
+             lblNoLeidas.isHidden=true
+             lblNoLeidas.isHidden=true
+             lblEliminar.isHidden=true
            
             
        }else{
@@ -1330,6 +1369,11 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                    btnMarcarLeidas.isHidden=true
                    btnMarcarNoLeidas.isHidden=true
                    btnMarcarEliminadas.isHidden=true
+            
+                      lblLeidas.isHidden=true
+                      lblNoLeidas.isHidden=true
+                      lblEliminar.isHidden=true
+            
                }
     }
     

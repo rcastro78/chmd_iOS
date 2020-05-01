@@ -42,7 +42,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                 let indexPath = IndexPath(row:s, section:0)
                 let cell = self.tableViewCirculares.dequeueReusableCell(withIdentifier: "celda", for: indexPath)
                           as! CircularTableViewCell
-                    
+                
                 if(cell.chkSeleccionar.isChecked == true){
                     cell.chkSeleccionar.isChecked=false
                 }
@@ -84,6 +84,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     var selecMultiple=false
     var circularesSeleccionadas = [Int]()
     var seleccion=[Int]()
+    var indices=[Int]()
     var isSearchBarEmpty: Bool {
       return searchController.searchBar.text?.isEmpty ?? true
     }
@@ -962,65 +963,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     
     
-    /*let footerView = UIView()
-    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        footerView.isHidden=true
-        footerView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height:
-       100)
-     
-                                //Favoritos al pie
-                                let btnFavoritos = UIButton(type: .custom)
-                                 btnFavoritos.frame=CGRect(x:10,y:20,width:32,height:32)
-                                 btnFavoritos.setImage(UIImage(named:"estrella_fav"), for: .normal)
-                                 //btnFavoritos.backgroundColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
-                                 btnFavoritos.clipsToBounds = true
-                                 //btnFavoritos.layer.cornerRadius = 32
-                                 //btnFavoritos.layer.borderColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
-                               
-                                 btnFavoritos.addTarget(self,action: #selector(agregarFavoritos), for: .touchUpInside)
-        
-        
-        let btnNoLeidos = UIButton(type: .custom)
-        btnNoLeidos.frame=CGRect(x:100,y:20,width:32,height:32)
-        btnNoLeidos.setImage(UIImage(named:"icono_noleido"), for: .normal)
-        //btnNoLeidos.backgroundColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
-        btnNoLeidos.clipsToBounds = true
-        //btnNoLeidos.layer.cornerRadius = 32
-        //btnNoLeidos.layer.borderColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
-        
-        btnNoLeidos.addTarget(self,action: #selector(noleer), for: .touchUpInside)
-        
-        
-              let btnEliminar = UIButton(type: .custom)
-               btnEliminar.frame=CGRect(x:180,y:20,width:32,height:32)
-               btnEliminar.setImage(UIImage(named:"delIcon"), for: .normal)
-               //btnEliminar.backgroundColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
-               btnEliminar.clipsToBounds = true
-               //btnEliminar.layer.cornerRadius = 32
-               //btnEliminar.layer.borderColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
-              
-               btnEliminar.addTarget(self,action: #selector(eliminar), for: .touchUpInside)
-        
-        
-        let btnDeshacer = UIButton(type: .custom)
-        btnDeshacer.frame=CGRect(x:260,y:20,width:32,height:32)
-        btnDeshacer.setImage(UIImage(named:"undo"), for: .normal)
-        //btnDeshacer.backgroundColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
-        btnDeshacer.clipsToBounds = true
-        //btnDeshacer.layer.cornerRadius = 32
-        //btnDeshacer.layer.borderColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
-       
-        btnDeshacer.addTarget(self,action: #selector(deshacer), for: .touchUpInside)
-        
-        
-       footerView.addSubview(btnFavoritos)
-       footerView.addSubview(btnNoLeidos)
-       footerView.addSubview(btnEliminar)
-       footerView.addSubview(btnDeshacer)
-       return footerView
-    }
-    */
-    //el pie
+    
      @objc func seleccionMultiple(_ sender:UIButton){
         var superView = sender.superview
         
@@ -1033,6 +976,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         let cell = superView as! CircularTableViewCell
         if let indexpath = tableViewCirculares.indexPath(for: cell){
             if(cell.chkSeleccionar.isChecked){
+                indices.append(indexpath.row)
                 //footerView.isHidden=false;
                 //let c = tableViewCirculares.cellForRow(at: indexpath) as! CircularTableViewCell
                 btnMarcarLeidas.isHidden=false
@@ -1060,6 +1004,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                     if let indice = circularesSeleccionadas.firstIndex(of: itemEliminar) {
                         let index = seleccion.firstIndex(of: selecEliminar) ?? 0
                         circularesSeleccionadas.remove(at: indice)
+                        indices.remove(at: indice)
                         seleccion.remove(at: index)
                     }
                 }
@@ -1084,26 +1029,39 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             }
         }
     }
-    
+   
     
     @objc func leer(){
         
         
           if ConexionRed.isConnectedToNetwork() == true {
           for c in circularesSeleccionadas{
-            print("circular: \(c)")
             self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: "\(c)")
-          
-          }
-            
-            seleccion.removeAll()
-            circularesSeleccionadas.removeAll()
            
-           self.viewDidLoad()
-           self.viewWillAppear(true)
+          }
+            //Con esta porción, se pueden eliminar elementos discontinuos de la lista
+            for s in seleccion{
+                       let indexPath = IndexPath(row:s, section:0)
+                            print("index: \(indexPath.row)")
+                            var r = indexPath.row
+                            if r>0{
+                                r = r - 1
+                            }
+                            print("index: \(r)")
+                            self.circulares.remove(at: r)
+                           
+            }
+            circularesSeleccionadas.removeAll()
+            seleccion.removeAll()
+            self.tableViewCirculares.reloadData()
             
-            self.obtenerCirculares(limit:50)
-            tableViewCirculares.reloadData()
+            btnMarcarLeidas.isHidden=true
+            btnMarcarFavoritas.isHidden=true
+            btnMarcarEliminadas.isHidden=true
+            lblFavoritas.isHidden=true
+            lblNoLeidas.isHidden=true
+            lblEliminar.isHidden=true
+          
             
           }else{
             var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
@@ -1119,14 +1077,29 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
               self.delCircularTodas(direccion: self.urlBase+"eliminarCircular.php", usuario_id: self.idUsuario, circular_id: "\(c)")
         }
         
-        seleccion.removeAll()
+       
+        for s in seleccion{
+                   let indexPath = IndexPath(row:s, section:0)
+                        print("index: \(indexPath.row)")
+                        var r = indexPath.row
+                        if r>0{
+                            r = r - 1
+                        }
+                        print("index: \(r)")
+                        self.circulares.remove(at: r)
+                       
+        }
         circularesSeleccionadas.removeAll()
-                
-                self.viewDidLoad()
-                self.viewWillAppear(true)
-                 
-                 self.obtenerCirculares(limit:50)
-                 tableViewCirculares.reloadData()
+        seleccion.removeAll()
+        self.tableViewCirculares.reloadData()
+        
+        btnMarcarLeidas.isHidden=true
+        btnMarcarFavoritas.isHidden=true
+        btnMarcarEliminadas.isHidden=true
+        lblFavoritas.isHidden=true
+        lblNoLeidas.isHidden=true
+        lblEliminar.isHidden=true
+        
         
        } else{
                   var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
@@ -1237,6 +1210,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             switch (response.result) {
             case .success:
                 print(response)
+                self.circulares.removeAll()
                 break
             case .failure:
                 print(Error.self)
@@ -1357,6 +1331,11 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                    btnMarcarLeidas.isHidden=true
                    btnMarcarFavoritas.isHidden=true
                    btnMarcarEliminadas.isHidden=true
+            
+                                 lblFavoritas.isHidden=true
+                                 lblNoLeidas.isHidden=true
+                                 lblEliminar.isHidden=true
+            
                }
     }
     
