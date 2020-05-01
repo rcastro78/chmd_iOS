@@ -88,10 +88,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate,GIDSignI
         }
         
       
-          
-            
-        
-        
         
         
         
@@ -206,11 +202,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate,GIDSignI
         let state = application.applicationState
         switch state {
             case .background:
-             print("Background")
-             
-           
+            print("Background")
+            
+            UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber + 1
+            
         case .active:
             print("activa")
+            
         case .inactive:
           print("Inactiva")
         @unknown default:

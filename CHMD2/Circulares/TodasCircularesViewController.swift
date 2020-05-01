@@ -121,8 +121,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
      
         if ConexionRed.isConnectedToNetwork() == true {
             self.delete()
-            //circulares.removeAll()
-            //self.obtenerCirculares(limit:50)
+            UIApplication.shared.applicationIconBadgeNumber = 0
              
              
         } else {

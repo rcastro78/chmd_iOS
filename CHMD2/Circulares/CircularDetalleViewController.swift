@@ -27,16 +27,19 @@ extension UIView {
 }
 
 
+
 class CircularDetalleViewController: UIViewController {
 
     
     @IBOutlet weak var webView: WKWebView!
+    
+   
     @IBOutlet weak var lblFechaCircular: UILabel!
     @IBOutlet weak var lblTituloParte1: MarqueeLabel!
     @IBOutlet weak var lblTituloParte2: UILabel!
     @IBOutlet weak var lblTituloNivel: UILabel!
     @IBOutlet weak var imbCalendario: UIButton!
-   
+      
     @IBOutlet weak var btnCalendario: UIButton!
     @IBOutlet weak var lblContenidoHTML: UITextView!
     @IBOutlet weak var lblNivel: UILabel!
@@ -81,7 +84,6 @@ class CircularDetalleViewController: UIViewController {
         lblTituloParte1.trailingBuffer = 20.0
        
         imbCalendario.isHidden=true
-        
         idUsuario = UserDefaults.standard.string(forKey: "idUsuario") ?? "0"
         viaNotif = UserDefaults.standard.integer(forKey: "viaNotif")
         horaInicialIcs = UserDefaults.standard.string(forKey: "horaInicialIcs") ?? "00:00:00"
