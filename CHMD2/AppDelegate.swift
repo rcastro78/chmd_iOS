@@ -53,13 +53,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate,GIDSignI
     
     
     func applicationDidBecomeActive(application: UIApplication) {
-        application.applicationIconBadgeNumber = 0
+        //application.applicationIconBadgeNumber = 0
     }
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        //client key: 1a11599f0dadc14c7c3141bcf2576eb7611bcf85
-        //client secret: fd10a0b735e5a716b6f4cd97f870736f89e49c08
-       
+        ///Aquí capturamos que ha llegado una notificación y se le dio click,
+        ///disminuir en 1 el recuento del badge
+        if(launchOptions != nil){
+            UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
+        }
+        
          var statement:OpaquePointer?
         let sqlRecuento1 = "select count(*) from appNotificacion"
           if sqlite3_prepare(self.db, sqlRecuento1, -1, &statement, nil) == SQLITE_OK{
@@ -196,7 +199,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate,GIDSignI
                 return
             }
         
-       
+       UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber + 1
             
        
         let state = application.applicationState
@@ -204,13 +207,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate,GIDSignI
             case .background:
             print("Background")
             
-            UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber + 1
+          
             
         case .active:
             print("activa")
-            
+              
         case .inactive:
           print("Inactiva")
+           
         @unknown default:
             print("default")
         }
@@ -227,11 +231,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate,GIDSignI
             let request = response.notification.request
             let userInfo = request.content.userInfo
             //Con esto capturamos los valores enviados en la notificacion
-            let idCircular = userInfo["idCircular"] as! String
+            let idCircular = userInfo["id"] as! String
             UserDefaults.standard.set(1, forKey: "viaNotif")
             UserDefaults.standard.set(idCircular, forKey: "idCircularViaNotif")
             
-        
+         UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
           
         let mainStoryboard:UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
                 let circulares = mainStoryboard.instantiateViewController(withIdentifier: "TodasCircularesViewController") as! TodasCircularesViewController

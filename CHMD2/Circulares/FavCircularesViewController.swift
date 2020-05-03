@@ -517,6 +517,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             UserDefaults.standard.set(c.horaFinalIcs,forKey:"horaFinalIcs")
             UserDefaults.standard.set(c.nivel,forKey:"nivel")
             UserDefaults.standard.set(0, forKey: "viaNotif")
+            UserDefaults.standard.set(2, forKey: "tipoCircular")
             performSegue(withIdentifier: "circularFavoritaSegue", sender:self)
         }
              
@@ -1091,32 +1092,32 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         
           if ConexionRed.isConnectedToNetwork() == true {
           for c in circularesSeleccionadas{
-            print("circular: \(c)")
             self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: "\(c)")
-          
-          }
-            
-           for s in seleccion{
-                      let indexPath = IndexPath(row:s, section:0)
-                           print("index: \(indexPath.row)")
-                           var r = indexPath.row
-                           if r>0{
-                               r = r - 1
-                           }
-                           print("index: \(r)")
-                           self.circulares.remove(at: r)
-                          
-           }
-           circularesSeleccionadas.removeAll()
-           seleccion.removeAll()
-           self.tableViewCirculares.reloadData()
            
-           btnMarcarLeidas.isHidden=true
-           btnMarcarNoLeidas.isHidden=true
-           btnMarcarEliminadas.isHidden=true
-           lblNoLeidas.isHidden=true
-           lblNoLeidas.isHidden=true
-           lblEliminar.isHidden=true
+          }
+            //Con esta porción, se pueden eliminar elementos discontinuos de la lista
+            for s in seleccion{
+                       let indexPath = IndexPath(row:s, section:0)
+                            print("index: \(indexPath.row)")
+                            var r = indexPath.row
+                            if r>0{
+                                r = r - 1
+                            }
+                            print("index: \(r)")
+                            self.circulares.remove(at: r)
+                           
+            }
+            circularesSeleccionadas.removeAll()
+            seleccion.removeAll()
+            self.tableViewCirculares.reloadData()
+            
+            btnMarcarLeidas.isHidden=true
+            btnMarcarNoLeidas.isHidden=true
+            btnMarcarEliminadas.isHidden=true
+            lblLeidas.isHidden=true
+            lblNoLeidas.isHidden=true
+            lblEliminar.isHidden=true
+          
             
           }else{
             var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
@@ -1126,37 +1127,40 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     }
     
     @objc func eliminar(){
-     if ConexionRed.isConnectedToNetwork() == true {
-        circulares.removeAll()
-        for c in circularesSeleccionadas{
-              self.delCircularTodas(direccion: self.urlBase+"eliminarCircular.php", usuario_id: self.idUsuario, circular_id: "\(c)")
-        }
         
-       for s in seleccion{
-                  let indexPath = IndexPath(row:s, section:0)
-                       print("index: \(indexPath.row)")
-                       var r = indexPath.row
-                       if r>0{
-                           r = r - 1
-                       }
-                       print("index: \(r)")
-                       self.circulares.remove(at: r)
-                      
-       }
-       circularesSeleccionadas.removeAll()
-       seleccion.removeAll()
-       self.tableViewCirculares.reloadData()
-       
-       btnMarcarLeidas.isHidden=true
-       btnMarcarNoLeidas.isHidden=true
-       btnMarcarEliminadas.isHidden=true
-       lblNoLeidas.isHidden=true
-       lblNoLeidas.isHidden=true
-       lblEliminar.isHidden=true
         
-       } else{
-                  var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
-                   alert.show()
+          if ConexionRed.isConnectedToNetwork() == true {
+          for c in circularesSeleccionadas{
+            self.delCircular(direccion: self.urlBase+"eliminarCircular.php", usuario_id: self.idUsuario, circular_id: "\(c)")
+           
+          }
+            //Con esta porción, se pueden eliminar elementos discontinuos de la lista
+            for s in seleccion{
+                       let indexPath = IndexPath(row:s, section:0)
+                            print("index: \(indexPath.row)")
+                            var r = indexPath.row
+                            if r>0{
+                                r = r - 1
+                            }
+                            print("index: \(r)")
+                            self.circulares.remove(at: r)
+                           
+            }
+            circularesSeleccionadas.removeAll()
+            seleccion.removeAll()
+            self.tableViewCirculares.reloadData()
+            
+            btnMarcarLeidas.isHidden=true
+            btnMarcarNoLeidas.isHidden=true
+            btnMarcarEliminadas.isHidden=true
+            lblLeidas.isHidden=true
+            lblNoLeidas.isHidden=true
+            lblEliminar.isHidden=true
+          
+            
+          }else{
+            var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
+             alert.show()
         }
         
     }
@@ -1165,40 +1169,43 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     }
     
-    @objc func noleer(){
-        if ConexionRed.isConnectedToNetwork() == true {
-        circulares.removeAll()
-           for c in circularesSeleccionadas{
-           self.noleerCircular(direccion: self.urlBase+self.noleerMetodo, usuario_id: self.idUsuario, circular_id: "\(c)")
-        }
-      
-            for s in seleccion{
-                        let indexPath = IndexPath(row:s, section:0)
-                             print("index: \(indexPath.row)")
-                             var r = indexPath.row
-                             if r>0{
-                                 r = r - 1
-                             }
-                             print("index: \(r)")
-                             self.circulares.remove(at: r)
-                            
-             }
-             circularesSeleccionadas.removeAll()
-             seleccion.removeAll()
-             self.tableViewCirculares.reloadData()
-             
-             btnMarcarLeidas.isHidden=true
-             btnMarcarNoLeidas.isHidden=true
-             btnMarcarEliminadas.isHidden=true
-             lblNoLeidas.isHidden=true
-             lblNoLeidas.isHidden=true
-             lblEliminar.isHidden=true
+     @objc func noleer(){
            
-            
-       }else{
-                       var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
-                        alert.show()
+           
+             if ConexionRed.isConnectedToNetwork() == true {
+             for c in circularesSeleccionadas{
+               self.noleerCircular(direccion: self.urlBase+self.noleerMetodo, usuario_id: self.idUsuario, circular_id: "\(c)")
+              
              }
+               //Con esta porción, se pueden eliminar elementos discontinuos de la lista
+               for s in seleccion{
+                          let indexPath = IndexPath(row:s, section:0)
+                               print("index: \(indexPath.row)")
+                               var r = indexPath.row
+                               if r>0{
+                                   r = r - 1
+                               }
+                               print("index: \(r)")
+                               self.circulares.remove(at: r)
+                              
+               }
+               circularesSeleccionadas.removeAll()
+               seleccion.removeAll()
+               self.tableViewCirculares.reloadData()
+               
+               btnMarcarLeidas.isHidden=true
+               btnMarcarNoLeidas.isHidden=true
+               btnMarcarEliminadas.isHidden=true
+               lblLeidas.isHidden=true
+               lblNoLeidas.isHidden=true
+               lblEliminar.isHidden=true
+             
+               
+             }else{
+               var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
+                alert.show()
+           }
+           
        }
 
     //Pie
@@ -1270,45 +1277,45 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         }
     }
     
- func delCircular(direccion:String, usuario_id:String, circular_id:String){
-     
-    //Preguntar
-    let dialogMessage = UIAlertController(title: "CHMD", message: "¿Deseas eliminar esta circular?", preferredStyle: .alert)
-               
-               // Create OK button with action handler
-               let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
-                
-                
-                let parameters: Parameters = ["usuario_id": usuario_id, "circular_id": circular_id]      //This will be your parameter
-                    Alamofire.request(direccion, method: .post, parameters: parameters).responseJSON { response in
-                        switch (response.result) {
-                        case .success:
-                            print(response)
-                            self.circulares.remove(at: self.indexEliminar)
-                            self.tableViewCirculares.reloadData()
-                            break
-                        case .failure:
-                            print(Error.self)
-                        }
-                    }
-                
-                
-                
-                })
-    
-    
-    let cancel = UIAlertAction(title: "Cancelar", style: .cancel) { (action) -> Void in
+    func delCircular(direccion:String, usuario_id:String, circular_id:String){
+        
+       //Preguntar
+       let dialogMessage = UIAlertController(title: "CHMD", message: "¿Deseas eliminar esta circular?", preferredStyle: .alert)
+                  
+                  // Create OK button with action handler
+                  let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
                    
-               }
-               
-               //Add OK and Cancel button to dialog message
-               dialogMessage.addAction(ok)
-               dialogMessage.addAction(cancel)
-               
-               // Present dialog message to user
-               self.present(dialogMessage, animated: true, completion: nil)
-    
- }
+                   
+                   let parameters: Parameters = ["usuario_id": usuario_id, "circular_id": circular_id]      //This will be your parameter
+                       Alamofire.request(direccion, method: .post, parameters: parameters).responseJSON { response in
+                           switch (response.result) {
+                           case .success:
+                               print(response)
+                               //self.circulares.remove(at: self.indexEliminar)
+                               self.tableViewCirculares.reloadData()
+                               break
+                           case .failure:
+                               print(Error.self)
+                           }
+                       }
+                   
+                   
+                   
+                   })
+       
+       
+       let cancel = UIAlertAction(title: "Cancelar", style: .cancel) { (action) -> Void in
+                      
+                  }
+                  
+                  //Add OK and Cancel button to dialog message
+                  dialogMessage.addAction(ok)
+                  dialogMessage.addAction(cancel)
+                  
+                  // Present dialog message to user
+                  self.present(dialogMessage, animated: true, completion: nil)
+       
+    }
     
     
     
@@ -1379,10 +1386,18 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     
     func compartir(message: String, link: String) {
-        if let link = NSURL(string: link) {
-            let objectsToShare = [message,link] as [Any]
-            let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
-            self.present(activityVC, animated: true, completion: nil)
+       let date = Date()
+        let msg = message
+        let urlWhats = "whatsapp://send?text=\(msg+"\n"+link)"
+
+        if let urlString = urlWhats.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed) {
+            if let whatsappURL = NSURL(string: urlString) {
+                if UIApplication.shared.canOpenURL(whatsappURL as URL) {
+                    UIApplication.shared.openURL(whatsappURL as URL)
+                } else {
+                    print("Por favor instale whatsapp")
+                }
+            }
         }
     }
 }

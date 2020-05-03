@@ -33,7 +33,9 @@ class CircularDetalleViewController: UIViewController {
     
     @IBOutlet weak var webView: WKWebView!
     
-   
+    @IBOutlet weak var btnAnterior: UIButton!
+    @IBOutlet weak var btnSiguiente: UIButton!
+    
     @IBOutlet weak var lblFechaCircular: UILabel!
     @IBOutlet weak var lblTituloParte1: MarqueeLabel!
     @IBOutlet weak var lblTituloParte2: UILabel!
@@ -73,6 +75,7 @@ class CircularDetalleViewController: UIViewController {
     var circulares = [CircularTodas]()
     var idCirculares = [Int]()
     var db: OpaquePointer?
+    var tipoCircular:Int=0
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -82,7 +85,7 @@ class CircularDetalleViewController: UIViewController {
         lblTituloParte1.fadeLength = 10.0
         lblTituloParte1.leadingBuffer = 30.0
         lblTituloParte1.trailingBuffer = 20.0
-       
+        tipoCircular = UserDefaults.standard.integer(forKey: "tipoCircular")
         imbCalendario.isHidden=true
         idUsuario = UserDefaults.standard.string(forKey: "idUsuario") ?? "0"
         viaNotif = UserDefaults.standard.integer(forKey: "viaNotif")
@@ -91,8 +94,14 @@ class CircularDetalleViewController: UIViewController {
         fechaIcs = UserDefaults.standard.string(forKey: "fechaIcs") ?? "0"
         nivel = UserDefaults.standard.string(forKey: "nivel") ?? "0"
         
-        if(horaInicialIcs != "00:00:00"){
+         if(horaInicialIcs != "00:00:00"){
             imbCalendario.isHidden=false
+            btnCalendario.isHidden=false
+            btnCalendario.isUserInteractionEnabled=false
+         }else{
+            imbCalendario.isHidden=true
+            btnCalendario.isHidden=true
+            btnCalendario.isUserInteractionEnabled=true
          }
          lblNivel.text = nivel
         
@@ -168,17 +177,45 @@ class CircularDetalleViewController: UIViewController {
                   let address=urlBase+"getCircularesUsuarios.php?usuario_id=\(idUsuario)"
                   circularUrl = address
                   if ConexionRed.isConnectedToNetwork() == true {
-                             let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesUsuarios.php?usuario_id=\(idUsuario)"
-                               let _url = URL(string: address);
-                             self.obtenerCirculares(uri:address)
-                             
-                         }
+                    
+                    //Todas
+                    if(tipoCircular==1){
+                       let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesUsuario.php?usuario_id=\(idUsuario)"
+                            let _url = URL(string: address);
+                        self.obtenerCirculares2(uri:address)
+                    }
+                    
+                    //Favoritas
+                    if(tipoCircular==2){
+                        let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesFavoritas.php?usuario_id=\(idUsuario)"
+                            let _url = URL(string: address);
+                            self.obtenerCirculares(uri:address)
+                    }
+                    //No leidas
+                    if(tipoCircular==3){
+                     let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesNoLeidas.php?usuario_id=\(idUsuario)"
+                      let _url = URL(string: address);
+                      self.obtenerCirculares(uri:address)
+                  }
+                    
+                    //Papelera
+                      if(tipoCircular==4){
+                       let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesEliminadas.php?usuario_id=\(idUsuario)"
+                        let _url = URL(string: address);
+                        self.obtenerCirculares(uri:address)
+                    }
+                    
+                    
+                }
                   
                  
                   posicion = find(value: id,in: ids) ?? 0
-                  
-                 
+                
+                    //Solo cuando sea no leída
+                
                   self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: self.id)
+            
+                
             
             
         }else{
@@ -353,7 +390,7 @@ class CircularDetalleViewController: UIViewController {
         if(ConexionRed.isConnectedToNetwork()){
              posicion = posicion+1
             if(posicion >= ids.count){
-                posicion=0;
+              btnSiguiente.isUserInteractionEnabled=false
             }
             
             if(posicion<ids.count){
@@ -362,7 +399,7 @@ class CircularDetalleViewController: UIViewController {
                
                 var nextId = ids[posicion]
                 
-              
+               self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: nextId)
                 
                 var nextTitulo = titulos[posicion]
                 var nextFecha = fechas[posicion]
@@ -465,13 +502,14 @@ class CircularDetalleViewController: UIViewController {
        if(ConexionRed.isConnectedToNetwork()){
        posicion = posicion+1
         if(posicion >= ids.count){
-            posicion=0;
+            btnSiguiente.isUserInteractionEnabled=false
         }
         if(posicion<ids.count){
             
             var nextId = ids[posicion]
             print("id siguiente: \(nextId)")
             print("pos siguiente: \(posicion)")
+             self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: nextId)
             
             var nextTitulo = titulos[posicion]
             var nextFecha = fechas[posicion]
@@ -579,14 +617,14 @@ class CircularDetalleViewController: UIViewController {
         if(ConexionRed.isConnectedToNetwork()){
                    posicion = posicion-1
                     if(posicion<0){
-                        posicion=0;
+                        btnAnterior.isUserInteractionEnabled=false
                     }
                    print("Anterior...")
                    if(posicion>=0){
                        var nextId = ids[posicion]
                        var nextTitulo = titulos[posicion]
                        var nextFecha = fechas[posicion]
-                       
+                        self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: nextId)
                        var nextHoraIniIcs = horasInicioIcs[posicion]
                        var nextHoraFinIcs = horasFinIcs[posicion]
                        var nextFechaIcs = fechasIcs[posicion]
@@ -670,13 +708,13 @@ class CircularDetalleViewController: UIViewController {
         if(ConexionRed.isConnectedToNetwork()){
             posicion = posicion-1
             if(posicion<0){
-                posicion=0;
+              btnAnterior.isUserInteractionEnabled=false
             }
             if(posicion>=0){
                 var nextId = ids[posicion]
                 var nextTitulo = titulos[posicion]
                 var nextFecha = fechas[posicion]
-                
+                 self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: nextId)
                 var nextHoraIniIcs = horasInicioIcs[posicion]
                 var nextHoraFinIcs = horasFinIcs[posicion]
                 var nextFechaIcs = fechasIcs[posicion]
@@ -1346,7 +1384,7 @@ class CircularDetalleViewController: UIViewController {
                         guard let eliminada = diccionario["eliminado"] as? String else {
                                                    return
                                                }
-                        if(Int(eliminada) == 0){
+                       
                                                self.ids.append(id)
                                                self.titulos.append(titulo)
                                                self.fechas.append(fecha)
@@ -1355,7 +1393,7 @@ class CircularDetalleViewController: UIViewController {
                                               self.horasInicioIcs.append(horaInicioIcs)
                                               self.horasFinIcs.append(horaFinIcs)
                                               self.niveles.append(nv ?? "")
-                        }
+                        
                    
                 }
                 
@@ -1365,10 +1403,164 @@ class CircularDetalleViewController: UIViewController {
     }
         
  }
+        
+        
+        
+        func obtenerCirculares(uri:String){
+               
+               Alamofire.request(uri)
+                   .responseJSON { response in
+                       // check for errors
+                       guard response.result.error == nil else {
+                           // got an error in getting the data, need to handle it
+                           print("error en la consulta")
+                           print(response.result.error!)
+                           return
+                       }
+                       /*
+                        [{"id":"1008","titulo":"\u00a1Felices vacaciones!","estatus":"Enviada","ciclo_escolar_id":"4","created_at":"2019-04-12 13:02:19","updated_at":"2019-04-12 13:02:19","leido":"1","favorito":"1","compartida":"1","eliminado":"1","status_envio":null,"envio_todos":"0"},
+                        */
+                       
+                       if let diccionarios = response.result.value as? [Dictionary<String,AnyObject>]{
+                           for diccionario in diccionarios{
+                               //print(diccionario)
+                               
+                               guard let id = diccionario["id"] as? String else {
+                                   print("No se pudo obtener el id")
+                                   return
+                               }
+                               print(id)
+                               
+                               guard let titulo = diccionario["titulo"] as? String else {
+                                   print("No se pudo obtener el titulo")
+                                   return
+                               }
+                             guard let fecha = diccionario["updated_at"] as? String else {
+                                                                                 print("No se pudo obtener la fecha")
+                                                                                 return
+                                                                             }
+                               guard let fechaIcs = diccionario["fecha_ics"] as? String else {
+                                                       return
+                                                     }
+                                                     guard let horaInicioIcs = diccionario["hora_inicial_ics"] as? String else {
+                                                                              return
+                                                                            }
+                                                     
+                                                    
+                                                     guard let horaFinIcs = diccionario["hora_final_ics"] as? String else {
+                                                                                                     return
+                                                                                                   }
+                                                     
+                                                     //Esto si viene null desde el servicio web
+                                                                       var nv:String?
+                                                                            if (diccionario["nivel"] == nil){
+                                                                                nv=""
+                                                                            }else{
+                                                                                nv=diccionario["nivel"] as? String
+                                                                            }
+                               guard let eliminada = diccionario["eliminado"] as? String else {
+                                                          return
+                                                      }
+                              
+                                                      self.ids.append(id)
+                                                      self.titulos.append(titulo)
+                                                      self.fechas.append(fecha)
+                                                         
+                                                     self.fechasIcs.append(fechaIcs)
+                                                     self.horasInicioIcs.append(horaInicioIcs)
+                                                     self.horasFinIcs.append(horaFinIcs)
+                                                     self.niveles.append(nv ?? "")
+                               
+                          
+                       }
+                       
+                       
+                   
+               
+           }
+               
+        }
     
         
 }
-    
+        
+}
+                
+        
+        
+        func obtenerCirculares2(uri:String){
+                   
+                   Alamofire.request(uri)
+                       .responseJSON { response in
+                           // check for errors
+                           guard response.result.error == nil else {
+                               // got an error in getting the data, need to handle it
+                               print("error en la consulta")
+                               print(response.result.error!)
+                               return
+                           }
+                           /*
+                            [{"id":"1008","titulo":"\u00a1Felices vacaciones!","estatus":"Enviada","ciclo_escolar_id":"4","created_at":"2019-04-12 13:02:19","updated_at":"2019-04-12 13:02:19","leido":"1","favorito":"1","compartida":"1","eliminado":"1","status_envio":null,"envio_todos":"0"},
+                            */
+                           
+                           if let diccionarios = response.result.value as? [Dictionary<String,AnyObject>]{
+                               for diccionario in diccionarios{
+                                   //print(diccionario)
+                                   
+                                   guard let id = diccionario["id"] as? String else {
+                                       print("No se pudo obtener el id")
+                                       return
+                                   }
+                                   print(id)
+                                   
+                                   guard let titulo = diccionario["titulo"] as? String else {
+                                       print("No se pudo obtener el titulo")
+                                       return
+                                   }
+                                 guard let fecha = diccionario["updated_at"] as? String else {
+                                                                                     print("No se pudo obtener la fecha")
+                                                                                     return
+                                                                                 }
+                                   guard let fechaIcs = diccionario["fecha_ics"] as? String else {
+                                                           return
+                                                         }
+                                                         guard let horaInicioIcs = diccionario["hora_inicial_ics"] as? String else {
+                                                                                  return
+                                                                                }
+                                                         
+                                                        
+                                                         guard let horaFinIcs = diccionario["hora_final_ics"] as? String else {
+                                                                                                         return
+                                                                                                       }
+                                                         
+                                                         //Esto si viene null desde el servicio web
+                                                                           var nv:String?
+                                                                                if (diccionario["nivel"] == nil){
+                                                                                    nv=""
+                                                                                }else{
+                                                                                    nv=diccionario["nivel"] as? String
+                                                                                }
+                                   guard let eliminada = diccionario["eliminado"] as? String else {
+                                                              return
+                                                          }
+                                if(Int(eliminada)==0){
+                                    self.ids.append(id)
+                                                                                                self.titulos.append(titulo)
+                                                                                                self.fechas.append(fecha)
+                                                                                                   
+                                                                                               self.fechasIcs.append(fechaIcs)
+                                                                                               self.horasInicioIcs.append(horaInicioIcs)
+                                                                                               self.horasFinIcs.append(horaFinIcs)
+                                                                                               self.niveles.append(nv ?? "")
+                                }
+                                                                                    
+                           }
+                     }
+                   
+            }
+        }
+        
+        
   func obtenerCircular(uri:String){
           
           Alamofire.request(uri)

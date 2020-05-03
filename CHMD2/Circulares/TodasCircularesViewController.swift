@@ -94,9 +94,9 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         
         btnMarcarFavoritas.addTarget(self,action: #selector(agregarFavoritos), for: .touchUpInside)
         btnMarcarNoLeidas.addTarget(self,action: #selector(noleer), for: .touchUpInside)
-         btnMarcarNoLeidas.addTarget(self,action: #selector(leer), for: .touchUpInside)
+         btnMarcarLeidas.addTarget(self,action: #selector(leer), for: .touchUpInside)
         btnMarcarEliminadas.addTarget(self,action: #selector(eliminar), for: .touchUpInside)
-   
+       
         
        
         tableViewCirculares.prefetchDataSource = self
@@ -121,7 +121,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
      
         if ConexionRed.isConnectedToNetwork() == true {
             self.delete()
-            UIApplication.shared.applicationIconBadgeNumber = 0
+            UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber-1
              
              
         } else {
@@ -492,6 +492,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         let cell = tableView.cellForRow(at: indexPath)
             UserDefaults.standard.set(indexPath.row,forKey:"posicion")
             UserDefaults.standard.set(c.id,forKey:"id")
+            
             UserDefaults.standard.set(c.nombre,forKey:"nombre")
             UserDefaults.standard.set(c.fecha,forKey:"fecha")
             UserDefaults.standard.set(c.contenido,forKey:"contenido")
@@ -500,6 +501,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             UserDefaults.standard.set(c.horaFinalIcs,forKey:"horaFinalIcs")
             UserDefaults.standard.set(c.nivel,forKey:"nivel")
             UserDefaults.standard.set(0, forKey: "viaNotif")
+            UserDefaults.standard.set(1, forKey: "tipoCircular")
             performSegue(withIdentifier: "TcircularSegue", sender:self)
         }else{
          
@@ -1015,8 +1017,11 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     */
     //el pie
     
-    
-   
+    @objc func reaccionar()
+    {
+        self.viewDidLoad()
+        self.viewWillAppear(true)
+    }
     
     
     @objc func hacerFavorita(_ sender:UIButton){
@@ -1118,24 +1123,33 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     }
     
     
+    
     @objc func agregarFavoritos(){
         
-        
+        circulares.removeAll()
           if ConexionRed.isConnectedToNetwork() == true {
           for c in circularesSeleccionadas{
-            print("circular: \(c)")
-          self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: "\(c)")
-          
-          }
-            
-            seleccion.removeAll()
-            circularesSeleccionadas.removeAll()
+            self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: "\(c)")
            
-           self.viewDidLoad()
-           self.viewWillAppear(true)
+                            
+           }
+            for s in seleccion{
+            let indexPath = IndexPath(row:s, section:0)
+            let cell = self.tableViewCirculares.dequeueReusableCell(withIdentifier: "celda", for: indexPath) as! CircularTableViewCell
+            if(cell.chkSeleccionar.isChecked == true){
+                          cell.chkSeleccionar.isChecked=false
+            }
+                
+                
+           
+          }
+            circulares.removeAll()
+            circularesSeleccionadas.removeAll()
+            seleccion.removeAll()
             
-            self.obtenerCirculares(limit:50)
-            tableViewCirculares.reloadData()
+             let timer = Timer.scheduledTimer(timeInterval: 2.5, target: self, selector: #selector(reaccionar), userInfo: nil, repeats: false)
+            
+           
             
           }else{
             var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
@@ -1143,31 +1157,39 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         }
         
     }
-    @objc func leer(){
-        
-        
-          if ConexionRed.isConnectedToNetwork() == true {
-          for c in circularesSeleccionadas{
-            print("circular: \(c)")
-            self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: "\(c)")
+    
+    
+   @objc func noleer(){
+       
+       circulares.removeAll()
+         if ConexionRed.isConnectedToNetwork() == true {
+         for c in circularesSeleccionadas{
+            self.noleerCircular(direccion: self.urlBase+self.noleerMetodo, usuario_id: self.idUsuario, circular_id: "\(c)")
           
-          }
-            
-            seleccion.removeAll()
-            circularesSeleccionadas.removeAll()
+         }
            
-           self.viewDidLoad()
-           self.viewWillAppear(true)
-            
-            self.obtenerCirculares(limit:50)
-            tableViewCirculares.reloadData()
-            
-          }else{
-            var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
-             alert.show()
-        }
-        
-    }
+           for s in seleccion{
+                          let indexPath = IndexPath(row:s, section:0)
+                          let cell = self.tableViewCirculares.dequeueReusableCell(withIdentifier: "celda", for: indexPath)
+                                    as! CircularTableViewCell
+                          
+                          if(cell.chkSeleccionar.isChecked == true){
+                              cell.chkSeleccionar.isChecked=false
+                              cell.imgCircular.image=UIImage(named:"circle")
+                          }
+                      }
+          circulares.removeAll()
+           circularesSeleccionadas.removeAll()
+           seleccion.removeAll()
+           
+            let timer = Timer.scheduledTimer(timeInterval: 2.5, target: self, selector: #selector(reaccionar), userInfo: nil, repeats: false)
+           
+         }else{
+           var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
+            alert.show()
+       }
+       
+   }
     
     @objc func eliminar(){
      if ConexionRed.isConnectedToNetwork() == true {
@@ -1217,27 +1239,36 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     }
     
-    @objc func noleer(){
-        if ConexionRed.isConnectedToNetwork() == true {
-        circulares.removeAll()
-           for c in circularesSeleccionadas{
-           self.noleerCircular(direccion: self.urlBase+self.noleerMetodo, usuario_id: self.idUsuario, circular_id: "\(c)")
-        }
-      
-             seleccion.removeAll()
-             circularesSeleccionadas.removeAll()
-                     
-                     self.viewDidLoad()
-                     self.viewWillAppear(true)
-                      
-                      self.obtenerCirculares(limit:50)
-                      tableViewCirculares.reloadData()
+     @objc func leer(){
            
-            
-       }else{
-                       var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
-                        alert.show()
+           circulares.removeAll()
+             if ConexionRed.isConnectedToNetwork() == true {
+             for c in circularesSeleccionadas{
+                self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: "\(c)")
+              
              }
+               
+               for s in seleccion{
+                              let indexPath = IndexPath(row:s, section:0)
+                              let cell = self.tableViewCirculares.dequeueReusableCell(withIdentifier: "celda", for: indexPath)
+                                        as! CircularTableViewCell
+                              
+                              if(cell.chkSeleccionar.isChecked == true){
+                                  cell.chkSeleccionar.isChecked=false
+                                  cell.imgCircular.image=UIImage(named:"circle_white")
+                              }
+                          }
+             circulares.removeAll()
+             circularesSeleccionadas.removeAll()
+             seleccion.removeAll()
+               
+                let timer = Timer.scheduledTimer(timeInterval: 2.5, target: self, selector: #selector(reaccionar), userInfo: nil, repeats: false)
+               
+             }else{
+               var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
+                alert.show()
+           }
+           
        }
 
     //Pie
@@ -1417,10 +1448,18 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     }
     
     func compartir(message: String, link: String) {
-          if let link = NSURL(string: link) {
-              let objectsToShare = [message,link] as [Any]
-              let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
-              self.present(activityVC, animated: true, completion: nil)
+          let date = Date()
+          let msg = message
+          let urlWhats = "whatsapp://send?text=\(msg+"\n"+link)"
+
+          if let urlString = urlWhats.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed) {
+              if let whatsappURL = NSURL(string: urlString) {
+                  if UIApplication.shared.canOpenURL(whatsappURL as URL) {
+                      UIApplication.shared.openURL(whatsappURL as URL)
+                  } else {
+                      print("Por favor instale whatsapp")
+                  }
+              }
           }
       }
 }

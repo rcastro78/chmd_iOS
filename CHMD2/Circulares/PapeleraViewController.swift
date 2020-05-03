@@ -286,7 +286,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         let favAction = self.contextualFavAction(forRowAtIndexPath: indexPath)
         let leeAction = self.contextualReadAction(forRowAtIndexPath: indexPath)
         let noleeAction = self.contextualUnreadAction(forRowAtIndexPath: indexPath)
-        let swipeConfig = UISwipeActionsConfiguration(actions: [leeAction,favAction,noleeAction])
+        let swipeConfig = UISwipeActionsConfiguration(actions: [favAction,noleeAction])
         return swipeConfig
     }
     
@@ -298,9 +298,8 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                              let idCircular:String = "\(circular.id)"
                                              if ConexionRed.isConnectedToNetwork() == true {
                                              self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: idCircular)
-                                                 
-                                                 self.viewDidLoad()
-                                                 self.viewWillAppear(true)
+                                                self.circulares.remove(at: indexPath.row)
+                                                self.tableViewCirculares.reloadData()
                                                  
                                                  
                                              }else{
@@ -353,8 +352,8 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                              let idCircular:String = "\(circular.id)"
                                          if ConexionRed.isConnectedToNetwork() == true {
                                          self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: idCircular)
-                                          self.viewDidLoad()
-                                          self.viewWillAppear(true)
+                                         self.circulares.remove(at: indexPath.row)
+                                         self.tableViewCirculares.reloadData()
                                             }else{
                                                var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
                                                alert.show()
@@ -380,8 +379,8 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                                 let idCircular:String = "\(circular.id)"
                                             if ConexionRed.isConnectedToNetwork() == true {
                                             self.noleerCircular(direccion: self.urlBase+self.noleerMetodo, usuario_id: self.idUsuario, circular_id: idCircular)
-                                             self.viewDidLoad()
-                                             self.viewWillAppear(true)
+                                              self.circulares.remove(at: indexPath.row)
+                                              self.tableViewCirculares.reloadData()
                                                }else{
                                                   var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
                                                   alert.show()
@@ -442,6 +441,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             UserDefaults.standard.set(c.horaFinalIcs,forKey:"horaFinalIcs")
             UserDefaults.standard.set(c.nivel,forKey:"nivel")
             UserDefaults.standard.set(0, forKey: "viaNotif")
+            UserDefaults.standard.set(4, forKey: "tipoCircular")
             performSegue(withIdentifier: "CircularEliminadaSegue", sender:self)
         }
              
@@ -1011,42 +1011,46 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     
     @objc func agregarFavoritos(){
+        
+        
+          if ConexionRed.isConnectedToNetwork() == true {
+          for c in circularesSeleccionadas{
+            self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: "\(c)")
            
-           
-             if ConexionRed.isConnectedToNetwork() == true {
-             for c in circularesSeleccionadas{
-               print("circular: \(c)")
-             self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: "\(c)")
-             
-             }
+          }
+            //Con esta porción, se  pueden eliminar elementos discontinuos de la lista
             for s in seleccion{
-                          let indexPath = IndexPath(row:s, section:0)
-                               print("index: \(indexPath.row)")
-                               var r = indexPath.row
-                               if r>0{
-                                   r = r - 1
-                               }
-                               print("index: \(r)")
-                               self.circulares.remove(at: r)
-                              
-               }
-               circularesSeleccionadas.removeAll()
-               seleccion.removeAll()
-               self.tableViewCirculares.reloadData()
-               
-               btnMarcarLeidas.isHidden=true
-               btnMarcarNoLeidas.isHidden=true
-               btnMarcarFavoritas.isHidden=true
-               lblNoLeidas.isHidden=true
-               lblNoLeidas.isHidden=true
-               lblFavoritas.isHidden=true
-               
-             }else{
-               var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
-                alert.show()
-           }
-           
-       }
+                       let indexPath = IndexPath(row:s, section:0)
+                            print("index: \(indexPath.row)")
+                            var r = indexPath.row
+                            if r>0{
+                                r = r - 1
+                            }
+                            print("index: \(r)")
+                         if(r>=0){
+                             self.circulares.remove(at: r)
+                         }
+                            
+                           
+            }
+            circularesSeleccionadas.removeAll()
+            seleccion.removeAll()
+            self.tableViewCirculares.reloadData()
+            
+            btnMarcarLeidas.isHidden=true
+            btnMarcarNoLeidas.isHidden=true
+            btnMarcarFavoritas.isHidden=true
+            lblFavoritas.isHidden=true
+            lblNoLeidas.isHidden=true
+            lblLeidas.isHidden=true
+          
+            
+          }else{
+            var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
+             alert.show()
+        }
+        
+    }
     
     @objc func leer(){
         
@@ -1115,40 +1119,43 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     }
     
     @objc func noleer(){
-        if ConexionRed.isConnectedToNetwork() == true {
-        circulares.removeAll()
-           for c in circularesSeleccionadas{
-           self.noleerCircular(direccion: self.urlBase+self.noleerMetodo, usuario_id: self.idUsuario, circular_id: "\(c)")
-        }
-      
-           for s in seleccion{
-                        let indexPath = IndexPath(row:s, section:0)
-                             print("index: \(indexPath.row)")
-                             var r = indexPath.row
-                             if r>0{
-                                 r = r - 1
-                             }
-                             print("index: \(r)")
-                             self.circulares.remove(at: r)
-                            
-             }
-             circularesSeleccionadas.removeAll()
-             seleccion.removeAll()
-             self.tableViewCirculares.reloadData()
-             
-             btnMarcarLeidas.isHidden=true
-             btnMarcarNoLeidas.isHidden=true
-             btnMarcarFavoritas.isHidden=true
-             lblNoLeidas.isHidden=true
-             lblNoLeidas.isHidden=true
-             lblFavoritas.isHidden=true
+        
+        
+          if ConexionRed.isConnectedToNetwork() == true {
+          for c in circularesSeleccionadas{
+            self.noleerCircular(direccion: self.urlBase+self.noleerMetodo, usuario_id: self.idUsuario, circular_id: "\(c)")
            
+          }
+            //Con esta porción, se pueden eliminar elementos discontinuos de la lista
+            for s in seleccion{
+                       let indexPath = IndexPath(row:s, section:0)
+                            print("index: \(indexPath.row)")
+                            var r = indexPath.row
+                            if r>0{
+                                r = r - 1
+                            }
+                            print("index: \(r)")
+                            self.circulares.remove(at: r)
+                           
+            }
+            circularesSeleccionadas.removeAll()
+            seleccion.removeAll()
+            self.tableViewCirculares.reloadData()
             
-       }else{
-                       var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
-                        alert.show()
-             }
-       }
+            btnMarcarLeidas.isHidden=true
+            btnMarcarNoLeidas.isHidden=true
+            btnMarcarFavoritas.isHidden=true
+            lblLeidas.isHidden=true
+            lblNoLeidas.isHidden=true
+            lblFavoritas.isHidden=true
+          
+            
+          }else{
+            var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
+             alert.show()
+        }
+        
+    }
 
     //Pie
     @objc func handleLongPress(_ gestureRecognizer: UILongPressGestureRecognizer){
