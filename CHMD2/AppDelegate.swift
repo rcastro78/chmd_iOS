@@ -53,15 +53,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate,GIDSignI
     
     
     func applicationDidBecomeActive(application: UIApplication) {
-        //application.applicationIconBadgeNumber = 0
+         
     }
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        ///Aquí capturamos que ha llegado una notificación y se le dio click,
-        ///disminuir en 1 el recuento del badge
-        if(launchOptions != nil){
-            UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
-        }
+        
         
          var statement:OpaquePointer?
         let sqlRecuento1 = "select count(*) from appNotificacion"
@@ -184,25 +180,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate,GIDSignI
    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any],
     fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         var statement:OpaquePointer?
-       guard
-        let aps = userInfo[AnyHashable("aps")] as? NSDictionary,
-            let alert = aps["alert"] as? NSDictionary,
-            let body = alert["body"] as? String,
-            let title = alert["title"] as? String,
-            let idC = alert["id"] as? String,
-            let badge = alert["badge"] as? String
-        
-            
-        
-            else {
-               print("Error en las notificaciones")
-                return
-            }
-        
-       UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber + 1
+        let aps = userInfo[AnyHashable("aps")] as? NSDictionary
+        let alert = aps?["alert"] as? NSDictionary
+        let body = alert![AnyHashable("body")] as? String
+        let title = alert!["title"] as? String
+        let b = aps![AnyHashable("badge")] as? Int
+
+       //Setear el badge si la app está abierta
+    UIApplication.shared.applicationIconBadgeNumber = (b ?? 1)
             
        
         let state = application.applicationState
+    
         switch state {
             case .background:
             print("Background")
@@ -231,14 +220,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate,GIDSignI
             let request = response.notification.request
             let userInfo = request.content.userInfo
             //Con esto capturamos los valores enviados en la notificacion
-            let idCircular = userInfo["id"] as! String
+            //let idCircular = userInfo["id"] as! String
+        
+        let aps = userInfo[AnyHashable("aps")] as? NSDictionary
+               let alert = aps?["alert"] as? NSDictionary
+               let body = alert![AnyHashable("body")] as? String
+               let title = alert!["title"] as? String
+               let b = aps![AnyHashable("badge")] as? Int
+
+              //Mostrar el badge
+              UIApplication.shared.applicationIconBadgeNumber = b!
+        
+            debugPrint("Notificaciones: \(userInfo)")
             UserDefaults.standard.set(1, forKey: "viaNotif")
-            UserDefaults.standard.set(idCircular, forKey: "idCircularViaNotif")
+            UserDefaults.standard.set(0, forKey: "idCircularViaNotif")
             
-         UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
+      
           
         let mainStoryboard:UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
-                let circulares = mainStoryboard.instantiateViewController(withIdentifier: "TodasCircularesViewController") as! TodasCircularesViewController
+                let circulares = mainStoryboard.instantiateViewController(withIdentifier: "ViewController") as! ViewController
                 self.window?.rootViewController = circulares
 
         
@@ -313,7 +313,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate,GIDSignI
     
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-         application.applicationIconBadgeNumber = 0
+         //application.applicationIconBadgeNumber = 0
     }
     
     func applicationWillTerminate(_ application: UIApplication) {
