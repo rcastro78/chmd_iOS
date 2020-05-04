@@ -121,7 +121,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
      
         if ConexionRed.isConnectedToNetwork() == true {
             self.delete()
-            UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber-1
+          
              
              
         } else {
@@ -1302,6 +1302,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                switch (response.result) {
                case .success:
                    print(response)
+                    UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
                    break
                case .failure:
                    print(Error.self)

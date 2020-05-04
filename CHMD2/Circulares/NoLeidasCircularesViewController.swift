@@ -1228,7 +1228,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             switch (response.result) {
             case .success:
                 print(response)
-                self.circulares.removeAll()
+                 UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
                 break
             case .failure:
                 print(Error.self)

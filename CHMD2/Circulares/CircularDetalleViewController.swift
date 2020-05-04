@@ -1143,6 +1143,7 @@ class CircularDetalleViewController: UIViewController {
             switch (response.result) {
             case .success:
                 print(response)
+                UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
                 break
             case .failure:
                 print(Error.self)
