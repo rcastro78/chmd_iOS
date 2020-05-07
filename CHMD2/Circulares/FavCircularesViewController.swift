@@ -311,7 +311,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                                            let cell = self.tableViewCirculares.dequeueReusableCell(withIdentifier: "celda", for: indexPath) as! CircularTableViewCell
                                                                self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: idCircular)
                                                                    self.circulares.remove(at: indexPath.row)
-                                                                self.tableViewCirculares.reloadData()
+                                                                 let timer = Timer.scheduledTimer(timeInterval: 2.5, target: self, selector: #selector(self.reaccionar), userInfo: nil, repeats: false)
                                                         
                                                         
                                                                     }else{
@@ -331,7 +331,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                                            let cell = self.tableViewCirculares.dequeueReusableCell(withIdentifier: "celda", for: indexPath) as! CircularTableViewCell
                                                                self.noleerCircular(direccion: self.urlBase+self.noleerMetodo, usuario_id: self.idUsuario, circular_id: idCircular)
                                                                     self.circulares.remove(at: indexPath.row)
-                                                                                                                                  self.tableViewCirculares.reloadData()
+                                                                                                                                      let timer = Timer.scheduledTimer(timeInterval: 2.5, target: self, selector: #selector(self.reaccionar), userInfo: nil, repeats: false)
                                                                     }else{
                                                                     var alert = UIAlertView(title: "No está conectado a Internet", message: "Esta opción solo funciona con una conexión a Internet", delegate: nil, cancelButtonTitle: "Aceptar")
                                                                 alert.show()
@@ -1400,6 +1400,13 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             }
         }
     }
+    
+    
+    @objc func reaccionar()
+       {
+           self.viewDidLoad()
+           self.viewWillAppear(true)
+       }
 }
 
 

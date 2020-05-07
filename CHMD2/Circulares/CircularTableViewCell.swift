@@ -19,7 +19,7 @@ class CircularTableViewCell: UITableViewCell {
     @IBOutlet weak var chkSeleccionar: CheckBox!
     
     
-    @IBOutlet weak var btnModificarEstado: UIButton!
+    //@IBOutlet weak var btnModificarEstado: UIButton!
     
     
     var favMetodo:String="favCircular.php"

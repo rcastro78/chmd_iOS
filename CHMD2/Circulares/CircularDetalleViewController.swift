@@ -180,7 +180,7 @@ class CircularDetalleViewController: UIViewController {
                     
                     //Todas
                     if(tipoCircular==1){
-                       let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesUsuario.php?usuario_id=\(idUsuario)"
+                       let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesUsuarioLazyLoad.php?usuario_id=\(idUsuario)&limit=50"
                             let _url = URL(string: address);
                         self.obtenerCirculares2(uri:address)
                     }
@@ -390,7 +390,7 @@ class CircularDetalleViewController: UIViewController {
         if(ConexionRed.isConnectedToNetwork()){
              posicion = posicion+1
             if(posicion >= ids.count){
-              btnSiguiente.isUserInteractionEnabled=false
+              //btnSiguiente.isUserInteractionEnabled=false
             }
             
             if(posicion<ids.count){
@@ -502,7 +502,7 @@ class CircularDetalleViewController: UIViewController {
        if(ConexionRed.isConnectedToNetwork()){
        posicion = posicion+1
         if(posicion >= ids.count){
-            btnSiguiente.isUserInteractionEnabled=false
+            //btnSiguiente.isUserInteractionEnabled=false
         }
         if(posicion<ids.count){
             
@@ -617,7 +617,7 @@ class CircularDetalleViewController: UIViewController {
         if(ConexionRed.isConnectedToNetwork()){
                    posicion = posicion-1
                     if(posicion<0){
-                        btnAnterior.isUserInteractionEnabled=false
+                        //btnAnterior.isUserInteractionEnabled=false
                     }
                    print("Anterior...")
                    if(posicion>=0){
@@ -949,22 +949,20 @@ class CircularDetalleViewController: UIViewController {
         
         
     }
-    
+    /*
     @IBAction func btnEliminaClick(_ sender: Any) {
         if(ConexionRed.isConnectedToNetwork()){
             let dialogMessage = UIAlertController(title: "CHMD", message: "¿Deseas eliminar esta circular?", preferredStyle: .alert)
             
             // Create OK button with action handler
             let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
-                self.delCircular(direccion: self.urlBase+self.delMetodo, usuario_id:self.idUsuario, circular_id: self.id)
+                self.delCircularSinDialogo(direccion: self.urlBase+self.delMetodo, usuario_id:self.idUsuario, circular_id: self.id)
                 
                 //Pasar a la siguiente
                 
                 self.posicion = self.posicion+1
                 
-              
-                
-                if(self.posicion<self.ids.count){
+                //if(self.posicion<self.ids.count){
                     var nextId = self.ids[self.posicion]
                     var nextTitulo = self.titulos[self.posicion]
                     var nextFecha = self.fechas[self.posicion]
@@ -991,18 +989,11 @@ class CircularDetalleViewController: UIViewController {
                     let mes = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
                     let dia = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
                     self.lblFechaCircular.text = "\(dia)/\(mes)/\(anio)"
+                    self.lblTituloParte1.text=nextTitulo
                     
-                    if(ConexionRed.isConnectedToNetwork()){
-                        //self.lblTituloParte1.isHidden=true
-                        //self.lblTituloParte1?.visiblity(gone: true, dimension: 0)
-                    }
                     
-                    //self.lblTituloParte1.text=nextTitulo /*partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())*/
                     self.id = nextId;
-                }else{
-                    self.posicion = 0
-                    self.id = UserDefaults.standard.string(forKey: "id") ?? ""
-                }
+               
                 
                 
                 
@@ -1023,7 +1014,7 @@ class CircularDetalleViewController: UIViewController {
             var alert = UIAlertView(title: "No está conectado a Internet", message: "Esta opción solo funciona con una conexión a Internet", delegate: nil, cancelButtonTitle: "Aceptar")
                                              alert.show()
         }
-    }
+    }*/
     
     @IBAction func btnEliminarClick(_ sender: UIButton) {
         
@@ -1032,15 +1023,13 @@ class CircularDetalleViewController: UIViewController {
             
             // Create OK button with action handler
             let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
-                self.delCircular(direccion: self.urlBase+self.delMetodo, usuario_id:self.idUsuario, circular_id: self.id)
+                self.delCircularSinDialogo(direccion: self.urlBase+self.delMetodo, usuario_id:self.idUsuario, circular_id: self.id)
                 
                 //Pasar a la siguiente
                 
                 self.posicion = self.posicion+1
                 
-              
-                
-                if(self.posicion<self.ids.count){
+                //if(self.posicion<self.ids.count){
                     var nextId = self.ids[self.posicion]
                     var nextTitulo = self.titulos[self.posicion]
                     var nextFecha = self.fechas[self.posicion]
@@ -1066,19 +1055,19 @@ class CircularDetalleViewController: UIViewController {
                     let anio = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
                     let mes = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
                     let dia = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
-                    self.lblFechaCircular.text = "\(dia)/\(mes)/\(anio)"
+                    let dateFormatter = DateFormatter()
+                    dateFormatter.dateFormat = "dd/MM/yyyy"
+                    dateFormatter.locale = Locale(identifier: "es_ES_POSIX")
+                    let date1 = dateFormatter.date(from: "\(dia)/\(mes)/\(anio)")
+                    dateFormatter.dateFormat = "d 'de' MMMM 'de' YYYY"
+                    let d = dateFormatter.string(from: date1!)
+                    self.lblFechaCircular.text = d
+                
+                    self.lblTituloParte1.text=nextTitulo
                     
-                    if(ConexionRed.isConnectedToNetwork()){
-                        self.lblTituloParte1.isHidden=true
-                        self.lblTituloParte1?.visiblity(gone: true, dimension: 0)
-                    }
                     
-                    //self.lblTituloParte1.text=nextTitulo /*partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())*/
                     self.id = nextId;
-                }else{
-                    self.posicion = 0
-                    self.id = UserDefaults.standard.string(forKey: "id") ?? ""
-                }
+               
                 
                 
                 
@@ -1198,6 +1187,26 @@ class CircularDetalleViewController: UIViewController {
         
         
     }
+    
+    
+    func delCircularSinDialogo(direccion:String, usuario_id:String, circular_id:String){
+        
+       
+            let parameters: Parameters = ["usuario_id": usuario_id, "circular_id": circular_id]      //This will be your parameter
+            Alamofire.request(direccion, method: .post, parameters: parameters).responseJSON { response in
+                switch (response.result) {
+                case .success:
+                    print(response)
+                    break
+                case .failure:
+                    print(Error.self)
+                }
+            }
+        
+        
+    }
+    
+    
     /*
     // MARK: - Navigation
 

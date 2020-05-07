@@ -1289,4 +1289,10 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             
                }
     }
+    
+    @objc func reaccionar()
+          {
+              self.viewDidLoad()
+              self.viewWillAppear(true)
+          }
 }
