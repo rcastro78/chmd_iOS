@@ -229,7 +229,17 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                           let date1 = dateFormatter.date(from: c.fecha)
                           dateFormatter.dateFormat = "EEEE"
                           let dia = dateFormatter.string(from: date1!)
-                  
+                  let intervalo = Date() - date1!
+                    let diferenciaDias:Int = intervalo.day!
+                    if(diferenciaDias<=7){
+                        dateFormatter.dateFormat = "EEEE"
+                    }
+                  if(diferenciaDias>7 && diferenciaDias<=365){
+                      dateFormatter.dateFormat = "dd/MM/yyyy"
+                  }
+                  if(diferenciaDias>365){
+                      dateFormatter.dateFormat = "MMMM/yyyy"
+                  }
                    
                    cell.lblFecha.text?=dia
          }

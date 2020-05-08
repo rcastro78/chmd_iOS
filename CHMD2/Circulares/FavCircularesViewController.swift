@@ -228,7 +228,17 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                           dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
                           dateFormatter.locale = Locale(identifier: "es_ES_POSIX")
                           let date1 = dateFormatter.date(from: c.fecha)
-                          dateFormatter.dateFormat = "EEEE"
+                         let intervalo = Date() - date1!
+                           let diferenciaDias:Int = intervalo.day!
+                           if(diferenciaDias<=7){
+                               dateFormatter.dateFormat = "EEEE"
+                           }
+                        if(diferenciaDias>7 && diferenciaDias<=365){
+                             dateFormatter.dateFormat = "dd/MM/yyyy"
+                         }
+                         if(diferenciaDias>365){
+                             dateFormatter.dateFormat = "MMMM/yyyy"
+                         }
                           let dia = dateFormatter.string(from: date1!)
                   
                    
