@@ -43,7 +43,7 @@ class CircularDetalleViewController: UIViewController {
     @IBOutlet weak var imbCalendario: UIButton!
       
     @IBOutlet weak var btnCalendario: UIButton!
-    @IBOutlet weak var lblContenidoHTML: UITextView!
+    //@IBOutlet weak var lblContenidoHTML: UITextView!
     @IBOutlet weak var lblNivel: UILabel!
     var ids = [String]()
     var titulos = [String]()
@@ -79,12 +79,12 @@ class CircularDetalleViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        lblTituloParte1.type = .continuous
+        /*lblTituloParte1.type = .continuous
         lblTituloParte1.scrollDuration = 8.0
         lblTituloParte1.animationCurve = .easeOut
         lblTituloParte1.fadeLength = 10.0
         lblTituloParte1.leadingBuffer = 30.0
-        lblTituloParte1.trailingBuffer = 20.0
+        lblTituloParte1.trailingBuffer = 20.0*/
         tipoCircular = UserDefaults.standard.integer(forKey: "tipoCircular")
         imbCalendario.isHidden=true
         idUsuario = UserDefaults.standard.string(forKey: "idUsuario") ?? "0"
@@ -118,13 +118,13 @@ class CircularDetalleViewController: UIViewController {
                    let dia = fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
                    //lblFechaCircular.text = "\(dia)/\(mes)/\(anio)"
             
-            let dateFormatter = DateFormatter()
+            /*let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "dd/MM/yyyy"
             dateFormatter.locale = Locale(identifier: "es_ES_POSIX")
             let date1 = dateFormatter.date(from: "\(dia)/\(mes)/\(anio)")
             dateFormatter.dateFormat = "d 'de' MMMM 'de' YYYY"
             let d = dateFormatter.string(from: date1!)
-            lblFechaCircular.text = d
+            lblFechaCircular.text = d*/
                     //Convertir la fecha al formato dd de mes de año
                     
             
@@ -133,9 +133,9 @@ class CircularDetalleViewController: UIViewController {
              if(ConexionRed.isConnectedToNetwork()){
                //self.lblTituloParte1.isHidden=true
                //self.lblTituloParte1?.visiblity(gone: true, dimension: 0)
-              self.lblTituloParte1.text = circularTitulo.uppercased()
+              //self.lblTituloParte1.text = circularTitulo.uppercased()
              }else{
-             self.lblTituloParte1.text = titulo.uppercased()
+            //self.lblTituloParte1.text = titulo.uppercased()
              posicion = UserDefaults.standard.integer(forKey:"posicion")
              leerCirculares()
             }
@@ -161,7 +161,7 @@ class CircularDetalleViewController: UIViewController {
          
             
             
-          lblContenidoHTML.isHidden=true
+          //lblContenidoHTML.isHidden=true
           webView.isHidden=false
             
             let link = URL(string:urlBase+"getCircularId4.php?id=\(id)")!
@@ -221,7 +221,7 @@ class CircularDetalleViewController: UIViewController {
         }else{
             
             //contenido = contenido.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLHostAllowedCharacterSet())
-            lblContenidoHTML.isHidden=true
+            //lblContenidoHTML.isHidden=true
             webView.isHidden=false
             
             webView.loadHTMLString("<html><head><meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=5, minimum-scale=1.0, user-scalable=yes'><meta  http-equiv='X-UA-Compatible'  content='IE=edge,chrome=1'><meta name='HandheldFriendly' content='true'></head><body {color: #005188;}><h3>\(contenido)</h3></p></body></html>", baseURL: nil)
@@ -441,7 +441,7 @@ class CircularDetalleViewController: UIViewController {
                     //self.lblTituloParte1?.visiblity(gone: true, dimension: 0)
                 }
                 
-                self.lblTituloParte1.text=nextTitulo /*partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())*/
+                //self.lblTituloParte1.text=nextTitulo /*partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())*/
                 id = nextId;
             }else{
                 posicion = 0
@@ -460,8 +460,8 @@ class CircularDetalleViewController: UIViewController {
                 if(posicion>=circulares.count){
                     posicion = 0
                 }
-                lblTituloParte1.text = circulares[posicion].nombre
-                lblNivel.text = circulares[posicion].nivel
+                //lblTituloParte1.text = circulares[posicion].nombre
+                //lblNivel.text = circulares[posicion].nivel
                 
                 let anio = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
                 let mes = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
@@ -541,20 +541,20 @@ class CircularDetalleViewController: UIViewController {
             let dia = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
             //self.lblFechaCircular.text = "\(dia)/\(mes)/\(anio)"
             
-            let dateFormatter = DateFormatter()
+            /*let dateFormatter = DateFormatter()
                       dateFormatter.dateFormat = "dd/MM/yyyy"
                       dateFormatter.locale = Locale(identifier: "es_ES_POSIX")
                       let date1 = dateFormatter.date(from: "\(dia)/\(mes)/\(anio)")
                       dateFormatter.dateFormat = "d 'de' MMMM 'de' YYYY"
                       let d = dateFormatter.string(from: date1!)
-                      lblFechaCircular.text = d
+                      lblFechaCircular.text = d*/
             
             if(ConexionRed.isConnectedToNetwork()){
                 //self.lblTituloParte1.isHidden=true
                 //self.lblTituloParte1?.visiblity(gone: true, dimension: 0)
             }
             
-            self.lblTituloParte1.text=nextTitulo /*partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())*/
+            //self.lblTituloParte1.text=nextTitulo /*partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())*/
             id = nextId;
         }else{
             posicion = 0
@@ -573,8 +573,8 @@ class CircularDetalleViewController: UIViewController {
             if(posicion>=circulares.count){
                 posicion = 0
             }
-            lblTituloParte1.text = circulares[posicion].nombre
-            lblNivel.text = circulares[posicion].nivel
+            //lblTituloParte1.text = circulares[posicion].nombre
+            //lblNivel.text = circulares[posicion].nivel
             
             let anio = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
             let mes = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
@@ -652,21 +652,21 @@ class CircularDetalleViewController: UIViewController {
                       let dia = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
                       //self.lblFechaCircular.text = "\(dia)/\(mes)/\(anio)"
                        
-                                 let dateFormatter = DateFormatter()
+                                 /*let dateFormatter = DateFormatter()
                                  dateFormatter.dateFormat = "dd/MM/yyyy"
                                  dateFormatter.locale = Locale(identifier: "es_ES_POSIX")
                                  let date1 = dateFormatter.date(from: "\(dia)/\(mes)/\(anio)")
                                  dateFormatter.dateFormat = "d 'de' MMMM 'de' YYYY"
                                  let d = dateFormatter.string(from: date1!)
                                  lblFechaCircular.text = d
-                       
+                       */
                        
                        if(ConexionRed.isConnectedToNetwork()){
                            //self.lblTituloParte1.isHidden=true
                            //self.lblTituloParte1?.visiblity(gone: true, dimension: 0)
                        }
                        
-                       self.lblTituloParte1.text=nextTitulo /*partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())*/
+                       //self.lblTituloParte1.text=nextTitulo /*partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())*/
                        id = nextId
                    }else{
                        posicion = ids.count
@@ -675,8 +675,8 @@ class CircularDetalleViewController: UIViewController {
                       
                       posicion = posicion-1
                    if(posicion>0){
-                       lblTituloParte1.text = circulares[posicion].nombre
-                                      lblNivel.text = circulares[posicion].nivel
+                       //lblTituloParte1.text = circulares[posicion].nombre
+                       //               lblNivel.text = circulares[posicion].nivel
                                       
                                       let anio = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
                                       let mes = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
@@ -688,7 +688,7 @@ class CircularDetalleViewController: UIViewController {
                                       let date1 = dateFormatter.date(from: "\(dia)/\(mes)/\(anio)")
                                       dateFormatter.dateFormat = "d 'de' MMMM 'de' YYYY"
                                       let d = dateFormatter.string(from: date1!)
-                                      lblFechaCircular.text = d
+                                      
                                       var nextHoraIniIcs = circulares[posicion].horaInicialIcs
                                                  var nextHoraFinIcs = circulares[posicion].horaFinalIcs
                                                  var nextFechaIcs = circulares[posicion].fechaIcs
@@ -697,7 +697,7 @@ class CircularDetalleViewController: UIViewController {
                                                  }else{
                                                             imbCalendario.isHidden=true
                                                  }
-                                      webView.loadHTMLString("<html><head><meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=5, minimum-scale=1.0, user-scalable=yes'><meta  http-equiv='X-UA-Compatible'  content='IE=edge,chrome=1'><meta name='HandheldFriendly' content='true'><meta content='text/html;charset=utf-8'></head><body {color: #005188;}><h3>\(circulares[posicion].contenido.replacingOccurrences(of: "&aacute;", with: "á").replacingOccurrences(of: "&eacute;", with: "é").replacingOccurrences(of: "&iacute;", with: "í").replacingOccurrences(of: "&oacute;", with: "ó").replacingOccurrences(of: "&uacute;", with: "ú").replacingOccurrences(of: "&ordm;", with: "o."))</h3></p></body></html>", baseURL: nil)
+                                      webView.loadHTMLString("<html><head><meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=5, minimum-scale=1.0, user-scalable=yes'><meta  http-equiv='X-UA-Compatible'  content='IE=edge,chrome=1'><meta name='HandheldFriendly' content='true'><meta content='text/html;charset=utf-8'></head><body {color: #005188;}><div style='text-align:right; width:100%;text-color:#098FCF'><h5>\(circulares[posicion].nivel)</h5></div><div style='text-align:right; width:100%;text-color:#098FCF'><h5>\(d)</h5></div><h3>\(circulares[posicion].contenido.replacingOccurrences(of: "&aacute;", with: "á").replacingOccurrences(of: "&eacute;", with: "é").replacingOccurrences(of: "&iacute;", with: "í").replacingOccurrences(of: "&oacute;", with: "ó").replacingOccurrences(of: "&uacuﬁte;", with: "ú").replacingOccurrences(of: "&ordm;", with: "o."))</h3></p></body></html>", baseURL: nil)
                                    
                               }
                    }
@@ -714,7 +714,7 @@ class CircularDetalleViewController: UIViewController {
                 var nextId = ids[posicion]
                 var nextTitulo = titulos[posicion]
                 var nextFecha = fechas[posicion]
-                 self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: nextId)
+                 self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id:nextId)
                 var nextHoraIniIcs = horasInicioIcs[posicion]
                 var nextHoraFinIcs = horasFinIcs[posicion]
                 var nextFechaIcs = fechasIcs[posicion]
