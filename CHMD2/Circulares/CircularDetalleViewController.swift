@@ -413,7 +413,7 @@ class CircularDetalleViewController: UIViewController {
                 if(nextHoraIniIcs != "00:00:00"){
                     imbCalendario.isHidden=false
                 }
-                 lblNivel.text = nextNivel
+                 //lblNivel.text = nextNivel
                 
                 circularTitulo = nextTitulo
                 let link = URL(string:urlBase+"getCircularId4.php?id=\(nextId)")!
@@ -526,7 +526,7 @@ class CircularDetalleViewController: UIViewController {
                 imbCalendario.isHidden=true
                 btnCalendario.isHidden=true
             }
-             lblNivel.text = nextNivel
+             //lblNivel.text = nextNivel
             
             circularTitulo = nextTitulo
             let link = URL(string:urlBase+"getCircularId4.php?id=\(nextId)")!
@@ -638,7 +638,7 @@ class CircularDetalleViewController: UIViewController {
                            btnCalendario.isHidden=true
                        }
                        
-                       lblNivel.text = nextNivel
+                       //lblNivel.text = nextNivel
                        
                        
                         circularTitulo = nextTitulo
@@ -728,7 +728,7 @@ class CircularDetalleViewController: UIViewController {
                     btnCalendario.isHidden=true
                 }
                 
-                lblNivel.text = nextNivel
+                //lblNivel.text = nextNivel
                 
                 
                  circularTitulo = nextTitulo
