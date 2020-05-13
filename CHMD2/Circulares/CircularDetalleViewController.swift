@@ -94,6 +94,7 @@ class CircularDetalleViewController: UIViewController {
         fechaIcs = UserDefaults.standard.string(forKey: "fechaIcs") ?? "0"
         nivel = UserDefaults.standard.string(forKey: "nivel") ?? "0"
         
+        
          if(horaInicialIcs != "00:00:00"){
             imbCalendario.isHidden=false
             btnCalendario.isHidden=false
@@ -113,31 +114,9 @@ class CircularDetalleViewController: UIViewController {
             id = UserDefaults.standard.string(forKey: "id") ?? ""
             idInicial = Int(UserDefaults.standard.string(forKey: "id") ?? "0")!
             
-                   /*let anio = fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
-                   let mes = fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
-                   let dia = fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
-                   /lblFechaCircular.text = "\(dia)/\(mes)/\(anio)"*/
-            
-            /*let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "dd/MM/yyyy"
-            dateFormatter.locale = Locale(identifier: "es_ES_POSIX")
-            let date1 = dateFormatter.date(from: "\(dia)/\(mes)/\(anio)")
-            dateFormatter.dateFormat = "d 'de' MMMM 'de' YYYY"
-            let d = dateFormatter.string(from: date1!)
-            lblFechaCircular.text = d*/
-                    //Convertir la fecha al formato dd de mes de año
-                    
-            
-                   self.title = "Circular"
-            
-             if(ConexionRed.isConnectedToNetwork()){
-               //self.lblTituloParte1.isHidden=true
-               //self.lblTituloParte1?.visiblity(gone: true, dimension: 0)
-              //self.lblTituloParte1.text = circularTitulo.uppercased()
-             }else{
-            //self.lblTituloParte1.text = titulo.uppercased()
-             posicion = UserDefaults.standard.integer(forKey:"posicion")
-             leerCirculares()
+            self.title = "Circular"
+            if(!ConexionRed.isConnectedToNetwork()){
+               leerCirculares()
             }
             
                    
@@ -392,30 +371,29 @@ class CircularDetalleViewController: UIViewController {
     
     
         
- 
+   var p = UserDefaults.standard.integer(forKey:"posicion")
     @IBAction func btnSiguienteClick(_ sender: Any) {
         if(ConexionRed.isConnectedToNetwork()){
-             posicion = posicion+1
-            if(posicion >= ids.count){
+             print("posicion \(p)")
+             p = p+1
+            if(p >= ids.count){
               //btnSiguiente.isUserInteractionEnabled=false
             }
             
-            if(posicion<ids.count){
+            if(p<ids.count){
                
-               
-               
-                var nextId = ids[posicion]
+                var nextId = ids[p]
                 
                self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: nextId)
                 
-                var nextTitulo = titulos[posicion]
-                var nextFecha = fechas[posicion]
+                var nextTitulo = titulos[p]
+                var nextFecha = fechas[p]
                 
-                var nextHoraIniIcs = horasInicioIcs[posicion]
-                nextHoraIcs = horasInicioIcs[posicion]
-                var nextHoraFinIcs = horasFinIcs[posicion]
-                var nextFechaIcs = fechasIcs[posicion]
-                var nextNivel = niveles[posicion]
+                var nextHoraIniIcs = horasInicioIcs[p]
+                nextHoraIcs = horasInicioIcs[p]
+                var nextHoraFinIcs = horasFinIcs[p]
+                var nextFechaIcs = fechasIcs[p]
+                var nextNivel = niveles[p]
                 
                 if(nextHoraIniIcs != "00:00:00"){
                     imbCalendario.isHidden=false
@@ -451,7 +429,7 @@ class CircularDetalleViewController: UIViewController {
                 //self.lblTituloParte1.text=nextTitulo /*partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())*/
                 id = nextId;
             }else{
-                posicion = 0
+                p = 0
                 id = UserDefaults.standard.string(forKey: "id") ?? ""
             }
                 
@@ -462,22 +440,22 @@ class CircularDetalleViewController: UIViewController {
         }else{
             //No hay conexion
             
-            if(posicion<circulares.count){
-               posicion = posicion+1
-                if(posicion>=circulares.count){
-                    posicion = 0
+            if(p<circulares.count){
+               p = p+1
+                if(p>=circulares.count){
+                    p = 0
                 }
                 //lblTituloParte1.text = circulares[posicion].nombre
                 //lblNivel.text = circulares[posicion].nivel
                 
-                let anio = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
-                let mes = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
-                let dia = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
+                let anio = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
+                let mes = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
+                let dia = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
                 
                 
-                var nextHoraIniIcs = circulares[posicion].horaInicialIcs
-                var nextHoraFinIcs = circulares[posicion].horaFinalIcs
-                var nextFechaIcs = circulares[posicion].fechaIcs
+                var nextHoraIniIcs = circulares[p].horaInicialIcs
+                var nextHoraFinIcs = circulares[p].horaFinalIcs
+                var nextFechaIcs = circulares[p].fechaIcs
                 if(nextHoraIniIcs != "00:00:00"){
                     imbCalendario.isHidden=false
                     btnCalendario.isHidden=false
@@ -494,7 +472,7 @@ class CircularDetalleViewController: UIViewController {
                 let d = dateFormatter.string(from: date1!)
                 /*lblFechaCircular.text = d*/
                 
-                webView.loadHTMLString("<html><head><meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=5, minimum-scale=1.0, user-scalable=yes'><meta  http-equiv='X-UA-Compatible'  content='IE=edge,chrome=1'><meta name='HandheldFriendly' content='true'><meta content='text/html;charset=utf-8'></head><body {color: #005188;}><div style='text-align:right; width:100%;text-color:#098FCF'><h5>\(circulares[posicion].nivel)</h5></div><div style='text-align:right; width:100%;text-color:#098FCF'><h5>\(d)</h5></div><h3>\(circulares[posicion].contenido.replacingOccurrences(of: "&aacute;", with: "á").replacingOccurrences(of: "&eacute;", with: "é").replacingOccurrences(of: "&iacute;", with: "í").replacingOccurrences(of: "&oacute;", with: "ó").replacingOccurrences(of: "&uacuﬁte;", with: "ú").replacingOccurrences(of: "&ordm;", with: "o."))</h3></p></body></html>", baseURL: nil)
+                webView.loadHTMLString("<html><head><meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=5, minimum-scale=1.0, user-scalable=yes'><meta  http-equiv='X-UA-Compatible'  content='IE=edge,chrome=1'><meta name='HandheldFriendly' content='true'><meta content='text/html;charset=utf-8'></head><body {color: #005188;}><div style='text-align:right; width:100%;text-color:#098FCF'><h5>\(circulares[p].nivel)</h5></div><div style='text-align:right; width:100%;text-color:#098FCF'><h5>\(d)</h5></div><h3>\(circulares[p].contenido.replacingOccurrences(of: "&aacute;", with: "á").replacingOccurrences(of: "&eacute;", with: "é").replacingOccurrences(of: "&iacute;", with: "í").replacingOccurrences(of: "&oacute;", with: "ó").replacingOccurrences(of: "&uacuﬁte;", with: "ú").replacingOccurrences(of: "&ordm;", with: "o."))</h3></p></body></html>", baseURL: nil)
                 
             
             }
@@ -503,29 +481,30 @@ class CircularDetalleViewController: UIViewController {
         }
     }
     
+  
     @IBAction func btnNextClick(_ sender: UIButton) {
        //obtener la posición del elemento cargado
-        
+       print("posicion \(p)")
        if(ConexionRed.isConnectedToNetwork()){
-       posicion = posicion+1
-        if(posicion >= ids.count){
+       p = p+1
+        if(p >= ids.count){
             //btnSiguiente.isUserInteractionEnabled=false
         }
-        if(posicion<ids.count){
+        if(p<ids.count){
             
-            var nextId = ids[posicion]
+            var nextId = ids[p]
             print("id siguiente: \(nextId)")
-            print("pos siguiente: \(posicion)")
+            print("pos siguiente: \(p)")
              self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: nextId)
             
-            var nextTitulo = titulos[posicion]
-            var nextFecha = fechas[posicion]
+            var nextTitulo = titulos[p]
+            var nextFecha = fechas[p]
             
-            var nextHoraIniIcs = horasInicioIcs[posicion]
-            var nextHoraFinIcs = horasFinIcs[posicion]
-            var nextFechaIcs = fechasIcs[posicion]
-            var nextNivel = niveles[posicion]
-            nextHoraIcs = horasInicioIcs[posicion]
+            var nextHoraIniIcs = horasInicioIcs[p]
+            var nextHoraFinIcs = horasFinIcs[p]
+            var nextFechaIcs = fechasIcs[p]
+            var nextNivel = niveles[p]
+            nextHoraIcs = horasInicioIcs[p]
             if(nextHoraIniIcs != "00:00:00"){
                 imbCalendario.isHidden=false
                 btnCalendario.isHidden=false
@@ -564,7 +543,7 @@ class CircularDetalleViewController: UIViewController {
             //self.lblTituloParte1.text=nextTitulo /*partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())*/
             id = nextId;
         }else{
-            posicion = 0
+            p = 0
             id = UserDefaults.standard.string(forKey: "id") ?? ""
         }
             
@@ -575,22 +554,22 @@ class CircularDetalleViewController: UIViewController {
     }else{
         //No hay conexion
         
-        if(posicion<circulares.count){
-           posicion = posicion+1
-            if(posicion>=circulares.count){
-                posicion = 0
+        if(p<circulares.count){
+           p = p+1
+            if(p>=circulares.count){
+                p = 0
             }
             //lblTituloParte1.text = circulares[posicion].nombre
             //lblNivel.text = circulares[posicion].nivel
             
-            let anio = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
-            let mes = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
-            let dia = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
+            let anio = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
+            let mes = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
+            let dia = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
             
             
-            var nextHoraIniIcs = circulares[posicion].horaInicialIcs
-            var nextHoraFinIcs = circulares[posicion].horaFinalIcs
-            var nextFechaIcs = circulares[posicion].fechaIcs
+            var nextHoraIniIcs = circulares[p].horaInicialIcs
+            var nextHoraFinIcs = circulares[p].horaFinalIcs
+            var nextFechaIcs = circulares[p].fechaIcs
             if(nextHoraIniIcs != "00:00:00"){
                 imbCalendario.isHidden=false
                 btnCalendario.isHidden=false
@@ -607,7 +586,7 @@ class CircularDetalleViewController: UIViewController {
             let d = dateFormatter.string(from: date1!)
             //lblFechaCircular.text = d
             
-           webView.loadHTMLString("<html><head><meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=5, minimum-scale=1.0, user-scalable=yes'><meta  http-equiv='X-UA-Compatible'  content='IE=edge,chrome=1'><meta name='HandheldFriendly' content='true'><meta content='text/html;charset=utf-8'></head><body {color: #005188;}><div style='text-align:right; width:100%;text-color:#098FCF'><h5>\(circulares[posicion].nivel)</h5></div><div style='text-align:right; width:100%;text-color:#098FCF'><h5>\(d)</h5></div><h3>\(circulares[posicion].contenido.replacingOccurrences(of: "&aacute;", with: "á").replacingOccurrences(of: "&eacute;", with: "é").replacingOccurrences(of: "&iacute;", with: "í").replacingOccurrences(of: "&oacute;", with: "ó").replacingOccurrences(of: "&uacuﬁte;", with: "ú").replacingOccurrences(of: "&ordm;", with: "o."))</h3></p></body></html>", baseURL: nil)
+           webView.loadHTMLString("<html><head><meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=5, minimum-scale=1.0, user-scalable=yes'><meta  http-equiv='X-UA-Compatible'  content='IE=edge,chrome=1'><meta name='HandheldFriendly' content='true'><meta content='text/html;charset=utf-8'></head><body {color: #005188;}><div style='text-align:right; width:100%;text-color:#098FCF'><h5>\(circulares[p].nivel)</h5></div><div style='text-align:right; width:100%;text-color:#098FCF'><h5>\(d)</h5></div><h3>\(circulares[p].contenido.replacingOccurrences(of: "&aacute;", with: "á").replacingOccurrences(of: "&eacute;", with: "é").replacingOccurrences(of: "&iacute;", with: "í").replacingOccurrences(of: "&oacute;", with: "ó").replacingOccurrences(of: "&uacuﬁte;", with: "ú").replacingOccurrences(of: "&ordm;", with: "o."))</h3></p></body></html>", baseURL: nil)
             
         
         }
@@ -622,21 +601,21 @@ class CircularDetalleViewController: UIViewController {
     
     @IBAction func btnAnteriorClick(_ sender: Any) {
         if(ConexionRed.isConnectedToNetwork()){
-                   posicion = posicion-1
-                    if(posicion<0){
-                        //btnAnterior.isUserInteractionEnabled=false
+                   p = p-1
+                    if(p<0){
+                        p=0
                     }
                    print("Anterior...")
-                   if(posicion>=0){
-                       var nextId = ids[posicion]
-                       var nextTitulo = titulos[posicion]
-                       var nextFecha = fechas[posicion]
+                   if(p>=0){
+                       var nextId = ids[p]
+                       var nextTitulo = titulos[p]
+                       var nextFecha = fechas[p]
                         self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: nextId)
-                       var nextHoraIniIcs = horasInicioIcs[posicion]
-                       var nextHoraFinIcs = horasFinIcs[posicion]
-                       var nextFechaIcs = fechasIcs[posicion]
-                       var nextNivel = niveles[posicion]
-                       nextHoraIcs = horasInicioIcs[posicion]
+                       var nextHoraIniIcs = horasInicioIcs[p]
+                       var nextHoraFinIcs = horasFinIcs[p]
+                       var nextFechaIcs = fechasIcs[p]
+                       var nextNivel = niveles[p]
+                       nextHoraIcs = horasInicioIcs[p]
                        if(nextHoraIniIcs != "00:00:00"){
                            imbCalendario.isHidden=false
                            btnCalendario.isHidden=false
@@ -676,18 +655,18 @@ class CircularDetalleViewController: UIViewController {
                        //self.lblTituloParte1.text=nextTitulo /*partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())*/
                        id = nextId
                    }else{
-                       posicion = ids.count
+                       p = ids.count
                    }
                }else{
                       
-                      posicion = posicion-1
-                   if(posicion>0){
+                      p = p-1
+                   if(p>0){
                        //lblTituloParte1.text = circulares[posicion].nombre
                        //               lblNivel.text = circulares[posicion].nivel
                                       
-                                      let anio = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
-                                      let mes = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
-                                      let dia = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
+                                      let anio = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
+                                      let mes = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
+                                      let dia = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
                                       
                                      let dateFormatter = DateFormatter()
                                       dateFormatter.dateFormat = "dd/MM/yyyy"
@@ -696,15 +675,15 @@ class CircularDetalleViewController: UIViewController {
                                       dateFormatter.dateFormat = "d 'de' MMMM 'de' YYYY"
                                       let d = dateFormatter.string(from: date1!)
                                       
-                                      var nextHoraIniIcs = circulares[posicion].horaInicialIcs
-                                                 var nextHoraFinIcs = circulares[posicion].horaFinalIcs
-                                                 var nextFechaIcs = circulares[posicion].fechaIcs
+                                      var nextHoraIniIcs = circulares[p].horaInicialIcs
+                                                 var nextHoraFinIcs = circulares[p].horaFinalIcs
+                                                 var nextFechaIcs = circulares[p].fechaIcs
                                                  if(nextHoraIniIcs != "00:00:00"){
                                                             imbCalendario.isHidden=false
                                                  }else{
                                                             imbCalendario.isHidden=true
                                                  }
-                                      webView.loadHTMLString("<html><head><meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=5, minimum-scale=1.0, user-scalable=yes'><meta  http-equiv='X-UA-Compatible'  content='IE=edge,chrome=1'><meta name='HandheldFriendly' content='true'><meta content='text/html;charset=utf-8'></head><body {color: #005188;}><div style='text-align:right; width:100%;text-color:#098FCF'><h5>\(circulares[posicion].nivel)</h5></div><div style='text-align:right; width:100%;text-color:#098FCF'><h5>\(d)</h5></div><h3>\(circulares[posicion].contenido.replacingOccurrences(of: "&aacute;", with: "á").replacingOccurrences(of: "&eacute;", with: "é").replacingOccurrences(of: "&iacute;", with: "í").replacingOccurrences(of: "&oacute;", with: "ó").replacingOccurrences(of: "&uacuﬁte;", with: "ú").replacingOccurrences(of: "&ordm;", with: "o."))</h3></p></body></html>", baseURL: nil)
+                                      webView.loadHTMLString("<html><head><meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=5, minimum-scale=1.0, user-scalable=yes'><meta  http-equiv='X-UA-Compatible'  content='IE=edge,chrome=1'><meta name='HandheldFriendly' content='true'><meta content='text/html;charset=utf-8'></head><body {color: #005188;}><div style='text-align:right; width:100%;text-color:#098FCF'><h5>\(circulares[p].nivel)</h5></div><div style='text-align:right; width:100%;text-color:#098FCF'><h5>\(d)</h5></div><h3>\(circulares[p].contenido.replacingOccurrences(of: "&aacute;", with: "á").replacingOccurrences(of: "&eacute;", with: "é").replacingOccurrences(of: "&iacute;", with: "í").replacingOccurrences(of: "&oacute;", with: "ó").replacingOccurrences(of: "&uacuﬁte;", with: "ú").replacingOccurrences(of: "&ordm;", with: "o."))</h3></p></body></html>", baseURL: nil)
                                    
                               }
                    }
@@ -713,20 +692,21 @@ class CircularDetalleViewController: UIViewController {
     @IBAction func btnAntClick(_ sender: UIButton) {
         
         if(ConexionRed.isConnectedToNetwork()){
-            posicion = posicion-1
-            if(posicion<0){
+            p = p-1
+            if(p<0){
+                p=0
               btnAnterior.isUserInteractionEnabled=false
             }
-            if(posicion>=0){
-                var nextId = ids[posicion]
-                var nextTitulo = titulos[posicion]
-                var nextFecha = fechas[posicion]
+            if(p>=0){
+                var nextId = ids[p]
+                var nextTitulo = titulos[p]
+                var nextFecha = fechas[p]
                  self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id:nextId)
-                var nextHoraIniIcs = horasInicioIcs[posicion]
-                var nextHoraFinIcs = horasFinIcs[posicion]
-                var nextFechaIcs = fechasIcs[posicion]
-                var nextNivel = niveles[posicion]
-                nextHoraIcs = horasInicioIcs[posicion]
+                var nextHoraIniIcs = horasInicioIcs[p]
+                var nextHoraFinIcs = horasFinIcs[p]
+                var nextFechaIcs = fechasIcs[p]
+                var nextNivel = niveles[p]
+                nextHoraIcs = horasInicioIcs[p]
                 if(nextHoraIniIcs != "00:00:00"){
                     imbCalendario.isHidden=false
                     btnCalendario.isHidden=false
@@ -763,21 +743,20 @@ class CircularDetalleViewController: UIViewController {
                     //self.lblTituloParte1?.visiblity(gone: true, dimension: 0)
                 }
                 
-                self.lblTituloParte1.text=nextTitulo /*partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())*/
+                self.lblTituloParte1.text=nextTitulo
                 id = nextId
             }else{
-                posicion = ids.count
+                p = ids.count
             }
         }else{
-               
-               posicion = posicion-1
-            if(posicion>0){
-                lblTituloParte1.text = circulares[posicion].nombre
-                               lblNivel.text = circulares[posicion].nivel
+            p = p-1
+            if(p>0){
+                lblTituloParte1.text = circulares[p].nombre
+                               lblNivel.text = circulares[p].nivel
                                
-                               let anio = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
-                               let mes = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
-                               let dia = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
+                               let anio = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
+                               let mes = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
+                               let dia = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
                                
                               /*let dateFormatter = DateFormatter()
                                dateFormatter.dateFormat = "dd/MM/yyyy"
@@ -786,9 +765,9 @@ class CircularDetalleViewController: UIViewController {
                                dateFormatter.dateFormat = "d 'de' MMMM 'de' YYYY"
                                let d = dateFormatter.string(from: date1!)
                                lblFechaCircular.text = d*/
-                               var nextHoraIniIcs = circulares[posicion].horaInicialIcs
-                                          var nextHoraFinIcs = circulares[posicion].horaFinalIcs
-                                          var nextFechaIcs = circulares[posicion].fechaIcs
+                               var nextHoraIniIcs = circulares[p].horaInicialIcs
+                                          var nextHoraFinIcs = circulares[p].horaFinalIcs
+                                          var nextFechaIcs = circulares[p].fechaIcs
                                           if(nextHoraIniIcs != "00:00:00"){
                                                      imbCalendario.isHidden=false
                                           }else{
@@ -804,7 +783,7 @@ class CircularDetalleViewController: UIViewController {
                               dateFormatter.dateFormat = "d 'de' MMMM 'de' YYYY"
                               let d = dateFormatter.string(from: date1!)
                 
-                               webView.loadHTMLString("<html><head><meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=5, minimum-scale=1.0, user-scalable=yes'><meta  http-equiv='X-UA-Compatible'  content='IE=edge,chrome=1'><meta name='HandheldFriendly' content='true'><meta content='text/html;charset=utf-8'></head><body {color: #005188;}><div style='text-align:right; width:100%;text-color:#098FCF'><h5>\(circulares[posicion].nivel)</h5></div><div style='text-align:right; width:100%;text-color:#098FCF'><h5>\(d)</h5></div><h3>\(circulares[posicion].contenido.replacingOccurrences(of: "&aacute;", with: "á").replacingOccurrences(of: "&eacute;", with: "é").replacingOccurrences(of: "&iacute;", with: "í").replacingOccurrences(of: "&oacute;", with: "ó").replacingOccurrences(of: "&uacuﬁte;", with: "ú").replacingOccurrences(of: "&ordm;", with: "o."))</h3></p></body></html>", baseURL: nil)
+                               webView.loadHTMLString("<html><head><meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=5, minimum-scale=1.0, user-scalable=yes'><meta  http-equiv='X-UA-Compatible'  content='IE=edge,chrome=1'><meta name='HandheldFriendly' content='true'><meta content='text/html;charset=utf-8'></head><body {color: #005188;}><div style='text-align:right; width:100%;text-color:#098FCF'><h5>\(circulares[p].nivel)</h5></div><div style='text-align:right; width:100%;text-color:#098FCF'><h5>\(d)</h5></div><h3>\(circulares[p].contenido.replacingOccurrences(of: "&aacute;", with: "á").replacingOccurrences(of: "&eacute;", with: "é").replacingOccurrences(of: "&iacute;", with: "í").replacingOccurrences(of: "&oacute;", with: "ó").replacingOccurrences(of: "&uacuﬁte;", with: "ú").replacingOccurrences(of: "&ordm;", with: "o."))</h3></p></body></html>", baseURL: nil)
                             
                        }
             }
