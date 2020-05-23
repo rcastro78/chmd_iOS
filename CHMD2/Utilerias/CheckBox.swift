@@ -11,8 +11,8 @@ import UIKit
 
 class CheckBox: UIButton {
     // Images
-    let checkedImage = UIImage(named: "checked")! as UIImage
-    let uncheckedImage = UIImage(named: "unchecked")! as UIImage
+    let checkedImage = UIImage(named: "check_lleno")! as UIImage
+    let uncheckedImage = UIImage(named: "check_vacio")! as UIImage
 
     // Bool property
     var isChecked: Bool = false {

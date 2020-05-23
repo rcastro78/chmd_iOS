@@ -313,7 +313,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                              
                                                 //Mostrar el alert
                                                 let alertController = UIAlertController(title: "Opciones", message: "Elige la opción que deseas", preferredStyle: .actionSheet)
-                                                let actionLeer = UIAlertAction(title: "Agregar a leídas", style: .default) { (action:UIAlertAction) in
+                                                let actionLeer = UIAlertAction(title: "Marcar como leída", style: .default) { (action:UIAlertAction) in
                                                     
                                                     if(ConexionRed.isConnectedToNetwork()){
                                                                                                           
@@ -331,7 +331,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                                     
                                                     }
                                                 
-                                                let actionNoLeer = UIAlertAction(title: "Agregar a favoritas", style: .default) { (action:UIAlertAction) in
+                                                let actionNoLeer = UIAlertAction(title: "Marcar como favorita", style: .default) { (action:UIAlertAction) in
                                                 
                                                     
                                                     
@@ -520,9 +520,16 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if(!editando){
+        if (revealViewController().frontViewPosition == FrontViewPosition.right){
+             self.revealViewController()?.revealToggle(animated: true)
+        }
+        //Con esto se evita indexOutOfRangeException
+              if (indexPath.item >= 0 || indexPath.item < circulares.count) {
+                
+        if(editando == false){
         let c = circulares[indexPath.row]
         let cell = tableView.cellForRow(at: indexPath)
+            cell?.selectionStyle = .none
         UserDefaults.standard.set(indexPath.row,forKey:"posicion")
             UserDefaults.standard.set(c.id,forKey:"id")
             UserDefaults.standard.set(c.nombre,forKey:"nombre")
@@ -535,10 +542,19 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             UserDefaults.standard.set(0, forKey: "viaNotif")
             UserDefaults.standard.set(3, forKey: "tipoCircular")
             performSegue(withIdentifier: "CircularNoLeidaSegue", sender:self)
+        }else{
+                      let cell = tableView.cellForRow(at: indexPath) as! CircularTableViewCell
+                      cell.selectionStyle = .none
+                      if(cell.chkSeleccionar.isChecked==false){
+                          cell.chkSeleccionar.isChecked=true
+                      }else{
+                           cell.chkSeleccionar.isChecked=false
+                      }
+                      seleccionMultiple(cell.chkSeleccionar)
         }
              
     }
-    
+    }
   
     
     //Leer las circulares cuando no haya internet

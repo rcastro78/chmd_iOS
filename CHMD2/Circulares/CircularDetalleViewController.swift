@@ -114,7 +114,19 @@ class CircularDetalleViewController: UIViewController {
             id = UserDefaults.standard.string(forKey: "id") ?? ""
             idInicial = Int(UserDefaults.standard.string(forKey: "id") ?? "0")!
             
-            self.title = "Circular"
+            //self.title = "Circular"
+            let bannerWidth = navigationItem.accessibilityFrame.size.width
+            
+            let bannerX = bannerWidth / 2
+            
+            
+            let imageView = UIImageView(frame: CGRect(x: bannerX, y: 10, width: 24, height: 24))
+            imageView.contentMode = .scaleAspectFit
+            let image = UIImage(named: "chmd_barra")
+            imageView.image = image
+            navigationItem.titleView = imageView
+            
+            
             if(!ConexionRed.isConnectedToNetwork()){
                leerCirculares()
             }
@@ -244,6 +256,7 @@ class CircularDetalleViewController: UIViewController {
         do {
             try store.save(event, span: .thisEvent)
             print("Evento guardado")
+             self.showToast(message:"Evento guardado", font: UIFont(name:"GothamRounded-Bold",size:11.0)!)
         }
         catch {
            print("Error guardando el evento")
@@ -262,10 +275,10 @@ class CircularDetalleViewController: UIViewController {
         
         
         if(ConexionRed.isConnectedToNetwork()){
-            let dialogMessage = UIAlertController(title: "CHMD", message: "¿Deseas agregar este evento a tu calendario?", preferredStyle: .alert)
+            //let dialogMessage = UIAlertController(title: "CHMD", message: "¿Deseas agregar este evento a tu calendario?", preferredStyle: .alert)
             
             // Create OK button with action handler
-            let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
+            //let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
               
                 
                 
@@ -294,19 +307,19 @@ class CircularDetalleViewController: UIViewController {
                 
                 
                 
-            })
+           // })
             
             // Create Cancel button with action handlder
-            let cancel = UIAlertAction(title: "Cancelar", style: .cancel) { (action) -> Void in
+           // let cancel = UIAlertAction(title: "Cancelar", style: .cancel) { (action) -> Void in
                 
-            }
+           // }
             
             //Add OK and Cancel button to dialog message
-            dialogMessage.addAction(ok)
-            dialogMessage.addAction(cancel)
+           // dialogMessage.addAction(ok)
+           // dialogMessage.addAction(cancel)
             
             // Present dialog message to user
-            self.present(dialogMessage, animated: true, completion: nil)
+          //  self.present(dialogMessage, animated: true, completion: nil)
         }else{
             var alert = UIAlertView(title: "No está conectado a Internet", message: "Esta opción solo funciona con una conexión a Internet", delegate: nil, cancelButtonTitle: "Aceptar")
                        alert.show()
@@ -689,24 +702,24 @@ class CircularDetalleViewController: UIViewController {
     
     @IBAction func btnFavoritoClick(_ sender: Any) {
         if(ConexionRed.isConnectedToNetwork()){
-                   let dialogMessage = UIAlertController(title: "CHMD", message: "¿Deseas agregar esta circular a tus favoritas?", preferredStyle: .alert)
+                   //let dialogMessage = UIAlertController(title: "CHMD", message: "¿Deseas agregar esta circular a tus favoritas?", preferredStyle: .alert)
                    
                    // Create OK button with action handler
-                   let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
+                   //let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
                        self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: self.id)
-                   })
+                   //})
                    
                    // Create Cancel button with action handlder
-                   let cancel = UIAlertAction(title: "Cancelar", style: .cancel) { (action) -> Void in
+                   //let cancel = UIAlertAction(title: "Cancelar", style: .cancel) { (action) -> Void in
                        
-                   }
+                   //}
                    
                    //Add OK and Cancel button to dialog message
-                   dialogMessage.addAction(ok)
-                   dialogMessage.addAction(cancel)
+                   //dialogMessage.addAction(ok)
+                   //dialogMessage.addAction(cancel)
                    
                    // Present dialog message to user
-                   self.present(dialogMessage, animated: true, completion: nil)
+                   //self.present(dialogMessage, animated: true, completion: nil)
                }else{
                    var alert = UIAlertView(title: "No está conectado a Internet", message: "Esta opción solo funciona con una conexión a Internet", delegate: nil, cancelButtonTitle: "Aceptar")
                               alert.show()
@@ -718,24 +731,24 @@ class CircularDetalleViewController: UIViewController {
         //Hacer favorita la circular
         
         if(ConexionRed.isConnectedToNetwork()){
-            let dialogMessage = UIAlertController(title: "CHMD", message: "¿Deseas agregar esta circular a tus favoritas?", preferredStyle: .alert)
+           // let dialogMessage = UIAlertController(title: "CHMD", message: "¿Deseas agregar esta circular a tus favoritas?", preferredStyle: .alert)
             
             // Create OK button with action handler
-            let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
+            //let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
                 self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: self.id)
-            })
+            //})
             
             // Create Cancel button with action handlder
-            let cancel = UIAlertAction(title: "Cancelar", style: .cancel) { (action) -> Void in
+            //let cancel = UIAlertAction(title: "Cancelar", style: .cancel) { (action) -> Void in
                 
-            }
+            //}
             
             //Add OK and Cancel button to dialog message
-            dialogMessage.addAction(ok)
-            dialogMessage.addAction(cancel)
+            //dialogMessage.addAction(ok)
+            //dialogMessage.addAction(cancel)
             
             // Present dialog message to user
-            self.present(dialogMessage, animated: true, completion: nil)
+            //self.present(dialogMessage, animated: true, completion: nil)
         }else{
             var alert = UIAlertView(title: "No está conectado a Internet", message: "Esta opción solo funciona con una conexión a Internet", delegate: nil, cancelButtonTitle: "Aceptar")
                        alert.show()
@@ -810,24 +823,24 @@ class CircularDetalleViewController: UIViewController {
     @IBAction func btnNoLeerClick(_ sender: Any) {
         
          if(ConexionRed.isConnectedToNetwork()){
-            let dialogMessage = UIAlertController(title: "CHMD", message: "¿Deseas marcar esta circular como no leída?", preferredStyle: .alert)
+            //let dialogMessage = UIAlertController(title: "CHMD", message: "¿Deseas marcar esta circular como no leída?", preferredStyle: .alert)
             
             // Create OK button with action handler
-            let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
+            //let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
                 self.noleerCircular(direccion: self.urlBase+self.noleerMetodo, usuario_id: self.idUsuario, circular_id: self.id)
-            })
+            //})
             
             // Create Cancel button with action handlder
-            let cancel = UIAlertAction(title: "Cancelar", style: .cancel) { (action) -> Void in
+            //let cancel = UIAlertAction(title: "Cancelar", style: .cancel) { (action) -> Void in
                 
-            }
+            //}
             
             //Add OK and Cancel button to dialog message
-            dialogMessage.addAction(ok)
-            dialogMessage.addAction(cancel)
+            //dialogMessage.addAction(ok)
+            //dialogMessage.addAction(cancel)
             
             // Present dialog message to user
-            self.present(dialogMessage, animated: true, completion: nil)
+            //self.present(dialogMessage, animated: true, completion: nil)
          }else{
             var alert = UIAlertView(title: "No está conectado a Internet", message: "Esta opción solo funciona con una conexión a Internet", delegate: nil, cancelButtonTitle: "Aceptar")
                                   alert.show()
@@ -1006,9 +1019,11 @@ class CircularDetalleViewController: UIViewController {
             switch (response.result) {
             case .success:
                 print(response)
-                break
+                self.showToast(message:"Marcada como favorita", font: UIFont(name:"GothamRounded-Bold",size:11.0)!)
+                
             case .failure:
                 print(Error.self)
+                self.showToast(message:"Error", font: UIFont(name:"GothamRounded-Bold",size:11.0)!)
             }
         }
     }
@@ -1034,6 +1049,7 @@ class CircularDetalleViewController: UIViewController {
             switch (response.result) {
             case .success:
                 print(response)
+                 self.showToast(message:"Marcada como no leída", font: UIFont(name:"GothamRounded-Bold",size:11.0)!)
                 break
             case .failure:
                 print(Error.self)
@@ -1548,24 +1564,24 @@ class CircularDetalleViewController: UIViewController {
         let alertController = UIAlertController(title: "Opciones", message: "Elige la opción que deseas", preferredStyle: .actionSheet)
         let actionFav = UIAlertAction(title: "Agregar a favoritas", style: .default) { (action:UIAlertAction) in
            if(ConexionRed.isConnectedToNetwork()){
-               let dialogMessage = UIAlertController(title: "CHMD", message: "¿Deseas agregar esta circular a tus favoritas?", preferredStyle: .alert)
+               //let dialogMessage = UIAlertController(title: "CHMD", message: "¿Deseas agregar esta circular a tus favoritas?", preferredStyle: .alert)
                
                // Create OK button with action handler
-               let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
+               //let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
                    self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: self.id)
-               })
+               //})
                
                // Create Cancel button with action handlder
-               let cancel = UIAlertAction(title: "Cancelar", style: .cancel) { (action) -> Void in
+               //let cancel = UIAlertAction(title: "Cancelar", style: .cancel) { (action) -> Void in
                    
-               }
+               //}
                
                //Add OK and Cancel button to dialog message
-               dialogMessage.addAction(ok)
-               dialogMessage.addAction(cancel)
+               //dialogMessage.addAction(ok)
+               //dialogMessage.addAction(cancel)
                
                // Present dialog message to user
-               self.present(dialogMessage, animated: true, completion: nil)
+               //self.present(dialogMessage, animated: true, completion: nil)
            }else{
                var alert = UIAlertView(title: "No está conectado a Internet", message: "Esta opción solo funciona con una conexión a Internet", delegate: nil, cancelButtonTitle: "Aceptar")
                           alert.show()
@@ -1574,24 +1590,25 @@ class CircularDetalleViewController: UIViewController {
         
         let actionNoLeer = UIAlertAction(title: "Marcar como no leída", style: .default) { (action:UIAlertAction) in
            if(ConexionRed.isConnectedToNetwork()){
-                      let dialogMessage = UIAlertController(title: "CHMD", message: "¿Deseas marcar esta circular como no leída?", preferredStyle: .alert)
+                      //let dialogMessage = UIAlertController(title: "CHMD", message: "¿Deseas marcar esta circular como no leída?", preferredStyle: .alert)
                       
                       // Create OK button with action handler
-                      let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
+                      //let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
                           self.noleerCircular(direccion: self.urlBase+self.noleerMetodo, usuario_id: self.idUsuario, circular_id: self.id)
-                      })
+             self.showToast(message:"Marcada como favorita", font: UIFont(name:"GothamRounded-Bold",size:11.0)!)
+                      //})
                       
                       // Create Cancel button with action handlder
-                      let cancel = UIAlertAction(title: "Cancelar", style: .cancel) { (action) -> Void in
+                      //let cancel = UIAlertAction(title: "Cancelar", style: .cancel) { (action) -> Void in
                           
-                      }
+                      //}
                       
                       //Add OK and Cancel button to dialog message
-                      dialogMessage.addAction(ok)
-                      dialogMessage.addAction(cancel)
+                      //dialogMessage.addAction(ok)
+                      //dialogMessage.addAction(cancel)
                       
                       // Present dialog message to user
-                      self.present(dialogMessage, animated: true, completion: nil)
+                      //self.present(dialogMessage, animated: true, completion: nil)
                    }else{
                       var alert = UIAlertView(title: "No está conectado a Internet", message: "Esta opción solo funciona con una conexión a Internet", delegate: nil, cancelButtonTitle: "Aceptar")
                                             alert.show()
@@ -1706,10 +1723,10 @@ class CircularDetalleViewController: UIViewController {
         
         let actionCalendario = UIAlertAction(title: "Agregar al calendario", style: .default) { (action:UIAlertAction) in
                    if(ConexionRed.isConnectedToNetwork()){
-                              let dialogMessage = UIAlertController(title: "CHMD", message: "¿Deseas agregar este evento a tu calendario?", preferredStyle: .alert)
+                              //let dialogMessage = UIAlertController(title: "CHMD", message: "¿Deseas agregar este evento a tu calendario?", preferredStyle: .alert)
                               
                               // Create OK button with action handler
-                              let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
+                              //let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
                                 
                                   
                                   
@@ -1717,6 +1734,9 @@ class CircularDetalleViewController: UIViewController {
                                              switch EKEventStore.authorizationStatus(for: .event) {
                                              case .authorized:
                                               self.insertarEvento(store: eventStore, titulo: self.circularTitulo, fechaIcs: self.fechaIcs, horaInicioIcs: self.horaInicialIcs, horaFinIcs: self.horaFinalIcs, ubicacionIcs: "")
+                                                
+                                                
+                                                
                                                  case .denied:
                                                      print("Acceso denegado")
                                                  case .notDetermined:
@@ -1738,19 +1758,19 @@ class CircularDetalleViewController: UIViewController {
                                   
                                   
                                   
-                              })
+                              //})
                               
                               // Create Cancel button with action handlder
-                              let cancel = UIAlertAction(title: "Cancelar", style: .cancel) { (action) -> Void in
+                              //let cancel = UIAlertAction(title: "Cancelar", style: .cancel) { (action) -> Void in
                                   
-                              }
+                              //}
                               
                               //Add OK and Cancel button to dialog message
-                              dialogMessage.addAction(ok)
-                              dialogMessage.addAction(cancel)
+                              //dialogMessage.addAction(ok)
+                              //dialogMessage.addAction(cancel)
                               
                               // Present dialog message to user
-                              self.present(dialogMessage, animated: true, completion: nil)
+                              //self.present(dialogMessage, animated: true, completion: nil)
                           }else{
                               var alert = UIAlertView(title: "No está conectado a Internet", message: "Esta opción solo funciona con una conexión a Internet", delegate: nil, cancelButtonTitle: "Aceptar")
                                          alert.show()

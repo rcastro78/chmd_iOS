@@ -239,11 +239,13 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
        
         if(editando){
             let isEditing: Bool = self.isEditing
-            cell.chkSeleccionar.visiblity(gone: true, dimension: 0)
-            cell.chkSeleccionar.isHidden = !isEditing
+            //cell.chkSeleccionar.visiblity(gone: true, dimension: 0)
+             cell.chkSeleccionar.isHidden = !isEditing
         }else{
             let isEditing: Bool = false
             cell.chkSeleccionar.isChecked=false
+            let viewHeight:CGFloat = cell.chkSeleccionar.isChecked ? 12 : 0.0
+            cell.chkSeleccionar.visiblity(gone: !cell.chkSeleccionar.isChecked, dimension: viewHeight)
             cell.chkSeleccionar.isHidden = !isEditing
         }
        
@@ -321,7 +323,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                                     //capturar la celda
                                                        let cell = self.tableViewCirculares.dequeueReusableCell(withIdentifier: "celda", for: indexPath) as! CircularTableViewCell
                                                            self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: idCircular)
-                                                    let timer = Timer.scheduledTimer(timeInterval: 2.5, target: self, selector: #selector(self.reaccionar), userInfo: nil, repeats: false)
+                                                    let timer = Timer.scheduledTimer(timeInterval: 1.2, target: self, selector: #selector(self.reaccionar), userInfo: nil, repeats: false)
                                                                //Modificar la imagen de la celda
                                                                 cell.imgCircular.image = UIImage(named:"star")
                                                                 }else{
@@ -333,14 +335,14 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                                 
                                                 
                                                 
-                                                let actionLeer = UIAlertAction(title: "Agregar a leídas", style: .default) { (action:UIAlertAction) in
+                                                let actionLeer = UIAlertAction(title: "Marcar como leída", style: .default) { (action:UIAlertAction) in
                                                     
                                                     if(ConexionRed.isConnectedToNetwork()){
                                                                                                           
                                                         //capturar la celda
                                                            let cell = self.tableViewCirculares.dequeueReusableCell(withIdentifier: "celda", for: indexPath) as! CircularTableViewCell
                                                                self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: idCircular)
-                                                        let timer = Timer.scheduledTimer(timeInterval: 2.5, target: self, selector: #selector(self.reaccionar), userInfo: nil, repeats: false)
+                                                        let timer = Timer.scheduledTimer(timeInterval: 1.2, target: self, selector: #selector(self.reaccionar), userInfo: nil, repeats: false)
                                                                    //Modificar la imagen de la celda
                                                                     cell.imgCircular.image = UIImage(named:"circle_white")
                                                                     }else{
@@ -350,7 +352,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                                     
                                                     }
                                                 
-                                                let actionNoLeer = UIAlertAction(title: "Agregar a no leídas", style: .default) { (action:UIAlertAction) in
+                                                let actionNoLeer = UIAlertAction(title: "Marcar como no leída", style: .default) { (action:UIAlertAction) in
                                                 
                                                     
                                                     
@@ -359,7 +361,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                                         //capturar la celda
                                                            let cell = self.tableViewCirculares.dequeueReusableCell(withIdentifier: "celda", for: indexPath) as! CircularTableViewCell
                                                                self.noleerCircular(direccion: self.urlBase+self.noleerMetodo, usuario_id: self.idUsuario, circular_id: idCircular)
-                                                        let timer = Timer.scheduledTimer(timeInterval: 2.5, target: self, selector: #selector(self.reaccionar), userInfo: nil, repeats: false)
+                                                        let timer = Timer.scheduledTimer(timeInterval: 1.2, target: self, selector: #selector(self.reaccionar), userInfo: nil, repeats: false)
                                                                    //Modificar la imagen de la celda
                                                                     cell.imgCircular.image = UIImage(named:"circle")
                                                                     }else{
@@ -370,7 +372,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                                 }
                                                     
                                                 
-                                                let actionCompartir = UIAlertAction(title: "Compartir", style: .default) { (action:UIAlertAction) in
+                                                let actionCompartir = UIAlertAction(title: "Compartir esta circular", style: .default) { (action:UIAlertAction) in
                                                 
                                                     let circularUrl = "https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularId4.php?id=\(idCircular)"
                                                     guard let link = URL(string: circularUrl) else { return }
@@ -514,13 +516,16 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
        
         
-        if(!editando){
-            
-            
-            
-            
-        let c = circulares[indexPath.row]
-        let cell = tableView.cellForRow(at: indexPath)
+        if (revealViewController().frontViewPosition == FrontViewPosition.right){
+             self.revealViewController()?.revealToggle(animated: true)
+        }
+       //Con esto se evita indexOutOfRangeException
+       if (indexPath.item >= 0 || indexPath.item < circulares.count) {
+        if(editando==false){
+        
+            let c = circulares[indexPath.row]
+            let cell = tableView.cellForRow(at: indexPath)
+            cell?.selectionStyle = .none
             UserDefaults.standard.set(indexPath.row,forKey:"posicion")
             UserDefaults.standard.set(c.id,forKey:"id")
             print("posicion \(indexPath.row)")
@@ -535,8 +540,23 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             UserDefaults.standard.set(1, forKey: "tipoCircular")
             performSegue(withIdentifier: "TcircularSegue", sender:self)
         }else{
-         
+         //está editando
+            let c = circulares[indexPath.row]
+            let cell = tableView.cellForRow(at: indexPath) as! CircularTableViewCell
+            cell.selectionStyle = .none
+            if(cell.chkSeleccionar.isChecked==false){
+                cell.chkSeleccionar.isChecked=true
+            }else{
+                 cell.chkSeleccionar.isChecked=false
+            }
+            seleccionMultiple(cell.chkSeleccionar)
+            
         }
+    }
+            
+        
+        
+        
         
         
         
@@ -1178,7 +1198,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             circularesSeleccionadas.removeAll()
             seleccion.removeAll()
             
-             let timer = Timer.scheduledTimer(timeInterval: 2.5, target: self, selector: #selector(reaccionar), userInfo: nil, repeats: false)
+            let timer = Timer.scheduledTimer(timeInterval: 1.5, target: self, selector: #selector(reaccionar), userInfo: nil, repeats: false)
             
            
             
@@ -1213,7 +1233,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
            circularesSeleccionadas.removeAll()
            seleccion.removeAll()
            
-            let timer = Timer.scheduledTimer(timeInterval: 2.5, target: self, selector: #selector(reaccionar), userInfo: nil, repeats: false)
+            let timer = Timer.scheduledTimer(timeInterval: 1.2, target: self, selector: #selector(reaccionar), userInfo: nil, repeats: false)
            
          }else{
            var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
@@ -1293,7 +1313,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
              circularesSeleccionadas.removeAll()
              seleccion.removeAll()
                
-                let timer = Timer.scheduledTimer(timeInterval: 2.5, target: self, selector: #selector(reaccionar), userInfo: nil, repeats: false)
+                let timer = Timer.scheduledTimer(timeInterval: 1.2, target: self, selector: #selector(reaccionar), userInfo: nil, repeats: false)
                
              }else{
                var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
