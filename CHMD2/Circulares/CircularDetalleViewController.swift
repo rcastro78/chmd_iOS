@@ -256,7 +256,7 @@ class CircularDetalleViewController: UIViewController {
         do {
             try store.save(event, span: .thisEvent)
             print("Evento guardado")
-             self.showToast(message:"Evento guardado", font: UIFont(name:"GothamRounded-Bold",size:11.0)!)
+            //self.showToast(message:"Evento guardado", font: UIFont(name:"GothamRounded-Bold",size:11.0)!)
         }
         catch {
            print("Error guardando el evento")
@@ -269,23 +269,13 @@ class CircularDetalleViewController: UIViewController {
     
     
     @IBAction func btnCalendarioClick(_ sender: Any) {
-    }
-    @IBAction func insertaEventoClick(_ sender: UIButton) {
-       
-        
-        
         if(ConexionRed.isConnectedToNetwork()){
-            //let dialogMessage = UIAlertController(title: "CHMD", message: "¿Deseas agregar este evento a tu calendario?", preferredStyle: .alert)
-            
-            // Create OK button with action handler
-            //let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
-              
-                
-                
+               
                 let eventStore = EKEventStore()
                            switch EKEventStore.authorizationStatus(for: .event) {
                            case .authorized:
                             self.insertarEvento(store: eventStore, titulo: self.circularTitulo, fechaIcs: self.fechaIcs, horaInicioIcs: self.horaInicialIcs, horaFinIcs: self.horaFinalIcs, ubicacionIcs: "")
+                            self.showToast(message:"Evento guardado", font: UIFont(name:"GothamRounded-Bold",size:11.0)!)
                                case .denied:
                                    print("Acceso denegado")
                                case .notDetermined:
@@ -304,26 +294,18 @@ class CircularDetalleViewController: UIViewController {
                     
                 }
                 
-                
-                
-                
-           // })
-            
-            // Create Cancel button with action handlder
-           // let cancel = UIAlertAction(title: "Cancelar", style: .cancel) { (action) -> Void in
-                
-           // }
-            
-            //Add OK and Cancel button to dialog message
-           // dialogMessage.addAction(ok)
-           // dialogMessage.addAction(cancel)
-            
-            // Present dialog message to user
-          //  self.present(dialogMessage, animated: true, completion: nil)
+              
+          
         }else{
             var alert = UIAlertView(title: "No está conectado a Internet", message: "Esta opción solo funciona con una conexión a Internet", delegate: nil, cancelButtonTitle: "Aceptar")
                        alert.show()
         }
+    }
+    @IBAction func insertaEventoClick(_ sender: UIButton) {
+       
+        
+        
+        
         
     }
     

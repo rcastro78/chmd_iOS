@@ -239,13 +239,11 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
        
         if(editando){
             let isEditing: Bool = self.isEditing
-            //cell.chkSeleccionar.visiblity(gone: true, dimension: 0)
-             cell.chkSeleccionar.isHidden = !isEditing
+            cell.chkSeleccionar.visiblity(gone: true, dimension: 0)
+            cell.chkSeleccionar.isHidden = !isEditing
         }else{
             let isEditing: Bool = false
             cell.chkSeleccionar.isChecked=false
-            let viewHeight:CGFloat = cell.chkSeleccionar.isChecked ? 12 : 0.0
-            cell.chkSeleccionar.visiblity(gone: !cell.chkSeleccionar.isChecked, dimension: viewHeight)
             cell.chkSeleccionar.isHidden = !isEditing
         }
        
@@ -507,19 +505,13 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         return action
     }
 
-    
-
-    
-    
-    
-    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
        
         
         if (revealViewController().frontViewPosition == FrontViewPosition.right){
              self.revealViewController()?.revealToggle(animated: true)
         }
-       //Con esto se evita indexOutOfRangeException
+       
        if (indexPath.item >= 0 || indexPath.item < circulares.count) {
         if(editando==false){
         
@@ -552,16 +544,9 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             seleccionMultiple(cell.chkSeleccionar)
             
         }
-    }
-            
-        
-        
-        
-        
-        
-        
-             
-    }
+  }
+              
+}
     
   
     
