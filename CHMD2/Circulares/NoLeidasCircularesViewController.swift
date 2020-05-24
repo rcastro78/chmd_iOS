@@ -524,9 +524,10 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
              self.revealViewController()?.revealToggle(animated: true)
         }
         //Con esto se evita indexOutOfRangeException
-              if (indexPath.item >= 0 || indexPath.item < circulares.count) {
+              
                 
         if(editando == false){
+            if (indexPath.item >= 0 || indexPath.item < circulares.count) {
         let c = circulares[indexPath.row]
         let cell = tableView.cellForRow(at: indexPath)
             cell?.selectionStyle = .none
@@ -542,6 +543,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             UserDefaults.standard.set(0, forKey: "viaNotif")
             UserDefaults.standard.set(3, forKey: "tipoCircular")
             performSegue(withIdentifier: "CircularNoLeidaSegue", sender:self)
+            }
         }else{
                       let cell = tableView.cellForRow(at: indexPath) as! CircularTableViewCell
                       cell.selectionStyle = .none
@@ -553,7 +555,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                       seleccionMultiple(cell.chkSeleccionar)
         }
              
-    }
+    
     }
   
     

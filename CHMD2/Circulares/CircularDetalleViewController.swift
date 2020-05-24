@@ -76,15 +76,17 @@ class CircularDetalleViewController: UIViewController {
     var idCirculares = [Int]()
     var db: OpaquePointer?
     var tipoCircular:Int=0
+    
+    
+   
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        /*lblTituloParte1.type = .continuous
-        lblTituloParte1.scrollDuration = 8.0
-        lblTituloParte1.animationCurve = .easeOut
-        lblTituloParte1.fadeLength = 10.0
-        lblTituloParte1.leadingBuffer = 30.0
-        lblTituloParte1.trailingBuffer = 20.0*/
+        webView.scrollView.showsHorizontalScrollIndicator = false
+        webView.scrollView.pinchGestureRecognizer?.isEnabled = false
+        
         tipoCircular = UserDefaults.standard.integer(forKey: "tipoCircular")
         imbCalendario.isHidden=true
         idUsuario = UserDefaults.standard.string(forKey: "idUsuario") ?? "0"

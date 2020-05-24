@@ -512,9 +512,9 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
              self.revealViewController()?.revealToggle(animated: true)
         }
        
-       if (indexPath.item >= 0 || indexPath.item < circulares.count) {
+       
         if(editando==false){
-        
+        if (indexPath.item >= 0 || indexPath.item < circulares.count) {
             let c = circulares[indexPath.row]
             let cell = tableView.cellForRow(at: indexPath)
             cell?.selectionStyle = .none
@@ -531,6 +531,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             UserDefaults.standard.set(0, forKey: "viaNotif")
             UserDefaults.standard.set(1, forKey: "tipoCircular")
             performSegue(withIdentifier: "TcircularSegue", sender:self)
+            }
         }else{
          //está editando
             let c = circulares[indexPath.row]
@@ -544,7 +545,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             seleccionMultiple(cell.chkSeleccionar)
             
         }
-  }
+  
               
 }
     
