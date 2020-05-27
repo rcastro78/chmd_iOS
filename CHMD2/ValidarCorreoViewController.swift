@@ -81,7 +81,7 @@ class ValidarCorreoViewController: UIViewController {
         }else{
             self.lblMensaje.text="La cuenta es válida"
             //self.btnContinuar.setTitle("Continuar", for: .normal)
-            self.btnContinuar.visiblity(gone: true, dimension: 0)
+            //self.btnContinuar.visiblity(gone: true, dimension: 0)
             performSegue(withIdentifier: "validarSegue", sender: self)
         }
         
