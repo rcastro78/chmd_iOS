@@ -313,7 +313,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                              
                                                 //Mostrar el alert
                                                 let alertController = UIAlertController(title: "Opciones", message: "Elige la opción que deseas", preferredStyle: .actionSheet)
-                                                let actionLeer = UIAlertAction(title: "Marcar como leída", style: .default) { (action:UIAlertAction) in
+                                                let actionLeer = UIAlertAction(title: "Mover a leídas", style: .default) { (action:UIAlertAction) in
                                                     
                                                     if(ConexionRed.isConnectedToNetwork()){
                                                                                                           
@@ -331,7 +331,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                                     
                                                     }
                                                 
-                                                let actionNoLeer = UIAlertAction(title: "Marcar como no leída", style: .default) { (action:UIAlertAction) in
+                                                let actionNoLeer = UIAlertAction(title: "Mover a no leídas", style: .default) { (action:UIAlertAction) in
                                                 
                                                     
                                                     
@@ -524,7 +524,9 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         
          if(editando==false){
              if (indexPath.item >= 0 || indexPath.item < circulares.count) {
-        let c = circulares[indexPath.row]
+        guard let c = circulares[safe: indexPath.row] else{
+            return
+        }
         let cell = tableView.cellForRow(at: indexPath)
             cell?.selectionStyle = .none
         UserDefaults.standard.set(indexPath.row,forKey:"posicion")
@@ -1078,13 +1080,17 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                 btnEliminar.isHidden=false
                 btnDeshacer.isHidden=false*/
                 tableViewCirculares.allowsSelection = true
-                let c = circulares[indexpath.row]
+               guard let c = circulares[safe: indexpath.row] else{
+                    return
+                }
                 //print("Seleccionado: \(c.id)")
                 circularesSeleccionadas.append(c.id)
                 seleccion.append(indexpath.row)
                 print("recuento: \(circularesSeleccionadas.count)")
             }else{
-               let c = circulares[indexpath.row]
+               guard let c = circulares[safe: indexpath.row] else{
+                   return
+               }
                 //print("No Seleccionado: \(c.id)")
                 let itemEliminar = c.id
                 let selecEliminar = indexpath.row
