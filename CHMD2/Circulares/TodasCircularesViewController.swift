@@ -79,7 +79,9 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         self.tableViewCirculares.delegate=self
         self.tableViewCirculares.dataSource=self
         self.barBusqueda.delegate=self
-        
+        let pantalla: CGRect = UIScreen.main.bounds
+        let ancho = pantalla.width
+        self.revealViewController().rearViewRevealWidth = ancho
         if #available(iOS 13.0, *) {
             self.isModalInPresentation=false
         }

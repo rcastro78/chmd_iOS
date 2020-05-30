@@ -110,7 +110,9 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         self.tableViewCirculares.delegate=self
         self.tableViewCirculares.dataSource=self
         self.barBusqueda.delegate=self
-        
+        let pantalla: CGRect = UIScreen.main.bounds
+        let ancho = pantalla.width
+        self.revealViewController().rearViewRevealWidth = ancho
         btnMarcarLeidas.isHidden=true
         btnMarcarFavoritas.isHidden=true
         btnMarcarEliminadas.isHidden=true
