@@ -130,10 +130,6 @@ class CircularDetalleViewController: UIViewController {
     var db: OpaquePointer?
     var tipoCircular:Int=0
     
-    
-   
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -159,7 +155,6 @@ class CircularDetalleViewController: UIViewController {
             btnCalendario.isHidden=true
             btnCalendario.isUserInteractionEnabled=true
          }
-         lblNivel.text = nivel
         
         if (viaNotif == 0){
             let titulo = UserDefaults.standard.string(forKey: "nombre") ?? ""
@@ -169,16 +164,15 @@ class CircularDetalleViewController: UIViewController {
             id = UserDefaults.standard.string(forKey: "id") ?? ""
             idInicial = Int(UserDefaults.standard.string(forKey: "id") ?? "0")!
             
-            //self.title = "Circular"
+             let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(imageTapped(tapGestureRecognizer:)))
             let bannerWidth = navigationItem.accessibilityFrame.size.width
-            
             let bannerX = bannerWidth / 2
-            
-            
-            let imageView = UIImageView(frame: CGRect(x: bannerX, y: 10, width: 24, height: 24))
+            let imageView = UIImageView(frame: CGRect(x: bannerX, y: 6, width: 24, height: 24))
             imageView.contentMode = .scaleAspectFit
             let image = UIImage(named: "chmd_barra")
             imageView.image = image
+            imageView.isUserInteractionEnabled = true
+            imageView.addGestureRecognizer(tapGestureRecognizer)
             navigationItem.titleView = imageView
             
             
@@ -277,6 +271,12 @@ class CircularDetalleViewController: UIViewController {
        
     }
    
+    @objc func imageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
+        let tappedImage = tapGestureRecognizer.view as! UIImageView
+         //self.performSegue(withIdentifier: "unwindSegueToVC1", sender: self)
+        //unwindToCirculares
+        self.performSegue(withIdentifier: "unwindToCirculares", sender: self)
+    }
    
     func find(value searchValue: String, in array: [String]) -> Int?
     {
@@ -699,7 +699,7 @@ class CircularDetalleViewController: UIViewController {
             p = p-1
             if(p>0){
                 lblTituloParte1.text = circulares[p].nombre
-                               lblNivel.text = circulares[p].nivel
+                               //lblNivel.text = circulares[p].nivel
                                
                                let anio = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
                                let mes = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
@@ -915,7 +915,7 @@ class CircularDetalleViewController: UIViewController {
                           if(nextHoraIniIcs != "00:00:00"){
                               self.imbCalendario.isHidden=false
                           }
-                           self.lblNivel.text = nextNivel
+                           //self.lblNivel.text = nextNivel
                           
                           self.circularTitulo = nextTitulo
                           let link = URL(string:self.urlBase+"getCircularId4.php?id=\(nextId)")!
@@ -990,7 +990,7 @@ class CircularDetalleViewController: UIViewController {
                     if(nextHoraIniIcs != "00:00:00"){
                         self.imbCalendario.isHidden=false
                     }
-                     self.lblNivel.text = nextNivel
+                     //self.lblNivel.text = nextNivel
                     
                     self.circularTitulo = nextTitulo
                     let link = URL(string:self.urlBase+"getCircularId4.php?id=\(nextId)")!
@@ -1691,7 +1691,7 @@ class CircularDetalleViewController: UIViewController {
                        if(nextHoraIniIcs != "00:00:00"){
                            self.imbCalendario.isHidden=false
                        }
-                        self.lblNivel.text = nextNivel
+                        //self.lblNivel.text = nextNivel
                        
                        self.circularTitulo = nextTitulo
                        let link = URL(string:self.urlBase+"getCircularId4.php?id=\(nextId)")!
