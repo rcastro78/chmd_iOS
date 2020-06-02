@@ -275,7 +275,7 @@ class CircularDetalleViewController: UIViewController {
         let tappedImage = tapGestureRecognizer.view as! UIImageView
          //self.performSegue(withIdentifier: "unwindSegueToVC1", sender: self)
         //unwindToCirculares
-        self.performSegue(withIdentifier: "unwindToCirculares", sender: self)
+        self.performSegue(withIdentifier: "unwindSegueToVC1", sender: self)
     }
    
     func find(value searchValue: String, in array: [String]) -> Int?
