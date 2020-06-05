@@ -167,9 +167,9 @@ class CircularDetalleViewController: UIViewController {
              let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(imageTapped(tapGestureRecognizer:)))
             let bannerWidth = navigationItem.accessibilityFrame.size.width
             let bannerX = bannerWidth / 2
-            let imageView = UIImageView(frame: CGRect(x: bannerX, y: 6, width: 24, height: 24))
+            let imageView = UIImageView(frame: CGRect(x: bannerX, y: 0, width: 18, height: 18))
             imageView.contentMode = .scaleAspectFit
-            let image = UIImage(named: "chmd_barra")
+            let image = UIImage(named: "chmd_barra2")
             imageView.image = image
             imageView.isUserInteractionEnabled = true
             imageView.addGestureRecognizer(tapGestureRecognizer)

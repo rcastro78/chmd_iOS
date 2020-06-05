@@ -50,6 +50,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     var urlBase:String="https://www.chmd.edu.mx/WebAdminCirculares/ws/"
     var noleerMetodo:String="noleerCircular.php"
     var leerMetodo:String="leerCircular.php"
+    var metodoCirculares:String="getCirculares_iOS.php"
     var selecMultiple=false
     var circularesSeleccionadas = [Int]()
     var seleccion=[Int]()
@@ -63,7 +64,10 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         super.viewWillAppear(_:true)
          circulares.removeAll()
          if ConexionRed.isConnectedToNetwork() == true {
-         self.obtenerCirculares(limit:50)
+            let address=self.urlBase+self.metodoCirculares+"?usuario_id=\(self.idUsuario)"
+             guard let _url = URL(string: address) else { return };
+             self.getDataFromURL(url: _url)
+            
          }else{
            self.leerCirculares()
         }
@@ -163,7 +167,9 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             //El método debe venir con top 15
             //del registro 1 al 15
             valorFinal = valorFinal+5
-           self.obtenerCirculares(limit:valorFinal)
+            let address=self.urlBase+self.metodoCirculares+"?usuario_id=\(self.idUsuario)"
+           guard let _url = URL(string: address) else { return };
+           self.getDataFromURL(url: _url)
             print("se pasó el último registro")
             }
     }
@@ -493,7 +499,12 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                             let idCircular:String = "\(circular.id)"
                                             if ConexionRed.isConnectedToNetwork() == true {
                                             self.delCircular(direccion: self.urlBase+"eliminarCircular.php", usuario_id: self.idUsuario, circular_id: idCircular)
-                                            //self.obtenerCirculares(limit:15)
+                                            
+                                                let address=self.urlBase+self.metodoCirculares+"?usuario_id=\(self.idUsuario)"
+                                                                       guard let _url = URL(string: address) else { return };
+                                                                       self.getDataFromURL(url: _url)
+                                                
+                                                
                                                 self.indexEliminar=indexPath.row
                                         
                                             }else{
@@ -847,146 +858,132 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     }
     
     
-    func obtenerCirculares(limit:Int){
-        self.circulares.removeAll()
-        
-        let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesUsuarioLazyLoad.php?usuario_id=\(self.idUsuario)&limit=\(limit)"
-       
-        
-        Alamofire.request(address)
-            .responseJSON { response in
-                // check for errors
-                guard response.result.error == nil else {
-                    // got an error in getting the data, need to handle it
-                    print("error en la consulta")
-                    print(response.result.error!)
-                    return
-                }
-               
-                
-                if let diccionarios = response.result.value as? [Dictionary<String,AnyObject>]{
-                    for diccionario in diccionarios{
-                        //print(diccionario)
-                        
-                        guard let id = diccionario["id"] as? String else {
-                            print("No se pudo obtener el id")
-                            return
-                        }
-                        print(id)
-                        
-                        guard let titulo = diccionario["titulo"] as? String else {
-                            print("No se pudo obtener el titulo")
-                            return
-                        }
-                        
-                        
-                        
-                        var imagen:UIImage
-                        imagen = UIImage.init(named: "appmenu05")!
-                        
-                        
-                        guard let leido = diccionario["leido"] as? String else {
-                            return
-                        }
-                        
-                        guard let fecha = diccionario["created_at"] as? String else {
-                                                   return
-                                               }
-                        
-                        guard let favorito = diccionario["favorito"] as? String else {
-                            return
-                        }
-                        
-                        guard let adjunto = diccionario["adjunto"] as? String else {
-                                                   return
-                                               }
-                        
-                        guard let eliminada = diccionario["eliminado"] as? String else {
-                            return
-                        }
-                        
-                        guard let texto = diccionario["contenido"] as? String else {
-                            return
-                        }
-                        
-                        guard let fechaIcs = diccionario["fecha_ics"] as? String else {
-                          return
-                        }
-                        guard let horaInicioIcs = diccionario["hora_inicial_ics"] as? String else {
-                                                 return
-                                               }
-                        
-                       
-                        guard let horaFinIcs = diccionario["hora_final_ics"] as? String else {
-                                                                        return
-                                                                      }
-                        
-                     
-                        //Con esto se evita la excepcion por los valores nulos
-                        var nv:String?
-                        if (diccionario["nivel"] == nil){
-                            nv=""
-                        }else{
-                            nv=diccionario["nivel"] as? String
-                        }
-
-                        
-                       
-                        
-                        //leídas
-                        if(Int(leido)!>0){
-                            imagen = UIImage.init(named: "circle_white")!
-                        }
-                        //No leídas
-                        if(Int(leido)==0 && Int(favorito)==0){
-                            imagen = UIImage.init(named: "circle")!
-                        }
-                        
-                        var noLeida:Int = 0
-                        if(Int(leido)! == 0){
-                            noLeida = 1
-                        }
-                        
-                        var adj=0;
-                        if(Int(adjunto)!==1){
-                            adj=1
-                        }
-                       
-                        if(Int(favorito)!>0){
-                            imagen = UIImage.init(named: "star")!
-                        }
-                        
-                        var str = texto.replacingOccurrences(of: "&lt;", with: "<").replacingOccurrences(of: "&gt;", with: ">")
-                        .replacingOccurrences(of: "&amp;aacute;", with: "á")
-                        .replacingOccurrences(of: "&amp;eacute;", with: "é")
-                        .replacingOccurrences(of: "&amp;iacute;", with: "í")
-                        .replacingOccurrences(of: "&amp;oacute;", with: "ó")
-                        .replacingOccurrences(of: "&amp;uacute;", with: "ú")
-                        .replacingOccurrences(of: "&amp;ordm;", with: "o.")
-                        print("Contenido: "+str)
-                        if(Int(eliminada)!==0){
-                             self.circulares.append(CircularTodas(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo.uppercased(),fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? ""))
-                        }
-                        
-                      
-                        //Guardar las circulares
-                        
-                        
-                        
-                        self.guardarCirculares(idCircular: Int(id)!, idUsuario: Int(self.idUsuario)!, nombre: titulo.uppercased(), textoCircular: str, no_leida: noLeida, leida: Int(leido)!, favorita: Int(favorito)!, compartida: 0, eliminada: Int(eliminada)!,fecha: fecha,fechaIcs: fechaIcs,horaInicioIcs: horaInicioIcs,horaFinIcs: horaFinIcs,nivel: nv ?? "",adjunto:adj)
+    
+    func getDataFromURL(url: URL) {
+        print("get data")
+        print(url)
+        URLSession.shared.dataTask(with: url) {
+            (data, response, error) in
+            print(data)
+            
+            if let datos = try? JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String:Any]] {
+                print(datos.count)
+                for index in 0...((datos).count) - 1
+                {
+                    let obj = datos[index] as! [String : AnyObject]
+                    guard let id = obj["id"] as? String else {
+                        print("No se pudo obtener el id")
+                        return
+                    }
+                    guard let titulo = obj["titulo"] as? String else {
+                        print("No se pudo obtener el titulo")
+                        return
                     }
                     
-                     
+                    var imagen:UIImage
+                       imagen = UIImage.init(named: "appmenu05")!
+                       
+                       
+                       guard let leido = obj["leido"] as? String else {
+                           return
+                       }
+                       
+                       guard let fecha = obj["created_at"] as? String else {
+                                                  return
+                                              }
+                       
+                       guard let favorito = obj["favorito"] as? String else {
+                           return
+                       }
+                       
+                       guard let adjunto = obj["adjunto"] as? String else {
+                                                  return
+                                              }
+                       
+                       guard let eliminada = obj["eliminado"] as? String else {
+                           return
+                       }
+                       
+                       guard let texto = obj["contenido"] as? String else {
+                           return
+                       }
+                       
+                       guard let fechaIcs = obj["fecha_ics"] as? String else {
+                         return
+                       }
+                       guard let horaInicioIcs = obj["hora_inicial_ics"] as? String else {
+                                                return
+                                              }
+                       
+                      
+                       guard let horaFinIcs = obj["hora_final_ics"] as? String else {
+                                                                       return
+                                                                     }
+                       
+                    
+                       //Con esto se evita la excepcion por los valores nulos
+                       var nv:String?
+                       if (obj["nivel"] == nil){
+                           nv=""
+                       }else{
+                           nv=obj["nivel"] as? String
+                       }
+
+                       
+                      
+                       
+                       //leídas
+                       if(Int(leido)!>0){
+                           imagen = UIImage.init(named: "circle_white")!
+                       }
+                       //No leídas
+                       if(Int(leido)==0 && Int(favorito)==0){
+                           imagen = UIImage.init(named: "circle")!
+                       }
+                       
+                       var noLeida:Int = 0
+                       if(Int(leido)! == 0){
+                           noLeida = 1
+                       }
+                       
+                       var adj=0;
+                       if(Int(adjunto)!==1){
+                           adj=1
+                       }
+                      
+                       if(Int(favorito)!>0){
+                           imagen = UIImage.init(named: "star")!
+                       }
+                       
+                       var str = texto.replacingOccurrences(of: "&lt;", with: "<").replacingOccurrences(of: "&gt;", with: ">")
+                       .replacingOccurrences(of: "&amp;aacute;", with: "á")
+                       .replacingOccurrences(of: "&amp;eacute;", with: "é")
+                       .replacingOccurrences(of: "&amp;iacute;", with: "í")
+                       .replacingOccurrences(of: "&amp;oacute;", with: "ó")
+                       .replacingOccurrences(of: "&amp;uacute;", with: "ú")
+                       .replacingOccurrences(of: "&amp;ordm;", with: "o.")
+                       print("Contenido: "+str)
+                       if(Int(eliminada)!==0){
+                            self.circulares.append(CircularTodas(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo.uppercased(),fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? ""))
+                       }
+                    
+                     self.guardarCirculares(idCircular: Int(id)!, idUsuario: Int(self.idUsuario)!, nombre: titulo.uppercased(), textoCircular: str, no_leida: noLeida, leida: Int(leido)!, favorita: Int(favorito)!, compartida: 0, eliminada: Int(eliminada)!,fecha: fecha,fechaIcs: fechaIcs,horaInicioIcs: horaInicioIcs,horaFinIcs: horaFinIcs,nivel: nv ?? "",adjunto:adj)
+                    
                     
                 }
-             
-        self.tableViewCirculares.reloadData()
+                OperationQueue.main.addOperation {
+                    self.tableViewCirculares.reloadData();
+                }
+            }else{
+                print(error.debugDescription)
+                print(error?.localizedDescription)
+            }
+            
+            
+            }.resume()
+        
+        
     }
-        
-        
-        
-    }
-    
     
     func setupLongPressGesture() {
         let longPressGesture:UILongPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(self.handleLongPress))
@@ -1255,8 +1252,11 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                         self.viewDidLoad()
                                         self.viewWillAppear(true)
                                          
-                                         self.obtenerCirculares(limit:50)
-                                self.tableViewCirculares.reloadData()
+                                         //self.obtenerCirculares(limit:50)
+         let address=self.urlBase+self.metodoCirculares+"?usuario_id=\(self.idUsuario)"
+         guard let _url = URL(string: address) else { return };
+         self.getDataFromURL(url: _url)
+         self.tableViewCirculares.reloadData()
                             /*})
                             
                             // Create Cancel button with action handlder
@@ -1450,9 +1450,13 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         if searchBar.text==nil || searchBar.text==""{
             buscando=false
             view.endEditing(true)
-            let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesUsuariosLazyLoad.php?usuario_id=\(self.idUsuario)&limit=15"
-            let _url = URL(string: address);
-            self.obtenerCirculares(limit:15)
+           let address=self.urlBase+self.metodoCirculares+"?usuario_id=\(self.idUsuario)"
+             
+            guard let _url = URL(string: address) else { return };
+            self.getDataFromURL(url: _url)
+            
+            
+            
             
         }else{
             buscando=true
