@@ -1179,7 +1179,26 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
            
                             
            }
-            for s in seleccion{
+            
+            if(seleccion.count<circulares.count){
+                for s in seleccion{
+                                      let indexPath = IndexPath(row:s, section:0)
+                                           print("index: \(indexPath.row)")
+                                           var r = indexPath.row
+                                           if r>0{
+                                               r = r - 1
+                                           }
+                                           print("index: \(r)")
+                                           self.circulares.remove(at: r)
+                                          
+                           }
+            }else{
+                //Si seleccionó todas, las elimina
+                self.circulares.removeAll()
+            }
+            
+            
+            /*for s in seleccion{
             let indexPath = IndexPath(row:s, section:0)
             let cell = self.tableViewCirculares.dequeueReusableCell(withIdentifier: "celda", for: indexPath) as! CircularTableViewCell
             if(cell.chkSeleccionar.isChecked == true){
@@ -1188,7 +1207,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                 
                 
            
-          }
+          }*/
             circulares.removeAll()
             circularesSeleccionadas.removeAll()
             seleccion.removeAll()
@@ -1214,16 +1233,22 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
           
          }
            
-           for s in seleccion{
-                          let indexPath = IndexPath(row:s, section:0)
-                          let cell = self.tableViewCirculares.dequeueReusableCell(withIdentifier: "celda", for: indexPath)
-                                    as! CircularTableViewCell
-                          
-                          if(cell.chkSeleccionar.isChecked == true){
-                              cell.chkSeleccionar.isChecked=false
-                              cell.imgCircular.image=UIImage(named:"circle")
+           if(seleccion.count<circulares.count){
+               for s in seleccion{
+                                     let indexPath = IndexPath(row:s, section:0)
+                                          print("index: \(indexPath.row)")
+                                          var r = indexPath.row
+                                          if r>0{
+                                              r = r - 1
+                                          }
+                                          print("index: \(r)")
+                                          self.circulares.remove(at: r)
+                                         
                           }
-                      }
+           }else{
+               //Si seleccionó todas, las elimina
+               self.circulares.removeAll()
+           }
           circulares.removeAll()
            circularesSeleccionadas.removeAll()
            seleccion.removeAll()
@@ -1237,39 +1262,50 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
        
    }
     
+   
     @objc func eliminar(){
-     //circulares.removeAll()
-       if ConexionRed.isConnectedToNetwork() == true {
-       for c in circularesSeleccionadas{
-          self.delCircularTodas(direccion: self.urlBase+"eliminarCircular.php", usuario_id: self.idUsuario, circular_id: "\(c)")
-        
-       }
-         
-         for s in seleccion{
-                        let indexPath = IndexPath(row:s, section:0)
-                        let cell = self.tableViewCirculares.dequeueReusableCell(withIdentifier: "celda", for: indexPath)
-                                  as! CircularTableViewCell
-                                let index = indexPath.row
-                                self.circulares.remove(at: index)
-                                self.tableViewCirculares.reloadData()
-            
-                        /*if(cell.chkSeleccionar.isChecked == true){
-                            cell.chkSeleccionar.isChecked=false
-                            cell.imgCircular.image=UIImage(named:"circle")
-                        }*/
+         if ConexionRed.isConnectedToNetwork() == true {
+                    for c in circularesSeleccionadas{
+                      self.delCircularTodas(direccion: self.urlBase+"eliminarCircular.php", usuario_id: self.idUsuario, circular_id: "\(c)")
+                     
                     }
-      
-        circularesSeleccionadas.removeAll()
-         seleccion.removeAll()
-         
-          let timer = Timer.scheduledTimer(timeInterval: 1.2, target: self, selector: #selector(reaccionar), userInfo: nil, repeats: false)
-         
-       }else{
-         var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
-          alert.show()
-     }
-        
+                      //Con esta porción, se pueden eliminar elementos discontinuos de la lista
+                      if(seleccion.count<circulares.count){
+                          for s in seleccion{
+                                                let indexPath = IndexPath(row:s, section:0)
+                                                     print("index: \(indexPath.row)")
+                                                     var r = indexPath.row
+                                                     if r>0{
+                                                         r = r - 1
+                                                     }
+                                                     print("index: \(r)")
+                                                     self.circulares.remove(at: r)
+                                                    
+                                     }
+                      }else{
+                          //Si seleccionó todas, las elimina
+                          self.circulares.removeAll()
+                      }
+                      circularesSeleccionadas.removeAll()
+                      seleccion.removeAll()
+                      self.tableViewCirculares.reloadData()
+                      
+                      btnMarcarLeidas.isHidden=true
+                      btnMarcarNoLeidas.isHidden=true
+                      btnMarcarEliminadas.isHidden=true
+                      btnMarcarFavoritas.isHidden=true
+                      lblLeidas.isHidden=true
+                      lblNoLeidas.isHidden=true
+                      lblEliminar.isHidden=true
+                      lblFavoritas.isHidden=true
+                      
+                    }else{
+                      var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
+                       alert.show()
+                  }
     }
+    
+    
     
     @objc func deshacer(){
     

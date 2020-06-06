@@ -1141,17 +1141,23 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
            
           }
             //Con esta porción, se pueden eliminar elementos discontinuos de la lista
-            for s in seleccion{
-                       let indexPath = IndexPath(row:s, section:0)
-                            print("index: \(indexPath.row)")
-                            var r = indexPath.row
-                            if r>0{
-                                r = r - 1
-                            }
-                            print("index: \(r)")
-                            self.circulares.remove(at: r)
-                           
+            if(seleccion.count<circulares.count){
+                for s in seleccion{
+                                      let indexPath = IndexPath(row:s, section:0)
+                                           print("index: \(indexPath.row)")
+                                           var r = indexPath.row
+                                           if r>0{
+                                               r = r - 1
+                                           }
+                                           print("index: \(r)")
+                                           self.circulares.remove(at: r)
+                                          
+                           }
+            }else{
+                //Si seleccionó todas, las elimina
+                self.circulares.removeAll()
             }
+           
             circularesSeleccionadas.removeAll()
             seleccion.removeAll()
             self.tableViewCirculares.reloadData()
@@ -1172,42 +1178,44 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     }
     
     @objc func eliminar(){
-        
-        
-          if ConexionRed.isConnectedToNetwork() == true {
-          for c in circularesSeleccionadas{
-            self.delCircular(direccion: self.urlBase+"eliminarCircular.php", usuario_id: self.idUsuario, circular_id: "\(c)")
-           
-          }
-            //Con esta porción, se pueden eliminar elementos discontinuos de la lista
-            for s in seleccion{
-                       let indexPath = IndexPath(row:s, section:0)
-                            print("index: \(indexPath.row)")
-                            var r = indexPath.row
-                            if r>0{
-                                r = r - 1
-                            }
-                            print("index: \(r)")
-                            self.circulares.remove(at: r)
-                           
-            }
-            circularesSeleccionadas.removeAll()
-            seleccion.removeAll()
-            self.tableViewCirculares.reloadData()
-            
-            btnMarcarLeidas.isHidden=true
-            btnMarcarNoLeidas.isHidden=true
-            btnMarcarEliminadas.isHidden=true
-            lblLeidas.isHidden=true
-            lblNoLeidas.isHidden=true
-            lblEliminar.isHidden=true
-          
-            
-          }else{
-            var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
-             alert.show()
-        }
-        
+         if ConexionRed.isConnectedToNetwork() == true {
+                    for c in circularesSeleccionadas{
+                      self.delCircular(direccion: self.urlBase+"eliminarCircular.php", usuario_id: self.idUsuario, circular_id: "\(c)")
+                     
+                    }
+                      //Con esta porción, se pueden eliminar elementos discontinuos de la lista
+                      if(seleccion.count<circulares.count){
+                          for s in seleccion{
+                                                let indexPath = IndexPath(row:s, section:0)
+                                                     print("index: \(indexPath.row)")
+                                                     var r = indexPath.row
+                                                     if r>0{
+                                                         r = r - 1
+                                                     }
+                                                     print("index: \(r)")
+                                                     self.circulares.remove(at: r)
+                                                    
+                                     }
+                      }else{
+                          //Si seleccionó todas, las elimina
+                          self.circulares.removeAll()
+                      }
+                      circularesSeleccionadas.removeAll()
+                      seleccion.removeAll()
+                      self.tableViewCirculares.reloadData()
+                      
+                      btnMarcarLeidas.isHidden=true
+                      btnMarcarNoLeidas.isHidden=true
+                      btnMarcarEliminadas.isHidden=true
+                      lblLeidas.isHidden=true
+                      lblNoLeidas.isHidden=true
+                      lblEliminar.isHidden=true
+                    
+                      
+                    }else{
+                      var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
+                       alert.show()
+                  }
     }
     
     @objc func deshacer(){
@@ -1223,16 +1231,21 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
               
              }
                //Con esta porción, se pueden eliminar elementos discontinuos de la lista
-               for s in seleccion{
-                          let indexPath = IndexPath(row:s, section:0)
-                               print("index: \(indexPath.row)")
-                               var r = indexPath.row
-                               if r>0{
-                                   r = r - 1
-                               }
-                               print("index: \(r)")
-                               self.circulares.remove(at: r)
-                              
+              if(seleccion.count<circulares.count){
+                   for s in seleccion{
+                                         let indexPath = IndexPath(row:s, section:0)
+                                              print("index: \(indexPath.row)")
+                                              var r = indexPath.row
+                                              if r>0{
+                                                  r = r - 1
+                                              }
+                                              print("index: \(r)")
+                                              self.circulares.remove(at: r)
+                                             
+                              }
+               }else{
+                   //Si seleccionó todas, las elimina
+                   self.circulares.removeAll()
                }
                circularesSeleccionadas.removeAll()
                seleccion.removeAll()
@@ -1323,43 +1336,16 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     }
     
     func delCircular(direccion:String, usuario_id:String, circular_id:String){
-        
-       //Preguntar
-       let dialogMessage = UIAlertController(title: "CHMD", message: "¿Deseas eliminar esta circular?", preferredStyle: .alert)
-                  
-                  // Create OK button with action handler
-                  let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
-                   
-                   
-                   let parameters: Parameters = ["usuario_id": usuario_id, "circular_id": circular_id]      //This will be your parameter
-                       Alamofire.request(direccion, method: .post, parameters: parameters).responseJSON { response in
-                           switch (response.result) {
-                           case .success:
-                               print(response)
-                               //self.circulares.remove(at: self.indexEliminar)
-                               self.tableViewCirculares.reloadData()
-                               break
-                           case .failure:
-                               print(Error.self)
-                           }
-                       }
-                   
-                   
-                   
-                   })
-       
-       
-       let cancel = UIAlertAction(title: "Cancelar", style: .cancel) { (action) -> Void in
-                      
-                  }
-                  
-                  //Add OK and Cancel button to dialog message
-                  dialogMessage.addAction(ok)
-                  dialogMessage.addAction(cancel)
-                  
-                  // Present dialog message to user
-                  self.present(dialogMessage, animated: true, completion: nil)
-       
+        let parameters: Parameters = ["usuario_id": usuario_id, "circular_id": circular_id]      //This will be your parameter
+        Alamofire.request(direccion, method: .post, parameters: parameters).responseJSON { response in
+            switch (response.result) {
+            case .success:
+                print(response)
+                break
+            case .failure:
+                print(Error.self)
+            }
+        }
     }
     
     

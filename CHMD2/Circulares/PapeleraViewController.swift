@@ -234,25 +234,27 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         
          if(c.fecha != "")
          {
-                          let dateFormatter = DateFormatter()
-                          dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-                          dateFormatter.locale = Locale(identifier: "es_ES_POSIX")
-                          let date1 = dateFormatter.date(from: c.fecha)
-                          dateFormatter.dateFormat = "EEEE"
-                          let dia = dateFormatter.string(from: date1!)
-                  let intervalo = Date() - date1!
-                    let diferenciaDias:Int = intervalo.day!
-                    if(diferenciaDias<=7){
-                        dateFormatter.dateFormat = "EEEE"
-                    }
-                  if(diferenciaDias>7 && diferenciaDias<=365){
-                      dateFormatter.dateFormat = "dd/MM/yyyy"
-                  }
-                  if(diferenciaDias>365){
-                      dateFormatter.dateFormat = "MMMM/yyyy"
-                  }
-                   
-                   cell.lblFecha.text?=dia
+                let dateFormatter = DateFormatter()
+                                        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                                        dateFormatter.locale = Locale(identifier: "es_ES_POSIX")
+                                        let date1 = dateFormatter.date(from: c.fecha)
+                                        
+                                        let intervalo = Date() - date1!
+                                        let diferenciaDias:Int = intervalo.day!
+                                        if(diferenciaDias<=7){
+                                            dateFormatter.dateFormat = "EEEE"
+                                        }
+                                     if(diferenciaDias>7 && diferenciaDias<=365){
+                                          dateFormatter.dateFormat = "dd/MM/yyyy"
+                                      }
+                                      if(diferenciaDias>365){
+                                          dateFormatter.dateFormat = "MMMM/yyyy"
+                                      }
+                          
+                                        let dia = dateFormatter.string(from: date1!)
+                                
+                                 
+                                 cell.lblFecha.text?=dia
          }
               
         //cell.imgCircular.image = c.imagen
@@ -1181,19 +1183,21 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
            
           }
             //Con esta porción, se  pueden eliminar elementos discontinuos de la lista
-            for s in seleccion{
-                       let indexPath = IndexPath(row:s, section:0)
-                            print("index: \(indexPath.row)")
-                            var r = indexPath.row
-                            if r>0{
-                                r = r - 1
-                            }
-                            print("index: \(r)")
-                         if(r>=0){
-                             self.circulares.remove(at: r)
-                         }
-                            
-                           
+            if(seleccion.count<circulares.count){
+                for s in seleccion{
+                                      let indexPath = IndexPath(row:s, section:0)
+                                           print("index: \(indexPath.row)")
+                                           var r = indexPath.row
+                                           if r>0{
+                                               r = r - 1
+                                           }
+                                           print("index: \(r)")
+                                           self.circulares.remove(at: r)
+                                          
+                           }
+            }else{
+                //Si seleccionó todas, las elimina
+                self.circulares.removeAll()
             }
             circularesSeleccionadas.removeAll()
             seleccion.removeAll()
@@ -1214,73 +1218,52 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         
     }
     
-    @objc func leer(){
-        
-        
-          if ConexionRed.isConnectedToNetwork() == true {
-          for c in circularesSeleccionadas{
-            print("circular: \(c)")
-            self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: "\(c)")
-          
-          }
-            
-           for s in seleccion{
-                       let indexPath = IndexPath(row:s, section:0)
-                            print("index: \(indexPath.row)")
-                            var r = indexPath.row
-                            if r>0{
-                                r = r - 1
-                            }
-                            print("index: \(r)")
-                            self.circulares.remove(at: r)
-                           
-            }
-            circularesSeleccionadas.removeAll()
-            seleccion.removeAll()
-            self.tableViewCirculares.reloadData()
-            
-            btnMarcarLeidas.isHidden=true
-            btnMarcarNoLeidas.isHidden=true
-            btnMarcarFavoritas.isHidden=true
-            lblNoLeidas.isHidden=true
-            lblLeidas.isHidden=true
-            lblFavoritas.isHidden=true
-            
-          }else{
-            var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
-             alert.show()
-        }
-        
-    }
     
-    @objc func eliminar(){
-     if ConexionRed.isConnectedToNetwork() == true {
-        circulares.removeAll()
-        for c in circularesSeleccionadas{
-              self.delCircular(direccion: self.urlBase+"eliminarCircular.php", usuario_id: self.idUsuario, circular_id: "\(c)")
-        }
-        
-        seleccion.removeAll()
-        circularesSeleccionadas.removeAll()
+        @objc func leer(){
+            
+            
+              if ConexionRed.isConnectedToNetwork() == true {
+              for c in circularesSeleccionadas{
+                self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: "\(c)")
+               
+              }
+                //Con esta porción, se pueden eliminar elementos discontinuos de la lista
+                if(seleccion.count<circulares.count){
+                    for s in seleccion{
+                                          let indexPath = IndexPath(row:s, section:0)
+                                               print("index: \(indexPath.row)")
+                                               var r = indexPath.row
+                                               if r>0{
+                                                   r = r - 1
+                                               }
+                                               print("index: \(r)")
+                                               self.circulares.remove(at: r)
+                                              
+                               }
+                }else{
+                    //Si seleccionó todas, las elimina
+                    self.circulares.removeAll()
+                }
+                circularesSeleccionadas.removeAll()
+                seleccion.removeAll()
+                self.tableViewCirculares.reloadData()
                 
-                self.viewDidLoad()
-                self.viewWillAppear(true)
-                 
-                   let address=self.urlBase+self.metodoCirculares+"?usuario_id=\(self.idUsuario)"
-                                    guard let _url = URL(string: address) else { return };
-                                    self.getDataFromURL(url: _url)
-                 tableViewCirculares.reloadData()
-        
-       } else{
-                  var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
-                   alert.show()
+                btnMarcarLeidas.isHidden=true
+                btnMarcarFavoritas.isHidden=true
+                btnMarcarNoLeidas.isHidden=true
+                lblFavoritas.isHidden=true
+                lblNoLeidas.isHidden=true
+                lblLeidas.isHidden=true
+              
+                
+              }else{
+                var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
+                 alert.show()
+            }
+            
         }
-        
-    }
     
-    @objc func deshacer(){
-    
-    }
+   
     
     @objc func noleer(){
         
@@ -1291,16 +1274,21 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
            
           }
             //Con esta porción, se pueden eliminar elementos discontinuos de la lista
-            for s in seleccion{
-                       let indexPath = IndexPath(row:s, section:0)
-                            print("index: \(indexPath.row)")
-                            var r = indexPath.row
-                            if r>0{
-                                r = r - 1
-                            }
-                            print("index: \(r)")
-                            self.circulares.remove(at: r)
-                           
+           if(seleccion.count<circulares.count){
+                for s in seleccion{
+                                      let indexPath = IndexPath(row:s, section:0)
+                                           print("index: \(indexPath.row)")
+                                           var r = indexPath.row
+                                           if r>0{
+                                               r = r - 1
+                                           }
+                                           print("index: \(r)")
+                                           self.circulares.remove(at: r)
+                                          
+                           }
+            }else{
+                //Si seleccionó todas, las elimina
+                self.circulares.removeAll()
             }
             circularesSeleccionadas.removeAll()
             seleccion.removeAll()
@@ -1362,17 +1350,18 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     
     func leerCircular(direccion:String, usuario_id:String, circular_id:String){
-        let parameters: Parameters = ["usuario_id": usuario_id, "circular_id": circular_id]      //This will be your parameter
-        Alamofire.request(direccion, method: .post, parameters: parameters).responseJSON { response in
-            switch (response.result) {
-            case .success:
-                print(response)
-                break
-            case .failure:
-                print(Error.self)
-            }
-        }
-    }
+           let parameters: Parameters = ["usuario_id": usuario_id, "circular_id": circular_id]      //This will be your parameter
+           Alamofire.request(direccion, method: .post, parameters: parameters).responseJSON { response in
+               switch (response.result) {
+               case .success:
+                   print(response)
+                    UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
+                   break
+               case .failure:
+                   print(Error.self)
+               }
+           }
+       }
     
  func delCircular(direccion:String, usuario_id:String, circular_id:String){
      let parameters: Parameters = ["usuario_id": usuario_id, "circular_id": circular_id]      //This will be your parameter
