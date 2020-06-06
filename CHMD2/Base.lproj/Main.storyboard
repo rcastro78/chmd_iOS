@@ -646,7 +646,7 @@
                                                     <constraint firstAttribute="width" constant="50" id="7oR-Xw-eLc"/>
                                                     <constraint firstAttribute="width" secondItem="GtP-yF-ZmS" secondAttribute="height" multiplier="25:22" id="jYE-Q6-YK5"/>
                                                 </constraints>
-                                                <state key="normal" image="appmenu04"/>
+                                                <state key="normal" image="appmenu05"/>
                                             </button>
                                         </subviews>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
@@ -668,7 +668,7 @@
                                                     <constraint firstAttribute="width" constant="50" id="1dO-05-bpf"/>
                                                     <constraint firstAttribute="height" constant="44" id="VTG-66-sli"/>
                                                 </constraints>
-                                                <state key="normal" image="appmenu05"/>
+                                                <state key="normal" image="appmenu04"/>
                                             </button>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Leídas" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ct2-AO-X0p">
                                                 <rect key="frame" x="24" y="52" width="33" height="10"/>
@@ -1721,9 +1721,9 @@
                                                     </constraints>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bNA-kN-Hej">
-                                                    <rect key="frame" x="37" y="2" width="233" height="30"/>
+                                                    <rect key="frame" x="37" y="2" width="254" height="30"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="width" secondItem="bNA-kN-Hej" secondAttribute="height" multiplier="233:30" id="gwk-Ck-5Vj"/>
+                                                        <constraint firstAttribute="width" secondItem="bNA-kN-Hej" secondAttribute="height" multiplier="233:30" constant="21" id="gwk-Ck-5Vj"/>
                                                     </constraints>
                                                     <fontDescription key="fontDescription" name="GothamRounded-Bold" family="Gotham Rounded" pointSize="14"/>
                                                     <color key="textColor" red="0.035294117647058823" green="0.5607843137254902" blue="0.81176470588235294" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -1745,7 +1745,7 @@
                                                 <constraint firstAttribute="bottom" secondItem="uS3-bT-hxX" secondAttribute="bottom" constant="31" id="PJU-6Y-Xgx"/>
                                                 <constraint firstItem="uS3-bT-hxX" firstAttribute="top" secondItem="3df-Fr-uSn" secondAttribute="top" constant="9" id="Yhm-Eh-zS2"/>
                                                 <constraint firstItem="s2M-1V-5tD" firstAttribute="top" secondItem="uog-ZZ-HoK" secondAttribute="bottom" constant="9" id="cui-oL-Beh"/>
-                                                <constraint firstItem="uog-ZZ-HoK" firstAttribute="leading" secondItem="bNA-kN-Hej" secondAttribute="trailing" constant="26" id="f9u-MX-2Cq"/>
+                                                <constraint firstItem="uog-ZZ-HoK" firstAttribute="leading" secondItem="bNA-kN-Hej" secondAttribute="trailing" constant="5" id="f9u-MX-2Cq"/>
                                                 <constraint firstItem="bNA-kN-Hej" firstAttribute="top" secondItem="3df-Fr-uSn" secondAttribute="top" constant="2" id="gYI-ik-5Bs"/>
                                                 <constraint firstItem="uS3-bT-hxX" firstAttribute="leading" secondItem="3df-Fr-uSn" secondAttribute="leading" constant="16" id="hbn-Li-GPR"/>
                                                 <constraint firstAttribute="trailing" secondItem="uog-ZZ-HoK" secondAttribute="trailing" constant="5" id="kzC-Di-sxO"/>
@@ -1923,7 +1923,7 @@
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="Rfy-LS-0qo"/>
-        <segue reference="mG6-9K-z2c"/>
+        <segue reference="1CB-74-YjN"/>
         <segue reference="mtg-fp-Lb4"/>
     </inferredMetricsTieBreakers>
     <resources>

@@ -862,6 +862,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     func getDataFromURL(url: URL) {
         print("get data")
         print(url)
+        circulares.removeAll()
         URLSession.shared.dataTask(with: url) {
             (data, response, error) in
             print(data)
@@ -1237,49 +1238,36 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
    }
     
     @objc func eliminar(){
-     if ConexionRed.isConnectedToNetwork() == true {
+     //circulares.removeAll()
+       if ConexionRed.isConnectedToNetwork() == true {
+       for c in circularesSeleccionadas{
+          self.delCircularTodas(direccion: self.urlBase+"eliminarCircular.php", usuario_id: self.idUsuario, circular_id: "\(c)")
         
-        
+       }
          
-                                self.circulares.removeAll()
-                                for c in self.circularesSeleccionadas{
-                                      self.delCircularTodas(direccion: self.urlBase+"eliminarCircular.php", usuario_id: self.idUsuario, circular_id: "\(c)")
-                                }
-                                
-                                self.seleccion.removeAll()
-                                self.circularesSeleccionadas.removeAll()
-                                        
-                                        self.viewDidLoad()
-                                        self.viewWillAppear(true)
-                                         
-                                         //self.obtenerCirculares(limit:50)
-         let address=self.urlBase+self.metodoCirculares+"?usuario_id=\(self.idUsuario)"
-         guard let _url = URL(string: address) else { return };
-         self.getDataFromURL(url: _url)
-         self.tableViewCirculares.reloadData()
-                            /*})
-                            
-                            // Create Cancel button with action handlder
-                            let cancel = UIAlertAction(title: "Cancelar", style: .cancel) { (action) -> Void in
-                                
-                            }
-                            
-                            //Add OK and Cancel button to dialog message
-                            dialogMessage.addAction(ok)
-                            dialogMessage.addAction(cancel)
-                            
-                            // Present dialog message to user
-                            self.present(dialogMessage, animated: true, completion: nil)*/
+         for s in seleccion{
+                        let indexPath = IndexPath(row:s, section:0)
+                        let cell = self.tableViewCirculares.dequeueReusableCell(withIdentifier: "celda", for: indexPath)
+                                  as! CircularTableViewCell
+                                let index = indexPath.row
+                                self.circulares.remove(at: index)
+                                self.tableViewCirculares.reloadData()
             
-            
-            
-        
-        
-        
-       } else{
-                  var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
-                   alert.show()
-        }
+                        /*if(cell.chkSeleccionar.isChecked == true){
+                            cell.chkSeleccionar.isChecked=false
+                            cell.imgCircular.image=UIImage(named:"circle")
+                        }*/
+                    }
+      
+        circularesSeleccionadas.removeAll()
+         seleccion.removeAll()
+         
+          let timer = Timer.scheduledTimer(timeInterval: 1.2, target: self, selector: #selector(reaccionar), userInfo: nil, repeats: false)
+         
+       }else{
+         var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
+          alert.show()
+     }
         
     }
     
@@ -1520,3 +1508,4 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     
 }
+ 

@@ -213,27 +213,27 @@ class CircularDetalleViewController: UIViewController {
                     
                     //Todas
                     if(tipoCircular==1){
-                       let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesUsuarioLazyLoad.php?usuario_id=\(idUsuario)&limit=50"
+                       let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCirculares_iOS.php?usuario_id=\(idUsuario)"
                             let _url = URL(string: address);
                         self.obtenerCirculares2(uri:address)
                     }
                     
                     //Favoritas
                     if(tipoCircular==2){
-                        let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesFavoritas.php?usuario_id=\(idUsuario)"
+                         let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCirculares_iOS.php?usuario_id=\(idUsuario)"
                             let _url = URL(string: address);
                             self.obtenerCirculares(uri:address)
                     }
                     //No leidas
                     if(tipoCircular==3){
-                     let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesNoLeidas.php?usuario_id=\(idUsuario)"
+                     let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCirculares_iOS.php?usuario_id=\(idUsuario)"
                       let _url = URL(string: address);
                       self.obtenerCirculares(uri:address)
                   }
                     
                     //Papelera
                       if(tipoCircular==4){
-                       let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularesEliminadas.php?usuario_id=\(idUsuario)"
+                       let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCirculares_iOS.php?usuario_id=\(idUsuario)"
                         let _url = URL(string: address);
                         self.obtenerCirculares(uri:address)
                     }
