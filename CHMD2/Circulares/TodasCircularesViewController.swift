@@ -498,6 +498,11 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                         title: "") { (contextAction: UIContextualAction, sourceView: UIView, completionHandler: (Bool) -> Void) in
                                             let idCircular:String = "\(circular.id)"
                                             if ConexionRed.isConnectedToNetwork() == true {
+                                                //Al eliminar una no leída, debe bajar el num. de notificaciones
+                                                if circular.noLeido==1 {
+                                                     UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
+                                                }
+                                                
                                             self.delCircular(direccion: self.urlBase+"eliminarCircular.php", usuario_id: self.idUsuario, circular_id: idCircular)
                                             
                                                 let address=self.urlBase+self.metodoCirculares+"?usuario_id=\(self.idUsuario)"
@@ -547,6 +552,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             UserDefaults.standard.set(c.horaFinalIcs,forKey:"horaFinalIcs")
             UserDefaults.standard.set(c.nivel,forKey:"nivel")
             UserDefaults.standard.set(0, forKey: "viaNotif")
+            UserDefaults.standard.set(c.noLeido, forKey: "noLeido")
             UserDefaults.standard.set(1, forKey: "tipoCircular")
             performSegue(withIdentifier: "TcircularSegue", sender:self)
             }
@@ -677,7 +683,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                 
                 
         
-                self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo.uppercased(),fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel))
+                self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo.uppercased(),fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,noLeido:noLeida))
               }
             
             self.tableViewCirculares.reloadData()
@@ -931,7 +937,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                        }
 
                        
-                      
+                    var noLeido:Int=0
                        
                        //leídas
                        if(Int(leido)!>0){
@@ -940,6 +946,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                        //No leídas
                        if(Int(leido)==0 && Int(favorito)==0){
                            imagen = UIImage.init(named: "circle")!
+                        noLeido=1
                        }
                        
                        var noLeida:Int = 0
@@ -965,7 +972,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                        .replacingOccurrences(of: "&amp;ordm;", with: "o.")
                        print("Contenido: "+str)
                        if(Int(eliminada)!==0){
-                            self.circulares.append(CircularTodas(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo.uppercased(),fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? ""))
+                        self.circulares.append(CircularTodas(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo.uppercased(),fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? "",noLeido:noLeida))
                        }
                     
                      self.guardarCirculares(idCircular: Int(id)!, idUsuario: Int(self.idUsuario)!, nombre: titulo.uppercased(), textoCircular: str, no_leida: noLeida, leida: Int(leido)!, favorita: Int(favorito)!, compartida: 0, eliminada: Int(eliminada)!,fecha: fecha,fechaIcs: fechaIcs,horaInicioIcs: horaInicioIcs,horaFinIcs: horaFinIcs,nivel: nv ?? "",adjunto:adj)

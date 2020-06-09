@@ -550,6 +550,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             UserDefaults.standard.set(c.nivel,forKey:"nivel")
             UserDefaults.standard.set(0, forKey: "viaNotif")
             UserDefaults.standard.set(2, forKey: "tipoCircular")
+            UserDefaults.standard.set(c.noLeido, forKey: "noLeido")
             performSegue(withIdentifier: "circularFavoritaSegue", sender:self)
             }
          }else{
@@ -678,7 +679,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                 
                 imagen = UIImage.init(named: "star")!
                 if(Int(favorita)==1){
-                self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo.uppercased(),fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel))
+                self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo.uppercased(),fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,noLeido:0))
                 }
               }
             
@@ -966,7 +967,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                        .replacingOccurrences(of: "&amp;ordm;", with: "o.")
                        print("Contenido: "+str)
                        if(Int(favorito)==1){
-                            self.circulares.append(CircularTodas(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo.uppercased(),fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? ""))
+                            self.circulares.append(CircularTodas(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo.uppercased(),fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? "",noLeido:0))
                        }
                     
                    
@@ -1313,6 +1314,8 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         Alamofire.request(direccion, method: .post, parameters: parameters).responseJSON { response in
             switch (response.result) {
             case .success:
+                 UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
+                 
                 print(response)
                 break
             case .failure:

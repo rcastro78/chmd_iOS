@@ -23,20 +23,23 @@ class CircularTodas: NSObject {
     var horaFinalIcs:String
     var nivel:String?
     
-    init(id:Int,imagen:UIImage,encabezado:String,nombre:String,fecha:String,estado:Int,contenido:String, adjunto:Int,fechaIcs:String,horaInicialIcs:String,horaFinalIcs:String,nivel:String) {
-        self.id=id
-        self.nombre=nombre
-        self.encabezado = encabezado
-        self.fecha = fecha
-        self.imagen = imagen
-        self.estado = estado
-        self.contenido = contenido
-        self.adjunto = adjunto
-        self.fechaIcs=fechaIcs
-        self.horaInicialIcs=horaInicialIcs
-        self.horaFinalIcs=horaFinalIcs
-        self.nivel=nivel as? String ?? ""
-    }
+    var noLeido:Int
     
+   
+    init(id:Int,imagen:UIImage,encabezado:String,nombre:String,fecha:String,estado:Int,contenido:String, adjunto:Int,fechaIcs:String,horaInicialIcs:String,horaFinalIcs:String,nivel:String,noLeido:Int) {
+           self.id=id
+           self.nombre=nombre
+           self.encabezado = encabezado
+           self.fecha = fecha
+           self.imagen = imagen
+           self.estado = estado
+           self.contenido = contenido
+           self.adjunto = adjunto
+           self.fechaIcs=fechaIcs
+           self.horaInicialIcs=horaInicialIcs
+           self.horaFinalIcs=horaFinalIcs
+           self.noLeido = noLeido
+           self.nivel=nivel as? String ?? ""
+       }
     
 }

@@ -129,7 +129,7 @@ class CircularDetalleViewController: UIViewController {
     var idCirculares = [Int]()
     var db: OpaquePointer?
     var tipoCircular:Int=0
-    
+    var noLeido:Int=0
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -163,7 +163,7 @@ class CircularDetalleViewController: UIViewController {
             contenido = UserDefaults.standard.string(forKey:"contenido") ?? ""
             id = UserDefaults.standard.string(forKey: "id") ?? ""
             idInicial = Int(UserDefaults.standard.string(forKey: "id") ?? "0")!
-            
+            noLeido = Int(UserDefaults.standard.string(forKey: "noLeido") ?? "0")!
              let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(imageTapped(tapGestureRecognizer:)))
             let bannerWidth = navigationItem.accessibilityFrame.size.width
             let bannerX = bannerWidth / 2
@@ -225,7 +225,8 @@ class CircularDetalleViewController: UIViewController {
                             self.obtenerCirculares(uri:address)
                     }
                     //No leidas
-                    if(tipoCircular==3){
+                    if(tipoCircular==3 || noLeido==1){
+                         self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: self.id)
                      let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCirculares_iOS.php?usuario_id=\(idUsuario)"
                       let _url = URL(string: address);
                       self.obtenerCirculares(uri:address)
@@ -243,12 +244,7 @@ class CircularDetalleViewController: UIViewController {
                   
                  
                   posicion = find(value: id,in: ids) ?? 0
-                
-                    //Solo cuando sea no leída
-                
-                  self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: self.id)
-            
-                
+                  
             
             
         }else{
@@ -1217,10 +1213,6 @@ class CircularDetalleViewController: UIViewController {
                                       } else {
                                        print("name not found")
                                    }
-             
-                            
-                                 
-             
                     
                var hIniIcs:String="";
                if  let horaInicioIcs = sqlite3_column_text(queryStatement, 11) {
@@ -1228,7 +1220,6 @@ class CircularDetalleViewController: UIViewController {
                 } else {
                  print("name not found")
              }
-                     
              
               var hFinIcs:String="";
               if  let horaFinIcs = sqlite3_column_text(queryStatement, 12) {
@@ -1236,12 +1227,6 @@ class CircularDetalleViewController: UIViewController {
                   } else {
                     print("name not found")
                   }
-             
-             
-             
-                     
-                     
-             
              var nivel:String="";
              if  let nv = sqlite3_column_text(queryStatement, 12) {
                  nivel = String(cString: nv)
@@ -1275,7 +1260,7 @@ class CircularDetalleViewController: UIViewController {
              }
              
              
-             self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo.uppercased(),fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel))
+            self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo.uppercased(),fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,noLeido:0))
            }
          
        
