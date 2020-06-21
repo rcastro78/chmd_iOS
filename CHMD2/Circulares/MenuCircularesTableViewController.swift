@@ -14,6 +14,10 @@ class MenuCircularesTableViewController: UITableViewController {
     @IBOutlet weak var lblUsuario: UILabel!
     @IBOutlet weak var lblNumFamilia: UILabel!
     var urlFotos:String = "http://chmd.chmd.edu.mx:65083/CREDENCIALES/padres/"
+    var urlBase:String="https://www.chmd.edu.mx/WebAdminCirculares/ws/"
+    var cifrarMetodo:String="cifrar.php"
+    var idUsuario:String=""
+    
     @IBOutlet weak var imgFotoPerfil: UIImageView!
     @IBOutlet var tableViewMenu: UITableView!
      var menu = [MenuCirculares]()
@@ -29,13 +33,19 @@ class MenuCircularesTableViewController: UITableViewController {
                var nombre = UserDefaults.standard.string(forKey: "nombreUsuario") ?? ""
                 var email = UserDefaults.standard.string(forKey: "email") ?? ""
                var familia = UserDefaults.standard.string(forKey: "numeroUsuario") ?? ""
-        
+               idUsuario = UserDefaults.standard.string(forKey: "idUsuario") ?? "0"
         lblUsuario.text=nombre
         lblNumFamilia.text=familia
         lblCorreo.text=email
          
          var fotoUrl = UserDefaults.standard.string(forKey: "fotoUrl") ?? ""
         if(ConexionRed.isConnectedToNetwork()){
+            
+          
+            let address=self.urlBase+self.cifrarMetodo+"?idUsuario=\(self.idUsuario)"
+            guard let _url = URL(string: address) else { return };
+            
+            
             let imageURL = URL(string: fotoUrl)!
               Alamofire.request(imageURL).responseJSON {
               response in
@@ -44,10 +54,11 @@ class MenuCircularesTableViewController: UITableViewController {
                 if(status!>=200){
                     
                     let imageURL = URL(string: self.urlFotos+"sinfoto.png")!
-                    self.imgFotoPerfil.sd_setImage(with: imageURL)
+                    //self.imgFotoPerfil.sd_setImage(with: imageURL)
+                    self.imgFotoPerfil.cargar(url:imageURL)
                 }else{
                     let placeholderImageURL = URL(string: self.urlFotos+"sinfoto.png")!
-                    self.imgFotoPerfil.sd_setImage(with: imageURL,placeholderImage:UIImage.init(named: "sinfoto.png"))
+                 self.imgFotoPerfil.cargar(url:placeholderImageURL)
                 }
 
             }
@@ -109,6 +120,11 @@ class MenuCircularesTableViewController: UITableViewController {
         
         return cell
     }
+    
+    
+    
+    
+    
     
 
     /*

@@ -105,6 +105,7 @@ PODS:
   - nanopb/decode (0.3.9011)
   - nanopb/encode (0.3.9011)
   - Protobuf (3.10.0)
+  - RijndaelSwift (0.2.0)
   - SDWebImage (5.2.3):
     - SDWebImage/Core (= 5.2.3)
   - SDWebImage/Core (5.2.3)
@@ -119,6 +120,7 @@ DEPENDENCIES:
   - FMDB
   - GoogleSignIn (~> 4.4.0)
   - MarqueeLabel
+  - RijndaelSwift
   - SDWebImage
 
 SPEC REPOS:
@@ -145,6 +147,7 @@ SPEC REPOS:
     - MarqueeLabel
     - nanopb
     - Protobuf
+    - RijndaelSwift
     - SDWebImage
 
 SPEC CHECKSUMS:
@@ -170,8 +173,9 @@ SPEC CHECKSUMS:
   MarqueeLabel: f762aa681ae201f66c1d511858b171f75d83013a
   nanopb: 18003b5e52dab79db540fe93fe9579f399bd1ccd
   Protobuf: a4dc852ad69c027ca2166ed287b856697814375b
+  RijndaelSwift: 3ee38b6371cb534019c1be2b34590a041e95bf45
   SDWebImage: 46a7f73228f84ce80990c786e4372cf4db5875ce
 
-PODFILE CHECKSUM: cbb8f18229a4e497dc56100ef6d6a8d6b207c344
+PODFILE CHECKSUM: 3c983cf63340fc1ef138ef575adad85c1010b424
 
 COCOAPODS: 1.8.4

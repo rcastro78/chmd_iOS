@@ -36,8 +36,8 @@ class PrincipalTableViewController: UITableViewController {
     let base_url_foto:String="http://chmd.chmd.edu.mx:65083/CREDENCIALES/padres/"
     let base_url:String="https://www.chmd.edu.mx/WebAdminCirculares/ws/";
     let get_usuario:String="getUsuarioEmail.php";
-    var email:String="";
-    
+    var email:String=""
+    var idUsuario:String=""
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let backItem = UIBarButtonItem()
         backItem.title = ""
@@ -50,7 +50,7 @@ class PrincipalTableViewController: UITableViewController {
         super.viewDidLoad()
         //
         email=UserDefaults.standard.string(forKey: "email") ?? ""
-        //email = UserDefaults.standard.string(forKey: "email") ?? ""
+        idUsuario = UserDefaults.standard.string(forKey: "idUsuario") ?? ""
         print("correo:"+email)
         
         let INICIO=1
@@ -86,10 +86,8 @@ class PrincipalTableViewController: UITableViewController {
         
         
         obtenerDatosUsuario(uri:base_url+get_usuario+"?correo="+email)
-        
-    
-        
-        
+        cifrarIdUsuario(uri:base_url+"cifrar.php?idUsuario="+self.idUsuario)
+        getVigenciaUsuario(uri:base_url+"getVigencia.php?idUsuario="+self.idUsuario)
     }
 
     /*@objc func playerItemDidReachEnd(notification: NSNotification) {
@@ -107,6 +105,76 @@ class PrincipalTableViewController: UITableViewController {
     }
     
     
+    func cifrarIdUsuario(uri:String){
+        Alamofire.request(uri)
+               .responseJSON { response in
+                   // check for errors
+                   guard response.result.error == nil else {
+                       // got an error in getting the data, need to handle it
+                       print("error en la consulta")
+                       print(response.result.error!)
+                       return
+                   }
+                
+                if let diccionarios = response.result.value as? [Dictionary<String,AnyObject>]{
+                for diccionario in diccionarios{
+                print(diccionario)
+                  
+                    guard let cifrado = diccionario["cifrado"] as? String else {
+                        print("No se pudo obtener el cifrado")
+                        return
+                    }
+                    
+                    
+                    
+                    UserDefaults.standard.set(cifrado, forKey: "cifrado")
+                  
+                   
+                             
+                             
+                    }
+                }
+                
+        }
+        
+    
+    }
+    
+    func getVigenciaUsuario(uri:String){
+        Alamofire.request(uri)
+               .responseJSON { response in
+                   // check for errors
+                   guard response.result.error == nil else {
+                       // got an error in getting the data, need to handle it
+                       print("error en la consulta")
+                       print(response.result.error!)
+                       return
+                   }
+                
+                if let diccionarios = response.result.value as? [Dictionary<String,AnyObject>]{
+                for diccionario in diccionarios{
+                print(diccionario)
+                  
+                    guard let vigencia = diccionario["texto"] as? String else {
+                        print("No se pudo obtener el cifrado")
+                        return
+                    }
+                    
+                    
+                    
+                    UserDefaults.standard.set(vigencia, forKey: "vigencia")
+                  
+                   
+                             
+                             
+                    }
+                }
+                
+        }
+        
+    
+    }
+    
     func obtenerDatosUsuario(uri:String){
         Alamofire.request(uri)
                .responseJSON { response in
@@ -120,18 +188,8 @@ class PrincipalTableViewController: UITableViewController {
                 
                 if let diccionarios = response.result.value as? [Dictionary<String,AnyObject>]{
                 for diccionario in diccionarios{
-                    print(diccionario)
-                    
-                    /*
-                                           * [{"id":"1","nombre":"SITT COHEN RAUL","numero":"0244","telefono":"52-51-91-34",
-                                           * "correo":"raul@gconcreta.com","calle":"Ahuehuetes Nte. 1333- T. Vendome 304",
-                                           * "colonia":"Bosques De Las Lomas","cp":"11700","ent":"CUDAD DE MEXICO","familia":"SITT SASSON",
-                                           * "estatus":"2","fecha":"2019-08-22 16:36:03","tipo":"3","correo2":"raul@gconcreta.com",
-                                           * "fotografia":"C:\\IDCARDDESIGN\\CREDENCIALES\\padres\\rosa maya.JPG","celular":"04455-51002067","token":"",
-                                           * "vigencia":"1","responsable":"PADRE","ntarjeton1":"0","ntarjeton2":"0","perfil_admin":"0"}]
-                                           * */
-                    
-                    
+                    //print(diccionario)
+                  
                     guard let id = diccionario["id"] as? String else {
                         print("No se pudo obtener el codigo")
                         return
@@ -168,6 +226,9 @@ class PrincipalTableViewController: UITableViewController {
                                            return
                     }
                     
+                    
+                    
+                    
                     var foto:String = ""
                     
                     if(fotografia.count>5){
@@ -191,7 +252,7 @@ class PrincipalTableViewController: UITableViewController {
                     UserDefaults.standard.set(fotoUrl, forKey: "fotoUrl")
                     UserDefaults.standard.set(responsable, forKey: "responsable")
                     UserDefaults.standard.set(correo, forKey: "correo")
-                    
+                  
                     
                     //Registrar dispositivo
                              

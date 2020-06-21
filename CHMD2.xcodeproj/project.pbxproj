@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		162565377EDA9F6C902B2DE3 /* Pods_CHMD2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ECEAAE6289DF86E2D884C881 /* Pods_CHMD2.framework */; };
 		5302F87D24422A29000B3167 /* CHMDValidarCorreoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5302F87C24422A29000B3167 /* CHMDValidarCorreoViewController.swift */; };
 		5302F87F24422DF4000B3167 /* ValidarCuentaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5302F87E24422DF4000B3167 /* ValidarCuentaViewController.swift */; };
 		530EC2C823D409F300A8BDBD /* NotificacionesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 530EC2C723D409F300A8BDBD /* NotificacionesTableViewController.swift */; };
@@ -26,7 +27,6 @@
 		53F6187D243D40C900A8B4A9 /* MenuCircularTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53F6187C243D40C900A8B4A9 /* MenuCircularTableViewCell.swift */; };
 		53F799DD235E1BF600BB7E00 /* Responsable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53F799DC235E1BF500BB7E00 /* Responsable.swift */; };
 		53FFC05E2440FBFA00F87F30 /* TodasCircularesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53FFC05D2440FBFA00F87F30 /* TodasCircularesViewController.swift */; };
-		742B29249C517D4C64988E32 /* Pods_CHMD2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 05A9F0D1790957363FB1F733 /* Pods_CHMD2.framework */; };
 		E0090AED22EBE92B00BC236C /* CircularesLeidasTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0090AEC22EBE92B00BC236C /* CircularesLeidasTableViewController.swift */; };
 		E0090AF322EBEC8F00BC236C /* CircularesCompTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0090AF222EBEC8F00BC236C /* CircularesCompTableViewController.swift */; };
 		E0090AF522EBF5A500BC236C /* CircularDetalleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0090AF422EBF5A500BC236C /* CircularDetalleViewController.swift */; };
@@ -56,7 +56,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		05A9F0D1790957363FB1F733 /* Pods_CHMD2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CHMD2.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4EF9FD714BEEB5E19CEB38BD /* Pods-CHMD2.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CHMD2.release.xcconfig"; path = "Target Support Files/Pods-CHMD2/Pods-CHMD2.release.xcconfig"; sourceTree = "<group>"; };
 		5302F87C24422A29000B3167 /* CHMDValidarCorreoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHMDValidarCorreoViewController.swift; sourceTree = "<group>"; };
 		5302F87E24422DF4000B3167 /* ValidarCuentaViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidarCuentaViewController.swift; sourceTree = "<group>"; };
 		530EC2C723D409F300A8BDBD /* NotificacionesTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificacionesTableViewController.swift; sourceTree = "<group>"; };
@@ -73,7 +73,7 @@
 		53F6187C243D40C900A8B4A9 /* MenuCircularTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuCircularTableViewCell.swift; sourceTree = "<group>"; };
 		53F799DC235E1BF500BB7E00 /* Responsable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Responsable.swift; sourceTree = "<group>"; };
 		53FFC05D2440FBFA00F87F30 /* TodasCircularesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodasCircularesViewController.swift; sourceTree = "<group>"; };
-		769E714CFFF5C0901C1E4A69 /* Pods-CHMD2.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CHMD2.release.xcconfig"; path = "Target Support Files/Pods-CHMD2/Pods-CHMD2.release.xcconfig"; sourceTree = "<group>"; };
+		AC82057CB2CF41238BE8A125 /* Pods-CHMD2.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CHMD2.debug.xcconfig"; path = "Target Support Files/Pods-CHMD2/Pods-CHMD2.debug.xcconfig"; sourceTree = "<group>"; };
 		E0090AEC22EBE92B00BC236C /* CircularesLeidasTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularesLeidasTableViewController.swift; sourceTree = "<group>"; };
 		E0090AF222EBEC8F00BC236C /* CircularesCompTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularesCompTableViewController.swift; sourceTree = "<group>"; };
 		E0090AF422EBF5A500BC236C /* CircularDetalleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularDetalleViewController.swift; sourceTree = "<group>"; };
@@ -108,7 +108,7 @@
 		E0E8293C230CDA4E005D5A6D /* GothamRoundedBook_21018.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = GothamRoundedBook_21018.ttf; sourceTree = "<group>"; };
 		E0E8293D230CDA4F005D5A6D /* GothamRoundedMedium_21022.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = GothamRoundedMedium_21022.ttf; sourceTree = "<group>"; };
 		E0F7AD0B2356A51F002ECB1B /* CredencialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredencialViewController.swift; sourceTree = "<group>"; };
-		E18D5761BE283AC64FD47F77 /* Pods-CHMD2.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CHMD2.debug.xcconfig"; path = "Target Support Files/Pods-CHMD2/Pods-CHMD2.debug.xcconfig"; sourceTree = "<group>"; };
+		ECEAAE6289DF86E2D884C881 /* Pods_CHMD2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CHMD2.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,7 +117,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E0C209BC2312384900342D6D /* libsqlite3.tbd in Frameworks */,
-				742B29249C517D4C64988E32 /* Pods_CHMD2.framework in Frameworks */,
+				162565377EDA9F6C902B2DE3 /* Pods_CHMD2.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -133,6 +133,13 @@
 			path = Notificaciones;
 			sourceTree = "<group>";
 		};
+		5399AA7F249F055B00B4D415 /* web */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = web;
+			sourceTree = "<group>";
+		};
 		53AB8079239C915D0073833F /* Utilerias */ = {
 			isa = PBXGroup;
 			children = (
@@ -146,8 +153,8 @@
 		B98E657104E7BA515BA79067 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				E18D5761BE283AC64FD47F77 /* Pods-CHMD2.debug.xcconfig */,
-				769E714CFFF5C0901C1E4A69 /* Pods-CHMD2.release.xcconfig */,
+				AC82057CB2CF41238BE8A125 /* Pods-CHMD2.debug.xcconfig */,
+				4EF9FD714BEEB5E19CEB38BD /* Pods-CHMD2.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -156,7 +163,7 @@
 			isa = PBXGroup;
 			children = (
 				E0C209BB2312384800342D6D /* libsqlite3.tbd */,
-				05A9F0D1790957363FB1F733 /* Pods_CHMD2.framework */,
+				ECEAAE6289DF86E2D884C881 /* Pods_CHMD2.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -248,6 +255,7 @@
 		E06577A822D14ADA0089A05A /* Circulares */ = {
 			isa = PBXGroup;
 			children = (
+				5399AA7F249F055B00B4D415 /* web */,
 				E06577A922D14B8A0089A05A /* MiMaguenViewController.swift */,
 				E0B1E47622E7F6C000CD8EE6 /* CircularLeidaTableViewCell.swift */,
 				E0B1E47822E7F71D00CD8EE6 /* CircularNoLeidaTableViewCell.swift */,
@@ -310,12 +318,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = E065779422D1128B0089A05A /* Build configuration list for PBXNativeTarget "CHMD2" */;
 			buildPhases = (
-				4B9082D7C66C7740E7581B17 /* [CP] Check Pods Manifest.lock */,
+				F1A7A3E9CE9669124D8B28FA /* [CP] Check Pods Manifest.lock */,
 				E065777E22D112690089A05A /* Sources */,
 				E065777F22D112690089A05A /* Frameworks */,
 				E065778022D112690089A05A /* Resources */,
-				FFCDAC7279A812F8DFF525FC /* [CP] Embed Pods Frameworks */,
-				54E3A6EB251D9A647808652A /* [CP] Copy Pods Resources */,
+				D5503DFCB3A47A6C306577AF /* [CP] Embed Pods Frameworks */,
+				EF2BFD1EEEFDCA81C9C2A07A /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -384,7 +392,41 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		4B9082D7C66C7740E7581B17 /* [CP] Check Pods Manifest.lock */ = {
+		D5503DFCB3A47A6C306577AF /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-CHMD2/Pods-CHMD2-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-CHMD2/Pods-CHMD2-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CHMD2/Pods-CHMD2-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		EF2BFD1EEEFDCA81C9C2A07A /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-CHMD2/Pods-CHMD2-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-CHMD2/Pods-CHMD2-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CHMD2/Pods-CHMD2-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F1A7A3E9CE9669124D8B28FA /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -404,40 +446,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		54E3A6EB251D9A647808652A /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CHMD2/Pods-CHMD2-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CHMD2/Pods-CHMD2-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CHMD2/Pods-CHMD2-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		FFCDAC7279A812F8DFF525FC /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CHMD2/Pods-CHMD2-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CHMD2/Pods-CHMD2-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CHMD2/Pods-CHMD2-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -628,7 +636,7 @@
 		};
 		E065779522D1128B0089A05A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E18D5761BE283AC64FD47F77 /* Pods-CHMD2.debug.xcconfig */;
+			baseConfigurationReference = AC82057CB2CF41238BE8A125 /* Pods-CHMD2.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -654,7 +662,7 @@
 		};
 		E065779622D1128B0089A05A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 769E714CFFF5C0901C1E4A69 /* Pods-CHMD2.release.xcconfig */;
+			baseConfigurationReference = 4EF9FD714BEEB5E19CEB38BD /* Pods-CHMD2.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;

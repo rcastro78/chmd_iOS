@@ -18,5 +18,7 @@ pod 'FMDB'
 pod 'SDWebImage'
 pod 'BitlySDK'
 pod 'Firebase/Analytics'
-pod 'Firebase/DynamicLinks'  
+pod 'Firebase/DynamicLinks'
+#pod 'CryptoSwift', '~> 1.0'
+pod 'RijndaelSwift'
 end

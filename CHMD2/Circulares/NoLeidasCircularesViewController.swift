@@ -18,6 +18,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     }
     var editando=false
     var indexEliminar:Int=0
+     var refreshControl = UIRefreshControl()
     @IBOutlet weak var btnEditar: UIBarButtonItem!
     
    @IBOutlet var tableViewCirculares: UITableView!
@@ -172,7 +173,9 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         }
         */
         
-      
+      refreshControl.attributedTitle = NSAttributedString(string: "Suelta para refrescar")
+      refreshControl.addTarget(self, action: #selector(self.refresh(_:)), for: .valueChanged)
+      self.tableViewCirculares.addSubview(refreshControl)
         
         
        
@@ -188,6 +191,15 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
 
    
+    @objc func refresh(_ sender: AnyObject) {
+      circulares.removeAll()
+        print("se ha refrescado...")
+      if ConexionRed.isConnectedToNetwork() == true {
+         let address=self.urlBase+self.metodoCirculares+"?usuario_id=\(self.idUsuario)"
+          guard let _url = URL(string: address) else { return };
+          self.getDataFromURL(url: _url)
+      }
+    }
     
     func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         var valorInicial:Int=1
@@ -228,7 +240,9 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             as! CircularTableViewCell
         let c = circulares[indexPath.row]
         //cell.lblEncabezado.text? = ""
-        cell.lblTitulo.text? = c.nombre.uppercased()
+        cell.lblTitulo.text? = c.nombre.capitalized
+        cell.btnHacerFav.addTarget(self, action: #selector(hacerFavorita), for: .touchUpInside)
+        
         cell.chkSeleccionar.addTarget(self, action: #selector(seleccionMultiple), for: .touchUpInside)
        
        
@@ -266,12 +280,12 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             cell.chkSeleccionar.isChecked=true
         }
         
-        if(c.adjunto==1){
+        /*if(c.adjunto==1){
             cell.imgAdjunto.isHidden=false
         }
         if(c.adjunto==0){
             cell.imgAdjunto.isHidden=true
-        }
+        }*/
        
        
         if(editando){
@@ -332,7 +346,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                                            let cell = self.tableViewCirculares.dequeueReusableCell(withIdentifier: "celda", for: indexPath) as! CircularTableViewCell
                                                                self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: idCircular)
                                                                    self.circulares.remove(at: indexPath.row)
-                                                                let timer = Timer.scheduledTimer(timeInterval: 2.5, target: self, selector: #selector(self.reaccionar), userInfo: nil, repeats: false)
+                                                        let timer = Timer.scheduledTimer(timeInterval: 0.6, target: self, selector: #selector(self.reaccionar), userInfo: nil, repeats: false)
                                                         
                                                         
                                                                     }else{
@@ -352,7 +366,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                                            let cell = self.tableViewCirculares.dequeueReusableCell(withIdentifier: "celda", for: indexPath) as! CircularTableViewCell
                                                                self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: idCircular)
                                                                     self.circulares.remove(at: indexPath.row)
-                                                                                                                                  let timer = Timer.scheduledTimer(timeInterval: 2.5, target: self, selector: #selector(self.reaccionar), userInfo: nil, repeats: false)
+                                                        let timer = Timer.scheduledTimer(timeInterval: 0.6, target: self, selector: #selector(self.reaccionar), userInfo: nil, repeats: false)
                                                         
                                                                     }else{
                                                                     var alert = UIAlertView(title: "No está conectado a Internet", message: "Esta opción solo funciona con una conexión a Internet", delegate: nil, cancelButtonTitle: "Aceptar")
@@ -597,7 +611,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                         var titulo:String="";
                 
                        if let name = sqlite3_column_text(queryStatement, 2) {
-                           titulo = String(cString: name).uppercased()
+                           titulo = String(cString: name).capitalized
                           } else {
                            print("name not found")
                        }
@@ -681,7 +695,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                 
                  imagen = UIImage.init(named: "circle")!
                  if(Int(leida) == 0){
-                self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo.uppercased(),fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,noLeido:1))
+                self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo.capitalized,fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,noLeido:1))
                 }
               }
             
@@ -968,7 +982,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                        .replacingOccurrences(of: "&amp;ordm;", with: "o.")
                        print("Contenido: "+str)
                        if(Int(favorito)==0 && Int(leido)==0){
-                            self.circulares.append(CircularTodas(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo.uppercased(),fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? "",noLeido:1))
+                            self.circulares.append(CircularTodas(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo.capitalized,fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? "",noLeido:1))
                        }
                     
                    
@@ -986,7 +1000,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             
             }.resume()
         
-        
+        self.refreshControl.endRefreshing()
     }
     
     
@@ -1073,6 +1087,35 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         }
     }
    
+    
+    @objc func hacerFavorita(_ sender:UIButton){
+           var superView = sender.superview
+           
+           while !(superView is UITableViewCell) {
+               superView = superView?.superview
+           }
+           let cell = superView as! CircularTableViewCell
+           if let indexpath = tableViewCirculares.indexPath(for: cell){
+            
+                let c = circulares[indexpath.row]
+                let idCircular = c.id
+                if ConexionRed.isConnectedToNetwork() == true {
+                    /*self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: String(idCircular))*/
+                    self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: String(idCircular))
+                        self.viewDidLoad()
+                        self.viewWillAppear(true)
+                    }else{
+                    var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
+                    alert.show()
+                }
+            
+            
+            }else{
+            
+        }
+        
+    }
+    
     
     @objc func leer(){
         
@@ -1334,7 +1377,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         if(!(searchBar.text?.isEmpty)!){
             buscando=true
             print("Buscar")
-            circulares = circulares.filter({$0.nombre.contains(searchBar.text!.uppercased())})
+            circulares = circulares.filter({$0.nombre.lowercased().contains(searchBar.text!.lowercased())})
             self.tableViewCirculares?.reloadData()
         }else{
             buscando=false
@@ -1357,7 +1400,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         }else{
             buscando=true
              print("Buscar")
-            circulares = circulares.filter({$0.nombre.contains(searchBar.text!.uppercased())})
+            circulares = circulares.filter({$0.nombre.lowercased().contains(searchBar.text!.lowercased())})
             self.tableViewCirculares?.reloadData()
             
         }

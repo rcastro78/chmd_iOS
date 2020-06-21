@@ -177,9 +177,17 @@ class CircularDetalleViewController: UIViewController {
             
             
             if(!ConexionRed.isConnectedToNetwork()){
+               
                leerCirculares()
+               
             }
-            
+            lblTituloParte1.text=circularTitulo
+            lblTituloParte1.type = .continuous
+            lblTituloParte1.scrollDuration = 8.0
+            lblTituloParte1.animationCurve = .easeInOut
+            lblTituloParte1.fadeLength = 10.0
+            lblTituloParte1.leadingBuffer = 20.0
+            lblTituloParte1.trailingBuffer = 20.0
                    
                    //partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:titulo)
             
@@ -325,31 +333,52 @@ class CircularDetalleViewController: UIViewController {
     @IBAction func btnCalendarioClick(_ sender: Any) {
         if(ConexionRed.isConnectedToNetwork()){
                
-                let eventStore = EKEventStore()
-                           switch EKEventStore.authorizationStatus(for: .event) {
-                           case .authorized:
-                            self.insertarEvento(store: eventStore, titulo: self.circularTitulo, fechaIcs: self.fechaIcs, horaInicioIcs: self.horaInicialIcs, horaFinIcs: self.horaFinalIcs, ubicacionIcs: "")
-                            self.showToast(message:"Evento guardado", font: UIFont(name:"GothamRounded-Bold",size:11.0)!)
-                               case .denied:
-                                   print("Acceso denegado")
-                               case .notDetermined:
-                               // 3
-                                   eventStore.requestAccess(to: .event, completion:
-                                     {[weak self] (granted: Bool, error: Error?) -> Void in
-                                         if granted {
-                                            self?.insertarEvento(store: eventStore, titulo: self?.circularTitulo ?? "", fechaIcs: self?.fechaIcs ?? "", horaInicioIcs: self?.horaInicialIcs ?? "", horaFinIcs: self?.horaFinalIcs ?? "", ubicacionIcs: "")
-                                         } else {
-                                               print("Acceso denegado")
-                                         }
-                                   })
-                                   default:
-                                       print("Case default")
+                let dialogMessage = UIAlertController(title: "CHMD", message: "¿Deseas agregar este evento a tu calendario?", preferredStyle: .alert)
+                
+                 //Create OK button with action handler
+                let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
+                  
                     
+                    
+                    let eventStore = EKEventStore()
+                               switch EKEventStore.authorizationStatus(for: .event) {
+                               case .authorized:
+                                self.insertarEvento(store: eventStore, titulo: self.circularTitulo, fechaIcs: self.fechaIcs, horaInicioIcs: self.horaInicialIcs, horaFinIcs: self.horaFinalIcs, ubicacionIcs: "")
+                                  
+                                  
+                                  
+                                   case .denied:
+                                       print("Acceso denegado")
+                                   case .notDetermined:
+                                   // 3
+                                       eventStore.requestAccess(to: .event, completion:
+                                         {[weak self] (granted: Bool, error: Error?) -> Void in
+                                             if granted {
+                                                self?.insertarEvento(store: eventStore, titulo: self?.circularTitulo ?? "", fechaIcs: self?.fechaIcs ?? "", horaInicioIcs: self?.horaInicialIcs ?? "", horaFinIcs: self?.horaFinalIcs ?? "", ubicacionIcs: "")
+                                             } else {
+                                                   print("Acceso denegado")
+                                             }
+                                       })
+                                       default:
+                                           print("Case default")
+                        
+                        
+                    }
+                    
+                    
+                    
+                    
+                })
+                
+                // Create Cancel button with action handlder
+                let cancel = UIAlertAction(title: "Cancelar", style: .cancel) { (action) -> Void in
                     
                 }
                 
-              
-          
+                //Add OK and Cancel button to dialog message
+                dialogMessage.addAction(ok)
+                dialogMessage.addAction(cancel)
+             
         }else{
             var alert = UIAlertView(title: "No está conectado a Internet", message: "Esta opción solo funciona con una conexión a Internet", delegate: nil, cancelButtonTitle: "Aceptar")
                        alert.show()
@@ -445,7 +474,7 @@ class CircularDetalleViewController: UIViewController {
                 let d = dateFormatter.string(from: date1!)
                 
                 
-                webView.loadHTMLString("<html><head><meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=5, minimum-scale=1.0, user-scalable=yes'><meta  http-equiv='X-UA-Compatible'  content='IE=edge,chrome=1'><meta name='HandheldFriendly' content='true'><meta content='text/html;charset=utf-8'></head><body {color: #005188;}><div style='text-align:right; width:100%;text-color:#098FCF'><h5>\(circulares[p].nivel)</h5></div><div style='text-align:right; width:100%;text-color:#098FCF'><h5>\(d)</h5></div><h3>\(circulares[p].contenido.replacingOccurrences(of: "&aacute;", with: "á").replacingOccurrences(of: "&eacute;", with: "é").replacingOccurrences(of: "&iacute;", with: "í").replacingOccurrences(of: "&oacute;", with: "ó").replacingOccurrences(of: "&uacuﬁte;", with: "ú").replacingOccurrences(of: "&ordm;", with: "o."))</h3></p></body></html>", baseURL: nil)
+                webView.loadHTMLString("<html><head><style>@-webkit-viewport { width: device-width; }@-moz-viewport { width: device-width; }                    @-ms-viewport { width: device-width; }@-o-viewport { width: device-width; }   @viewport { width: device-width; }@font-face {font-family: GothamRoundedMedium; src: url('GothamRoundedBook_21018.ttf'); }                     @font-face {font-family: GothamRoundedBold; src: url('GothamRoundedBold_21016.ttf'); }h3 {                        font-family: GothamRoundedBold;color:#ffffff;}h4 {                       font-family: GothamRoundedMedium;color:#098FCF;} h5 {font-family:GothamRoundedMedium;color:#098FCF;} a {font-size: 12px;font-family: GothamRoundedBold;color:#098FCF;}body {padding: 0;margin: 0;font-family: GothamRoundedBold;color:#098FCF;}p{text-align:justify;line-height:20px;width:100%;resize:both;}</style><meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=5, minimum-scale=1.0, user-scalable=yes'><meta  http-equiv='X-UA-Compatible'  content='IE=edge,chrome=1'><meta name='HandheldFriendly' content='true'><meta content='text/html;charset=utf-8'></head><body {color: #005188;}><div style='text-align:right; width:100%;text-color:#098FCF'><h5>\(circulares[p].nivel)</h5></div><div style='text-align:right; width:100%;text-color:#098FCF'><h5>\(d)</h5></div><h3>\(circulares[p].contenido.replacingOccurrences(of: "&aacute;", with: "á").replacingOccurrences(of: "&eacute;", with: "é").replacingOccurrences(of: "&iacute;", with: "í").replacingOccurrences(of: "&oacute;", with: "ó").replacingOccurrences(of: "&uacuﬁte;", with: "ú").replacingOccurrences(of: "&ordm;", with: "o."))</h3></p></body></html>", baseURL: nil)
                 
             
             }
@@ -517,7 +546,7 @@ class CircularDetalleViewController: UIViewController {
             if(p>=circulares.count){
                 p = 0
             }
-            //lblTituloParte1.text = circulares[posicion].nombre
+            lblTituloParte1.text = circulares[posicion].nombre
             //lblNivel.text = circulares[posicion].nivel
             
             let anio = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
@@ -544,7 +573,7 @@ class CircularDetalleViewController: UIViewController {
             let d = dateFormatter.string(from: date1!)
             //lblFechaCircular.text = d
             
-           webView.loadHTMLString("<html><head><meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=5, minimum-scale=1.0, user-scalable=yes'><meta  http-equiv='X-UA-Compatible'  content='IE=edge,chrome=1'><meta name='HandheldFriendly' content='true'><meta content='text/html;charset=utf-8'></head><body {color: #005188;}><div style='text-align:right; width:100%;text-color:#098FCF'><h5>\(circulares[p].nivel)</h5></div><div style='text-align:right; width:100%;text-color:#098FCF'><h5>\(d)</h5></div><h3>\(circulares[p].contenido.replacingOccurrences(of: "&aacute;", with: "á").replacingOccurrences(of: "&eacute;", with: "é").replacingOccurrences(of: "&iacute;", with: "í").replacingOccurrences(of: "&oacute;", with: "ó").replacingOccurrences(of: "&uacuﬁte;", with: "ú").replacingOccurrences(of: "&ordm;", with: "o."))</h3></p></body></html>", baseURL: nil)
+           webView.loadHTMLString("<html><head><style>@-webkit-viewport { width: device-width; }@-moz-viewport { width: device-width; }                    @-ms-viewport { width: device-width; }@-o-viewport { width: device-width; }   @viewport { width: device-width; }@font-face {font-family: GothamRoundedMedium; src: url('GothamRoundedBook_21018.ttf'); }                     @font-face {font-family: GothamRoundedBold; src: url('GothamRoundedBold_21016.ttf'); }h3 {                        font-family: GothamRoundedBold;color:#ffffff;}h4 {                       font-family: GothamRoundedMedium;color:#098FCF;} h5 {font-family:GothamRoundedMedium;color:#098FCF;} a {font-size: 12px;font-family: GothamRoundedBold;color:#098FCF;}body {padding: 0;margin: 0;font-family: GothamRoundedBold;color:#098FCF;}p{text-align:justify;line-height:20px;width:100%;resize:both;}</style><meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=5, minimum-scale=1.0, user-scalable=yes'><meta  http-equiv='X-UA-Compatible'  content='IE=edge,chrome=1'><meta name='HandheldFriendly' content='true'><meta content='text/html;charset=utf-8'></head><body {color: #005188;}><div style='text-align:right; width:100%;text-color:#098FCF'><h5>\(circulares[p].nivel)</h5></div><div style='text-align:right; width:100%;text-color:#098FCF'><h5>\(d)</h5></div><h3>\(circulares[p].contenido.replacingOccurrences(of: "&aacute;", with: "á").replacingOccurrences(of: "&eacute;", with: "é").replacingOccurrences(of: "&iacute;", with: "í").replacingOccurrences(of: "&oacute;", with: "ó").replacingOccurrences(of: "&uacuﬁte;", with: "ú").replacingOccurrences(of: "&ordm;", with: "o."))</h3></p></body></html>", baseURL: nil)
             
         
         }
@@ -604,7 +633,7 @@ class CircularDetalleViewController: UIViewController {
                       
                       p = p-1
                    if(p>0){
-                       //lblTituloParte1.text = circulares[posicion].nombre
+                       lblTituloParte1.text = circulares[posicion].nombre
                        //               lblNivel.text = circulares[posicion].nivel
                                       
                                       let anio = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
@@ -682,11 +711,11 @@ class CircularDetalleViewController: UIViewController {
                 
                 
                 if(ConexionRed.isConnectedToNetwork()){
-                    //self.lblTituloParte1.isHidden=true
+                    self.lblTituloParte1.isHidden=true
                     //self.lblTituloParte1?.visiblity(gone: true, dimension: 0)
                 }
                 
-                //self.lblTituloParte1.text=nextTitulo
+                self.lblTituloParte1.text=nextTitulo
                 id = nextId
             }else{
                 p = ids.count
@@ -930,9 +959,9 @@ class CircularDetalleViewController: UIViewController {
                           let date1 = dateFormatter.date(from: "\(dia)/\(mes)/\(anio)")
                           dateFormatter.dateFormat = "d 'de' MMMM 'de' YYYY"
                           let d = dateFormatter.string(from: date1!)
-                          self.lblFechaCircular.text = d
+                          self.lblFechaCircular.text = d*/
                       
-                          self.lblTituloParte1.text=nextTitulo*/
+                          self.lblTituloParte1.text=nextTitulo
                           
                           
                           self.id = nextId;
@@ -1005,9 +1034,9 @@ class CircularDetalleViewController: UIViewController {
                     let date1 = dateFormatter.date(from: "\(dia)/\(mes)/\(anio)")
                     dateFormatter.dateFormat = "d 'de' MMMM 'de' YYYY"
                     let d = dateFormatter.string(from: date1!)
-                    self.lblFechaCircular.text = d
+                    self.lblFechaCircular.text = d*/
                 
-                    self.lblTituloParte1.text=nextTitulo*/
+                    self.lblTituloParte1.text=nextTitulo
                     
                     
                     self.id = nextId;
@@ -1551,7 +1580,7 @@ class CircularDetalleViewController: UIViewController {
                     self.lblFechaCircular.text = "\(dia)/\(mes)/\(anio)"
                     self.title = "Detalles de la circular"*/
                     //self.titulos[0].uppercased()
-                    //self.lblTituloParte1.text=self.titulos[0].uppercased() /*self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:self.titulos[0].uppercased())*/
+                    self.lblTituloParte1.text=self.titulos[0].capitalized /*self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:self.titulos[0].uppercased())*/
               
           
       }
@@ -1696,7 +1725,7 @@ class CircularDetalleViewController: UIViewController {
                            //self.lblTituloParte1?.visiblity(gone: true, dimension: 0)
                        }
                        
-                       //self.lblTituloParte1.text=nextTitulo /*partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())*/
+                    self.lblTituloParte1.text=nextTitulo.capitalized /*partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())*/
                        self.id = nextId;
                    }else{
                        self.posicion = 0
