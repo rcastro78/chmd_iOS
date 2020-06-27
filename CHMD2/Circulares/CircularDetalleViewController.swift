@@ -90,7 +90,7 @@ class CircularDetalleViewController: UIViewController {
     @IBOutlet weak var btnSiguiente: UIButton!
     
     @IBOutlet weak var lblFechaCircular: UILabel!
-    @IBOutlet weak var lblTituloParte1: MarqueeLabel!
+    @IBOutlet weak var lblTituloParte1: UILabel!
     @IBOutlet weak var lblTituloParte2: UILabel!
     @IBOutlet weak var lblTituloNivel: UILabel!
     @IBOutlet weak var imbCalendario: UIButton!
@@ -181,15 +181,16 @@ class CircularDetalleViewController: UIViewController {
                leerCirculares()
                
             }
-            lblTituloParte1.text=circularTitulo
+            /*lblTituloParte1.text=circularTitulo
             lblTituloParte1.type = .continuous
             lblTituloParte1.scrollDuration = 8.0
             lblTituloParte1.animationCurve = .easeInOut
             lblTituloParte1.fadeLength = 10.0
             lblTituloParte1.leadingBuffer = 20.0
-            lblTituloParte1.trailingBuffer = 20.0
-                   
-                   //partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:titulo)
+            lblTituloParte1.trailingBuffer = 20.0*/
+            
+            
+            partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:titulo.capitalized)
             
         }else{
             id = UserDefaults.standard.string(forKey: "idCircularViaNotif") ?? ""
@@ -378,6 +379,7 @@ class CircularDetalleViewController: UIViewController {
                 //Add OK and Cancel button to dialog message
                 dialogMessage.addAction(ok)
                 dialogMessage.addAction(cancel)
+                self.present(dialogMessage, animated: true, completion: nil)
              
         }else{
             var alert = UIAlertView(title: "No está conectado a Internet", message: "Esta opción solo funciona con una conexión a Internet", delegate: nil, cancelButtonTitle: "Aceptar")
@@ -385,11 +387,58 @@ class CircularDetalleViewController: UIViewController {
         }
     }
     @IBAction func insertaEventoClick(_ sender: UIButton) {
-       
-        
-        
-        
-        
+       if(ConexionRed.isConnectedToNetwork()){
+              
+               let dialogMessage = UIAlertController(title: "CHMD", message: "¿Deseas agregar este evento a tu calendario?", preferredStyle: .alert)
+               
+                //Create OK button with action handler
+               let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
+                 
+                   
+                   
+                   let eventStore = EKEventStore()
+                              switch EKEventStore.authorizationStatus(for: .event) {
+                              case .authorized:
+                               self.insertarEvento(store: eventStore, titulo: self.circularTitulo, fechaIcs: self.fechaIcs, horaInicioIcs: self.horaInicialIcs, horaFinIcs: self.horaFinalIcs, ubicacionIcs: "")
+                                 
+                                 
+                                 
+                                  case .denied:
+                                      print("Acceso denegado")
+                                  case .notDetermined:
+                                  // 3
+                                      eventStore.requestAccess(to: .event, completion:
+                                        {[weak self] (granted: Bool, error: Error?) -> Void in
+                                            if granted {
+                                               self?.insertarEvento(store: eventStore, titulo: self?.circularTitulo ?? "", fechaIcs: self?.fechaIcs ?? "", horaInicioIcs: self?.horaInicialIcs ?? "", horaFinIcs: self?.horaFinalIcs ?? "", ubicacionIcs: "")
+                                            } else {
+                                                  print("Acceso denegado")
+                                            }
+                                      })
+                                      default:
+                                          print("Case default")
+                       
+                       
+                   }
+                   
+                   
+                   
+                   
+               })
+               
+               // Create Cancel button with action handlder
+               let cancel = UIAlertAction(title: "Cancelar", style: .cancel) { (action) -> Void in
+                   
+               }
+               
+               //Add OK and Cancel button to dialog message
+               dialogMessage.addAction(ok)
+               dialogMessage.addAction(cancel)
+            
+       }else{
+           var alert = UIAlertView(title: "No está conectado a Internet", message: "Esta opción solo funciona con una conexión a Internet", delegate: nil, cancelButtonTitle: "Aceptar")
+                      alert.show()
+       }
     }
     
     
@@ -411,9 +460,11 @@ class CircularDetalleViewController: UIViewController {
                 
                self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: nextId)
                 
+                
+                
                 var nextTitulo = titulos[p]
                 var nextFecha = fechas[p]
-                
+                self.lblTituloParte1.text=nextTitulo
                 var nextHoraIniIcs = horasInicioIcs[p]
                 nextHoraIcs = horasInicioIcs[p]
                 var nextHoraFinIcs = horasFinIcs[p]
@@ -424,6 +475,7 @@ class CircularDetalleViewController: UIViewController {
                     imbCalendario.isHidden=false
                 }
         
+                self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.capitalized)
                 
                 circularTitulo = nextTitulo
                 let link = URL(string:urlBase+"getCircularId4.php?id=\(nextId)")!
@@ -472,8 +524,8 @@ class CircularDetalleViewController: UIViewController {
                 let date1 = dateFormatter.date(from: "\(dia)/\(mes)/\(anio)")
                 dateFormatter.dateFormat = "d 'de' MMMM 'de' YYYY"
                 let d = dateFormatter.string(from: date1!)
-                
-                
+                //self.lblTituloParte1.text=circulares[p].nombre
+                self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:circulares[p].nombre.capitalized)
                 webView.loadHTMLString("<html><head><style>@-webkit-viewport { width: device-width; }@-moz-viewport { width: device-width; }                    @-ms-viewport { width: device-width; }@-o-viewport { width: device-width; }   @viewport { width: device-width; }@font-face {font-family: GothamRoundedMedium; src: url('GothamRoundedBook_21018.ttf'); }                     @font-face {font-family: GothamRoundedBold; src: url('GothamRoundedBold_21016.ttf'); }h3 {                        font-family: GothamRoundedBold;color:#ffffff;}h4 {                       font-family: GothamRoundedMedium;color:#098FCF;} h5 {font-family:GothamRoundedMedium;color:#098FCF;} a {font-size: 12px;font-family: GothamRoundedBold;color:#098FCF;}body {padding: 0;margin: 0;font-family: GothamRoundedBold;color:#098FCF;}p{text-align:justify;line-height:20px;width:100%;resize:both;}</style><meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=5, minimum-scale=1.0, user-scalable=yes'><meta  http-equiv='X-UA-Compatible'  content='IE=edge,chrome=1'><meta name='HandheldFriendly' content='true'><meta content='text/html;charset=utf-8'></head><body {color: #005188;}><div style='text-align:right; width:100%;text-color:#098FCF'><h5>\(circulares[p].nivel)</h5></div><div style='text-align:right; width:100%;text-color:#098FCF'><h5>\(d)</h5></div><h3>\(circulares[p].contenido.replacingOccurrences(of: "&aacute;", with: "á").replacingOccurrences(of: "&eacute;", with: "é").replacingOccurrences(of: "&iacute;", with: "í").replacingOccurrences(of: "&oacute;", with: "ó").replacingOccurrences(of: "&uacuﬁte;", with: "ú").replacingOccurrences(of: "&ordm;", with: "o."))</h3></p></body></html>", baseURL: nil)
                 
             
@@ -501,7 +553,9 @@ class CircularDetalleViewController: UIViewController {
             
             var nextTitulo = titulos[p]
             var nextFecha = fechas[p]
+            //self.lblTituloParte1.text=nextTitulo
             
+            self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.capitalized)
             var nextHoraIniIcs = horasInicioIcs[p]
             var nextHoraFinIcs = horasFinIcs[p]
             var nextFechaIcs = fechasIcs[p]
@@ -546,9 +600,9 @@ class CircularDetalleViewController: UIViewController {
             if(p>=circulares.count){
                 p = 0
             }
-            lblTituloParte1.text = circulares[posicion].nombre
+            //lblTituloParte1.text = circulares[posicion].nombre
             //lblNivel.text = circulares[posicion].nivel
-            
+            self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:circulares[p].nombre.capitalized)
             let anio = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
             let mes = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
             let dia = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
@@ -557,6 +611,7 @@ class CircularDetalleViewController: UIViewController {
             var nextHoraIniIcs = circulares[p].horaInicialIcs
             var nextHoraFinIcs = circulares[p].horaFinalIcs
             var nextFechaIcs = circulares[p].fechaIcs
+            self.lblTituloParte1.text=circulares[p].nombre
             if(nextHoraIniIcs != "00:00:00"){
                 imbCalendario.isHidden=false
                 btnCalendario.isHidden=false
@@ -602,6 +657,8 @@ class CircularDetalleViewController: UIViewController {
                        var nextHoraFinIcs = horasFinIcs[p]
                        var nextFechaIcs = fechasIcs[p]
                        var nextNivel = niveles[p]
+                    //self.lblTituloParte1.text=nextTitulo
+                    self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.capitalized)
                        nextHoraIcs = horasInicioIcs[p]
                        if(nextHoraIniIcs != "00:00:00"){
                            imbCalendario.isHidden=false
@@ -633,7 +690,8 @@ class CircularDetalleViewController: UIViewController {
                       
                       p = p-1
                    if(p>0){
-                       lblTituloParte1.text = circulares[posicion].nombre
+                    self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:circulares[p].nombre.capitalized)
+                       //lblTituloParte1.text = circulares[posicion].nombre
                        //               lblNivel.text = circulares[posicion].nivel
                                       
                                       let anio = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
@@ -646,7 +704,7 @@ class CircularDetalleViewController: UIViewController {
                                       let date1 = dateFormatter.date(from: "\(dia)/\(mes)/\(anio)")
                                       dateFormatter.dateFormat = "d 'de' MMMM 'de' YYYY"
                                       let d = dateFormatter.string(from: date1!)
-                                      
+                    //self.lblTituloParte1.text=circulares[p].nombre
                                       var nextHoraIniIcs = circulares[p].horaInicialIcs
                                                  var nextHoraFinIcs = circulares[p].horaFinalIcs
                                                  var nextFechaIcs = circulares[p].fechaIcs
@@ -679,6 +737,7 @@ class CircularDetalleViewController: UIViewController {
                 var nextFechaIcs = fechasIcs[p]
                 var nextNivel = niveles[p]
                 nextHoraIcs = horasInicioIcs[p]
+                self.lblTituloParte1.text=nextTitulo
                 if(nextHoraIniIcs != "00:00:00"){
                     imbCalendario.isHidden=false
                     btnCalendario.isHidden=false
@@ -689,6 +748,7 @@ class CircularDetalleViewController: UIViewController {
                 
                 //lblNivel.text = nextNivel
                 
+                self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.capitalized)
                 
                  circularTitulo = nextTitulo
                 let link = URL(string:urlBase+"getCircularId4.php?id=\(nextId)")!
@@ -710,12 +770,7 @@ class CircularDetalleViewController: UIViewController {
                           lblFechaCircular.text = d*/
                 
                 
-                if(ConexionRed.isConnectedToNetwork()){
-                    self.lblTituloParte1.isHidden=true
-                    //self.lblTituloParte1?.visiblity(gone: true, dimension: 0)
-                }
-                
-                self.lblTituloParte1.text=nextTitulo
+               
                 id = nextId
             }else{
                 p = ids.count
@@ -723,7 +778,7 @@ class CircularDetalleViewController: UIViewController {
         }else{
             p = p-1
             if(p>0){
-                lblTituloParte1.text = circulares[p].nombre
+                self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:circulares[p].nombre.capitalized)
                                //lblNivel.text = circulares[p].nivel
                                
                                let anio = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
@@ -1289,7 +1344,7 @@ class CircularDetalleViewController: UIViewController {
              }
              
              
-            self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo.uppercased(),fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,noLeido:0))
+            self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo.uppercased(),fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,noLeido:0,favorita:Int(favorita)))
            }
          
        
@@ -1580,7 +1635,8 @@ class CircularDetalleViewController: UIViewController {
                     self.lblFechaCircular.text = "\(dia)/\(mes)/\(anio)"
                     self.title = "Detalles de la circular"*/
                     //self.titulos[0].uppercased()
-                    self.lblTituloParte1.text=self.titulos[0].capitalized /*self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:self.titulos[0].uppercased())*/
+                //self.lblTituloParte1.text=self.titulos[0].capitalized
+                    self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:self.titulos[0].capitalized)
               
           
       }
@@ -1725,7 +1781,8 @@ class CircularDetalleViewController: UIViewController {
                            //self.lblTituloParte1?.visiblity(gone: true, dimension: 0)
                        }
                        
-                    self.lblTituloParte1.text=nextTitulo.capitalized /*partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.uppercased())*/
+                    //self.lblTituloParte1.text=nextTitulo.capitalized
+                    self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.capitalized)
                        self.id = nextId;
                    }else{
                        self.posicion = 0

@@ -206,6 +206,13 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         let c = circulares[indexPath.row]
         //cell.lblEncabezado.text? = ""
         cell.lblTitulo.text? = c.nombre.capitalized
+        /*let favImage = UIImage(named: "favIconCompleto")! as UIImage
+                                 cell.btnHacerFav.setImage(favImage, for: UIControl.State.normal)*/
+        if c.favorita == 1
+        {
+            let favImage = UIImage(named: "favIconCompleto")! as UIImage
+            cell.btnHacerFav.setImage(favImage, for: UIControl.State.normal)
+        }
         //Para hacer favoritas con un boton
         cell.btnHacerFav.addTarget(self, action: #selector(hacerFavorita), for: .touchUpInside)
         
@@ -679,7 +686,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                         }
                 
                         if(Int(favorita)==1){
-                           imagen = UIImage.init(named: "star")!
+                           imagen = UIImage.init(named: "circle_white")!
                           }
                         var noLeida:Int = 0
                         if(Int(leida) == 0){
@@ -696,7 +703,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                 
                 
         
-                self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo.capitalized,fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,noLeido:noLeida))
+                self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo.capitalized,fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,noLeido:noLeida,favorita: Int(favorita)))
               }
             
             self.tableViewCirculares.reloadData()
@@ -973,7 +980,8 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                        }
                       
                        if(Int(favorito)!>0){
-                           imagen = UIImage.init(named: "star")!
+                           imagen = UIImage.init(named: "circle_white")!
+                        //imagen = nil
                        }
                        
                        var str = texto.replacingOccurrences(of: "&lt;", with: "<").replacingOccurrences(of: "&gt;", with: ">")
@@ -985,7 +993,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                        .replacingOccurrences(of: "&amp;ordm;", with: "o.")
                        print("Contenido: "+str)
                        if(Int(eliminada)!==0){
-                        self.circulares.append(CircularTodas(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo.capitalized,fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? "",noLeido:noLeida))
+                        self.circulares.append(CircularTodas(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo.capitalized,fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? "",noLeido:noLeida,favorita:Int(favorito)!))
                        }
                     
                      self.guardarCirculares(idCircular: Int(id)!, idUsuario: Int(self.idUsuario)!, nombre: titulo.capitalized, textoCircular: str, no_leida: noLeida, leida: Int(leido)!, favorita: Int(favorito)!, compartida: 0, eliminada: Int(eliminada)!,fecha: fecha,fechaIcs: fechaIcs,horaInicioIcs: horaInicioIcs,horaFinIcs: horaFinIcs,nivel: nv ?? "",adjunto:adj)
@@ -1094,6 +1102,9 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
            }
            let cell = superView as! CircularTableViewCell
            if let indexpath = tableViewCirculares.indexPath(for: cell){
+               let favImage = UIImage(named: "favIconCompleto")! as UIImage
+               cell.btnHacerFav.setImage(favImage, for: UIControl.State.normal)
+            
             
                 let c = circulares[indexpath.row]
                 let idCircular = c.id

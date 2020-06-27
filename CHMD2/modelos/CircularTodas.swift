@@ -17,7 +17,7 @@ class CircularTodas: NSObject {
     var estado:Int
     var contenido:String
     var adjunto:Int
-    
+    var favorita:Int
     var fechaIcs:String
     var horaInicialIcs:String
     var horaFinalIcs:String
@@ -26,7 +26,7 @@ class CircularTodas: NSObject {
     var noLeido:Int
     
    
-    init(id:Int,imagen:UIImage,encabezado:String,nombre:String,fecha:String,estado:Int,contenido:String, adjunto:Int,fechaIcs:String,horaInicialIcs:String,horaFinalIcs:String,nivel:String,noLeido:Int) {
+    init(id:Int,imagen:UIImage,encabezado:String,nombre:String,fecha:String,estado:Int,contenido:String, adjunto:Int,fechaIcs:String,horaInicialIcs:String,horaFinalIcs:String,nivel:String,noLeido:Int,favorita:Int) {
            self.id=id
            self.nombre=nombre
            self.encabezado = encabezado
@@ -40,6 +40,7 @@ class CircularTodas: NSObject {
            self.horaFinalIcs=horaFinalIcs
            self.noLeido = noLeido
            self.nivel=nivel as? String ?? ""
+           self.favorita = favorita
        }
     
 }
