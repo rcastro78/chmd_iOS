@@ -15,6 +15,36 @@ import BitlySDK
 import MarqueeLabel
 import SQLite3
 
+
+extension UIColor {
+    public convenience init?(hex: String) {
+        let r, g, b, a: CGFloat
+
+        if hex.hasPrefix("#") {
+            let start = hex.index(hex.startIndex, offsetBy: 1)
+            let hexColor = String(hex[start...])
+
+            if hexColor.count == 8 {
+                let scanner = Scanner(string: hexColor)
+                var hexNumber: UInt64 = 0
+
+                if scanner.scanHexInt64(&hexNumber) {
+                    r = CGFloat((hexNumber & 0xff000000) >> 24) / 255
+                    g = CGFloat((hexNumber & 0x00ff0000) >> 16) / 255
+                    b = CGFloat((hexNumber & 0x0000ff00) >> 8) / 255
+                    a = CGFloat(hexNumber & 0x000000ff) / 255
+
+                    self.init(red: r, green: g, blue: b, alpha: a)
+                    return
+                }
+            }
+        }
+
+        return nil
+    }
+}
+
+
 extension UIView {
 
    public enum Visibility: String {
@@ -1654,24 +1684,39 @@ class CircularDetalleViewController: UIViewController {
       
       
   }
+    let strokeTextAttributes1: [NSAttributedString.Key : Any] = [
+    .foregroundColor : UIColor(hex: "#0e2455ff"),
+    .backgroundColor:UIColor(hex: "#91caeeff"),
+    .strokeWidth : -4.0,
+    ]
     
+    let strokeTextAttributes2: [NSAttributedString.Key : Any] = [
+    .foregroundColor : UIColor(hex: "#0e497bff"),
+    .backgroundColor:UIColor(hex: "#098fcfff"),
+    .strokeWidth : -4.0,
+    ]
    
     func partirTitulo(label1:UILabel, label2:UILabel, titulo:String){
         var totalElementos:Int=0
         var tituloArreglo = titulo.split{$0 == " "}.map(String.init)
         totalElementos = tituloArreglo.count
         if(totalElementos>2){
-            label1.text = tituloArreglo[0]+" "+tituloArreglo[1]
+            label1.attributedText = NSAttributedString(string: tituloArreglo[0]+" "+tituloArreglo[1], attributes: strokeTextAttributes1)
+            //label1.text = tituloArreglo[0]+" "+tituloArreglo[1]
+            label1.sizeToFit()
             var t:String=""
             var i:Int=0
             for i in 2...totalElementos-1{
                 t += tituloArreglo[i]+" "
             }
-            label2.text = t
+            //label2.text = t
+             label2.attributedText = NSAttributedString(string: t, attributes: strokeTextAttributes2)
             label2.isHidden = false
+            label2.sizeToFit()
         }else{
              label2.isHidden = true
-            label1.text = titulo
+            //label1.text = titulo
+             label1.attributedText = NSAttributedString(string: titulo, attributes: strokeTextAttributes1)
         }
     }
    

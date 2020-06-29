@@ -214,7 +214,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             cell.btnHacerFav.setImage(favImage, for: UIControl.State.normal)
         }
         //Para hacer favoritas con un boton
-        cell.btnHacerFav.addTarget(self, action: #selector(hacerFavorita), for: .touchUpInside)
+        cell.btnHacerFav.addTarget(self, action: #selector(toggleFavorita), for: .touchUpInside)
         
         cell.chkSeleccionar.addTarget(self, action: #selector(seleccionMultiple), for: .touchUpInside)
        
@@ -1093,6 +1093,54 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         self.viewWillAppear(true)
     }
     
+    
+    
+    
+    @objc func toggleFavorita(_ sender:UIButton){
+           var superView = sender.superview
+           
+           while !(superView is UITableViewCell) {
+               superView = superView?.superview
+           }
+           let cell = superView as! CircularTableViewCell
+           if let indexpath = tableViewCirculares.indexPath(for: cell){
+               let favImage = UIImage(named: "favIconCompleto")! as UIImage
+               cell.btnHacerFav.setImage(favImage, for: UIControl.State.normal)
+            
+            
+                let c = circulares[indexpath.row]
+            
+            if c.favorita==1 {
+                let favImage = UIImage(named: "favIcon")! as UIImage
+                              cell.btnHacerFav.setImage(favImage, for: UIControl.State.normal)
+            }
+            
+            
+                let idCircular = c.id
+                if ConexionRed.isConnectedToNetwork() == true {
+                    /*self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: String(idCircular))*/
+                    if c.favorita==0 {
+                    self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: String(idCircular))
+                        self.viewDidLoad()
+                        self.viewWillAppear(true)
+                    }else{
+                        self.favCircular(direccion: self.urlBase+"elimFavCircular.php", usuario_id: self.idUsuario, circular_id: String(idCircular))
+                                               self.viewDidLoad()
+                                               self.viewWillAppear(true)
+                    }
+                    
+                    
+                    }else{
+                    var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
+                    alert.show()
+                }
+            
+            
+            }else{
+            
+        }
+        
+    }
     
     @objc func hacerFavorita(_ sender:UIButton){
            var superView = sender.superview
