@@ -312,7 +312,8 @@ class CircularDetalleViewController: UIViewController {
             
             
             if(!ConexionRed.isConnectedToNetwork()){
-                webViewSinConexion.isHidden=true
+                webView.isHidden=true
+                webViewSinConexion.isHidden=false
                leerCirculares()
                
             }
@@ -338,7 +339,7 @@ class CircularDetalleViewController: UIViewController {
         if(ConexionRed.isConnectedToNetwork()){
          
           webView.isHidden=false
-            
+          webViewSinConexion.isHidden=true
             let link = URL(string:urlBase+"getCircularId4.php?id=\(id)")!
                   let request = URLRequest(url: link)
                   //webView = WKWebView(frame: .zero, configuration: webConfiguration)
