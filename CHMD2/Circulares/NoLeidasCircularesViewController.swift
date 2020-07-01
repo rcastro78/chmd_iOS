@@ -1418,14 +1418,14 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                    self.isEditing=true
                    editando=true
                    tableViewCirculares.reloadData()
-                   self.btnEditar.title="Cancelar"
+                   self.btnEditar.title="CANCELAR"
                    
                }else{
                    self.isEditing=false
                    editando=false
                    tableViewCirculares.reloadData()
                    seleccion.removeAll()
-                   self.btnEditar.title="Editar"
+                   self.btnEditar.title="EDITAR"
                    btnMarcarLeidas.isHidden=true
                    btnMarcarFavoritas.isHidden=true
                    btnMarcarEliminadas.isHidden=true

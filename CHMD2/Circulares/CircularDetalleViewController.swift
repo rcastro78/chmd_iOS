@@ -15,6 +15,100 @@ import BitlySDK
 import MarqueeLabel
 import SQLite3
 
+private let characterEntities : [ Substring : Character ] = [
+    // XML predefined entities:
+    "&quot;"    : "\"",
+    "&amp;"     : "&",
+    "&apos;"    : "'",
+    "&lt;"      : "<",
+    "&gt;"      : ">",
+    "&ntilde;"      : "ñ",
+    "&Ntilde;"      : "Ñ",
+    "&aacute;"      : "á",
+    "&eacute;"      : "é",
+    "&iacute;"      : "í",
+    "&oacute;"      : "ó",
+    "&uacute;"      : "ú",
+    "&Aacute;"      : "Á",
+    "&Eacute;"      : "É",
+    "&Iacute;"      : "Í",
+    "&Oacute;"      : "Ó",
+    "&Uacute;"      : "Ú",
+    // HTML character entity references:
+    "&nbsp;"    : "\u{00a0}",
+    // ...
+    "&middot;"   : "♦",
+    "&deg;"   : "o",
+    
+]
+
+extension String {
+
+    /// Returns a new string made by replacing in the `String`
+    /// all HTML character entity references with the corresponding
+    /// character.
+    var stringByDecodingHTMLEntities : String {
+
+        // ===== Utility functions =====
+
+        // Convert the number in the string to the corresponding
+        // Unicode character, e.g.
+        //    decodeNumeric("64", 10)   --> "@"
+        //    decodeNumeric("20ac", 16) --> "€"
+        func decodeNumeric(_ string : Substring, base : Int) -> Character? {
+            guard let code = UInt32(string, radix: base),
+                let uniScalar = UnicodeScalar(code) else { return nil }
+            return Character(uniScalar)
+        }
+
+        // Decode the HTML character entity to the corresponding
+        // Unicode character, return `nil` for invalid input.
+        //     decode("&#64;")    --> "@"
+        //     decode("&#x20ac;") --> "€"
+        //     decode("&lt;")     --> "<"
+        //     decode("&foo;")    --> nil
+        func decode(_ entity : Substring) -> Character? {
+
+            if entity.hasPrefix("&#x") || entity.hasPrefix("&#X") {
+                return decodeNumeric(entity.dropFirst(3).dropLast(), base: 16)
+            } else if entity.hasPrefix("&#") {
+                return decodeNumeric(entity.dropFirst(2).dropLast(), base: 10)
+            } else {
+                return characterEntities[entity]
+            }
+        }
+
+        // ===== Method starts here =====
+
+        var result = ""
+        var position = startIndex
+
+        // Find the next '&' and copy the characters preceding it to `result`:
+        while let ampRange = self[position...].range(of: "&") {
+            result.append(contentsOf: self[position ..< ampRange.lowerBound])
+            position = ampRange.lowerBound
+
+            // Find the next ';' and copy everything from '&' to ';' into `entity`
+            guard let semiRange = self[position...].range(of: ";") else {
+                // No matching ';'.
+                break
+            }
+            let entity = self[position ..< semiRange.upperBound]
+            position = semiRange.upperBound
+
+            if let decoded = decode(entity) {
+                // Replace by decoded character:
+                result.append(decoded)
+            } else {
+                // Invalid entity, copy verbatim:
+                result.append(contentsOf: entity)
+            }
+        }
+        // Copy remaining characters to `result`:
+        result.append(contentsOf: self[position...])
+        return result
+    }
+}
 
 extension UIColor {
     public convenience init?(hex: String) {
@@ -125,6 +219,7 @@ class CircularDetalleViewController: UIViewController {
     @IBOutlet weak var lblTituloNivel: UILabel!
     @IBOutlet weak var imbCalendario: UIButton!
       
+    @IBOutlet weak var webViewSinConexion: UITextView!
     @IBOutlet weak var btnCalendario: UIButton!
     //@IBOutlet weak var lblContenidoHTML: UITextView!
     @IBOutlet weak var lblNivel: UILabel!
@@ -162,7 +257,17 @@ class CircularDetalleViewController: UIViewController {
     var noLeido:Int=0
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        /*
+         let label = PaddingLabel(8, 8, 16, 16)
+         label.font = .boldSystemFont(ofSize: 16)
+         label.text = "Hello World"
+         label.backgroundColor = .black
+         label.textColor = .white
+         label.textAlignment = .center
+         label.layer.cornerRadius = 8
+         label.clipsToBounds = true
+         label.sizeToFit()
+         */
         webView.scrollView.showsHorizontalScrollIndicator = false
         webView.scrollView.pinchGestureRecognizer?.isEnabled = false
         
@@ -207,7 +312,7 @@ class CircularDetalleViewController: UIViewController {
             
             
             if(!ConexionRed.isConnectedToNetwork()){
-               
+                webViewSinConexion.isHidden=true
                leerCirculares()
                
             }
@@ -297,9 +402,58 @@ class CircularDetalleViewController: UIViewController {
                            let date1 = dateFormatter.date(from: "\(dia)/\(mes)/\(anio)")
                            dateFormatter.dateFormat = "d 'de' MMMM 'de' YYYY"
                            let d = dateFormatter.string(from: date1!)
-            webView.isHidden=false
+            webView.isHidden=true
+            webViewSinConexion.isHidden=false
             
-             webView.loadHTMLString("<html><head><meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=5, minimum-scale=1.0, user-scalable=yes'><meta  http-equiv='X-UA-Compatible'  content='IE=edge,chrome=1'><meta name='HandheldFriendly' content='true'><meta content='text/html;charset=utf-8'></head><body {color: #005188;}><div style='text-align:right; width:100%;text-color:#098FCF'><h5>\(circulares[posicion].nivel)</h5></div><div style='text-align:right; width:100%;text-color:#098FCF'><h5>\(d)</h5></div><h3>\(circulares[posicion].contenido.replacingOccurrences(of: "&aacute;", with: "á").replacingOccurrences(of: "&eacute;", with: "é").replacingOccurrences(of: "&iacute;", with: "í").replacingOccurrences(of: "&oacute;", with: "ó").replacingOccurrences(of: "&uacuﬁte;", with: "ú").replacingOccurrences(of: "&ordm;", with: "o."))</h3></p></body></html>", baseURL: nil)
+            let decoded = circulares[posicion].contenido.stringByDecodingHTMLEntities
+            let html1 = """
+            <html>
+             <head>
+             <style>
+                 .myDiv {
+                     background-color: #ffffff;
+                     color:#0e497B;
+                     padding:12px;
+                     width:100%;
+                 }
+             .myDiv2 {
+                 background-color: #ffffff;
+                 color:#0e497B;
+                 padding:12px;
+                 width:100%;
+                 text-align:right;
+             }
+             </style>
+             </head>
+            <body>
+            
+            <div class="myDiv2"><h5>\(circulares[posicion].nivel!)</h5></div><div  class="myDiv2"><h5>\(d)</h5></div>
+            
+                 <div class="myDiv">\(decoded)<br></div>
+                
+            </body>
+            </html>
+            """
+            
+            
+            let modifiedFont = NSString(format:"<span>%@</span>" as NSString, html1) as String
+
+                       let attrStr = try! NSMutableAttributedString(
+                           data: modifiedFont.data(using: .unicode, allowLossyConversion: true)!,
+                           options: [NSAttributedString.DocumentReadingOptionKey.documentType:NSAttributedString.DocumentType.html, NSAttributedString.DocumentReadingOptionKey.characterEncoding: String.Encoding.utf8.rawValue],
+                           documentAttributes: nil)
+                       let textRangeForFont : NSRange = NSMakeRange(0, attrStr.length)
+                       attrStr.addAttributes([NSAttributedString.Key.font : UIFont(name: "Gotham Rounded",size:12)!], range: textRangeForFont)
+                       
+                       webViewSinConexion.attributedText = attrStr
+            
+            
+            
+            
+             /*webView.loadHTMLString("<html><head><meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=5, minimum-scale=1.0, user-scalable=yes'><meta  http-equiv='X-UA-Compatible'  content='IE=edge,chrome=1'><meta name='HandheldFriendly' content='true'><meta content='text/html;charset=utf-8'></head><body {color: #005188;}><div style='text-align:right; width:100%;text-color:#098FCF'><h5>\(circulares[posicion].nivel)</h5></div><div style='text-align:right; width:100%;text-color:#098FCF'><h5>\(d)</h5></div><h3>\(circulares[posicion].contenido.replacingOccurrences(of: "&aacute;", with: "á").replacingOccurrences(of: "&eacute;", with: "é").replacingOccurrences(of: "&iacute;", with: "í").replacingOccurrences(of: "&oacute;", with: "ó").replacingOccurrences(of: "&uacuﬁte;", with: "ú").replacingOccurrences(of: "&ordm;", with: "o."))</h3></p></body></html>", baseURL: nil)*/
+            
+            
+            
           
         }
         
@@ -556,7 +710,51 @@ class CircularDetalleViewController: UIViewController {
                 let d = dateFormatter.string(from: date1!)
                 //self.lblTituloParte1.text=circulares[p].nombre
                 self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:circulares[p].nombre.capitalized)
-                webView.loadHTMLString("<html><head><style>@-webkit-viewport { width: device-width; }@-moz-viewport { width: device-width; }                    @-ms-viewport { width: device-width; }@-o-viewport { width: device-width; }   @viewport { width: device-width; }@font-face {font-family: GothamRoundedMedium; src: url('GothamRoundedBook_21018.ttf'); }                     @font-face {font-family: GothamRoundedBold; src: url('GothamRoundedBold_21016.ttf'); }h3 {                        font-family: GothamRoundedBold;color:#ffffff;}h4 {                       font-family: GothamRoundedMedium;color:#098FCF;} h5 {font-family:GothamRoundedMedium;color:#098FCF;} a {font-size: 12px;font-family: GothamRoundedBold;color:#098FCF;}body {padding: 0;margin: 0;font-family: GothamRoundedBold;color:#098FCF;}p{text-align:justify;line-height:20px;width:100%;resize:both;}</style><meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=5, minimum-scale=1.0, user-scalable=yes'><meta  http-equiv='X-UA-Compatible'  content='IE=edge,chrome=1'><meta name='HandheldFriendly' content='true'><meta content='text/html;charset=utf-8'></head><body {color: #005188;}><div style='text-align:right; width:100%;text-color:#098FCF'><h5>\(circulares[p].nivel)</h5></div><div style='text-align:right; width:100%;text-color:#098FCF'><h5>\(d)</h5></div><h3>\(circulares[p].contenido.replacingOccurrences(of: "&aacute;", with: "á").replacingOccurrences(of: "&eacute;", with: "é").replacingOccurrences(of: "&iacute;", with: "í").replacingOccurrences(of: "&oacute;", with: "ó").replacingOccurrences(of: "&uacuﬁte;", with: "ú").replacingOccurrences(of: "&ordm;", with: "o."))</h3></p></body></html>", baseURL: nil)
+               webView.isHidden=true
+                webViewSinConexion.isHidden=false
+                
+                let decoded = circulares[p].contenido.stringByDecodingHTMLEntities
+                print("decoded: \(decoded)")
+                let html1 = """
+                <html>
+                 <head>
+                 <style>
+                     .myDiv {
+                         background-color: #ffffff;
+                         color:#0e497B;
+                         padding:12px;
+                         width:100%;
+                     }
+                 .myDiv2 {
+                     background-color: #ffffff;
+                     color:#0e497B;
+                     padding:12px;
+                     width:100%;
+                     text-align:right;
+                 }
+                 </style>
+                 </head>
+                <body>
+                
+                <div class="myDiv2"><h5>\(circulares[p].nivel!)</h5></div><div  class="myDiv2"><h5>\(d)</h5></div>
+                
+                     <div class="myDiv">\(decoded)<br></div>
+                    
+                </body>
+                </html>
+                """
+                
+                
+                let modifiedFont = NSString(format:"<span>%@</span>" as NSString, html1) as String
+
+                           let attrStr = try! NSMutableAttributedString(
+                               data: modifiedFont.data(using: .unicode, allowLossyConversion: true)!,
+                               options: [NSAttributedString.DocumentReadingOptionKey.documentType:NSAttributedString.DocumentType.html, NSAttributedString.DocumentReadingOptionKey.characterEncoding: String.Encoding.utf8.rawValue],
+                               documentAttributes: nil)
+                           let textRangeForFont : NSRange = NSMakeRange(0, attrStr.length)
+                           attrStr.addAttributes([NSAttributedString.Key.font : UIFont(name: "Gotham Rounded",size:12)!], range: textRangeForFont)
+                           
+                           webViewSinConexion.attributedText = attrStr
                 
             
             }
@@ -658,7 +856,53 @@ class CircularDetalleViewController: UIViewController {
             let d = dateFormatter.string(from: date1!)
             //lblFechaCircular.text = d
             
-           webView.loadHTMLString("<html><head><style>@-webkit-viewport { width: device-width; }@-moz-viewport { width: device-width; }                    @-ms-viewport { width: device-width; }@-o-viewport { width: device-width; }   @viewport { width: device-width; }@font-face {font-family: GothamRoundedMedium; src: url('GothamRoundedBook_21018.ttf'); }                     @font-face {font-family: GothamRoundedBold; src: url('GothamRoundedBold_21016.ttf'); }h3 {                        font-family: GothamRoundedBold;color:#ffffff;}h4 {                       font-family: GothamRoundedMedium;color:#098FCF;} h5 {font-family:GothamRoundedMedium;color:#098FCF;} a {font-size: 12px;font-family: GothamRoundedBold;color:#098FCF;}body {padding: 0;margin: 0;font-family: GothamRoundedBold;color:#098FCF;}p{text-align:justify;line-height:20px;width:100%;resize:both;}</style><meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=5, minimum-scale=1.0, user-scalable=yes'><meta  http-equiv='X-UA-Compatible'  content='IE=edge,chrome=1'><meta name='HandheldFriendly' content='true'><meta content='text/html;charset=utf-8'></head><body {color: #005188;}><div style='text-align:right; width:100%;text-color:#098FCF'><h5>\(circulares[p].nivel)</h5></div><div style='text-align:right; width:100%;text-color:#098FCF'><h5>\(d)</h5></div><h3>\(circulares[p].contenido.replacingOccurrences(of: "&aacute;", with: "á").replacingOccurrences(of: "&eacute;", with: "é").replacingOccurrences(of: "&iacute;", with: "í").replacingOccurrences(of: "&oacute;", with: "ó").replacingOccurrences(of: "&uacuﬁte;", with: "ú").replacingOccurrences(of: "&ordm;", with: "o."))</h3></p></body></html>", baseURL: nil)
+           webView.isHidden=true
+           webViewSinConexion.isHidden=false
+           
+           let decoded = circulares[p].contenido.stringByDecodingHTMLEntities
+           print("decoded: \(decoded)")
+           let html1 = """
+           <html>
+            <head>
+            <style>
+                .myDiv {
+                    background-color: #ffffff;
+                    color:#0e497B;
+                    padding:12px;
+                    width:100%;
+                }
+            .myDiv2 {
+                background-color: #ffffff;
+                color:#0e497B;
+                padding:12px;
+                width:100%;
+                text-align:right;
+            }
+            </style>
+            </head>
+           <body>
+           
+           <div class="myDiv2"><h5>\(circulares[p].nivel!)</h5></div><div  class="myDiv2"><h5>\(d)</h5></div>
+           
+                <div class="myDiv">\(decoded)<br></div>
+               
+           </body>
+           </html>
+           """
+           
+           
+           let modifiedFont = NSString(format:"<span>%@</span>" as NSString, html1) as String
+
+                      let attrStr = try! NSMutableAttributedString(
+                          data: modifiedFont.data(using: .unicode, allowLossyConversion: true)!,
+                          options: [NSAttributedString.DocumentReadingOptionKey.documentType:NSAttributedString.DocumentType.html, NSAttributedString.DocumentReadingOptionKey.characterEncoding: String.Encoding.utf8.rawValue],
+                          documentAttributes: nil)
+                      let textRangeForFont : NSRange = NSMakeRange(0, attrStr.length)
+                      attrStr.addAttributes([NSAttributedString.Key.font : UIFont(name: "Gotham Rounded",size:12)!], range: textRangeForFont)
+                      
+                      webViewSinConexion.attributedText = attrStr
+           
+           
             
         
         }
@@ -743,7 +987,52 @@ class CircularDetalleViewController: UIViewController {
                                                  }else{
                                                             imbCalendario.isHidden=true
                                                  }
-                                      webView.loadHTMLString("<html><head><meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=5, minimum-scale=1.0, user-scalable=yes'><meta  http-equiv='X-UA-Compatible'  content='IE=edge,chrome=1'><meta name='HandheldFriendly' content='true'><meta content='text/html;charset=utf-8'></head><body {color: #005188;}><div style='text-align:right; width:100%;text-color:#098FCF'><h5>\(circulares[p].nivel)</h5></div><div style='text-align:right; width:100%;text-color:#098FCF'><h5>\(d)</h5></div><h3>\(circulares[p].contenido.replacingOccurrences(of: "&aacute;", with: "á").replacingOccurrences(of: "&eacute;", with: "é").replacingOccurrences(of: "&iacute;", with: "í").replacingOccurrences(of: "&oacute;", with: "ó").replacingOccurrences(of: "&uacuﬁte;", with: "ú").replacingOccurrences(of: "&ordm;", with: "o."))</h3></p></body></html>", baseURL: nil)
+                    webView.isHidden=true
+                    webViewSinConexion.isHidden=false
+                    
+                    let decoded = circulares[p].contenido.stringByDecodingHTMLEntities
+                    let html1 = """
+                    <html>
+                     <head>
+                     <style>
+                         .myDiv {
+                             background-color: #ffffff;
+                             color:#0e497B;
+                             padding:12px;
+                             width:100%;
+                         }
+                     .myDiv2 {
+                         background-color: #ffffff;
+                         color:#0e497B;
+                         padding:12px;
+                         width:100%;
+                         text-align:right;
+                     }
+                     </style>
+                     </head>
+                    <body>
+                    
+                    <div class="myDiv2"><h5>\(circulares[p].nivel!)</h5></div><div  class="myDiv2"><h5>\(d)</h5></div>
+                    
+                         <div class="myDiv">\(decoded)<br></div>
+                        
+                    </body>
+                    </html>
+                    """
+                    
+                    
+                    let modifiedFont = NSString(format:"<span>%@</span>" as NSString, html1) as String
+
+                               let attrStr = try! NSMutableAttributedString(
+                                   data: modifiedFont.data(using: .unicode, allowLossyConversion: true)!,
+                                   options: [NSAttributedString.DocumentReadingOptionKey.documentType:NSAttributedString.DocumentType.html, NSAttributedString.DocumentReadingOptionKey.characterEncoding: String.Encoding.utf8.rawValue],
+                                   documentAttributes: nil)
+                               let textRangeForFont : NSRange = NSMakeRange(0, attrStr.length)
+                               attrStr.addAttributes([NSAttributedString.Key.font : UIFont(name: "Gotham Rounded",size:12)!], range: textRangeForFont)
+                               
+                               webViewSinConexion.attributedText = attrStr
+                    
+                    
                                    
                               }
                    }
@@ -840,7 +1129,52 @@ class CircularDetalleViewController: UIViewController {
                               dateFormatter.dateFormat = "d 'de' MMMM 'de' YYYY"
                               let d = dateFormatter.string(from: date1!)
                 
-                               webView.loadHTMLString("<html><head><meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=5, minimum-scale=1.0, user-scalable=yes'><meta  http-equiv='X-UA-Compatible'  content='IE=edge,chrome=1'><meta name='HandheldFriendly' content='true'><meta content='text/html;charset=utf-8'></head><body {color: #005188;}><div style='text-align:right; width:100%;text-color:#098FCF'><h5>\(circulares[p].nivel)</h5></div><div style='text-align:right; width:100%;text-color:#098FCF'><h5>\(d)</h5></div><h3>\(circulares[p].contenido.replacingOccurrences(of: "&aacute;", with: "á").replacingOccurrences(of: "&eacute;", with: "é").replacingOccurrences(of: "&iacute;", with: "í").replacingOccurrences(of: "&oacute;", with: "ó").replacingOccurrences(of: "&uacuﬁte;", with: "ú").replacingOccurrences(of: "&ordm;", with: "o."))</h3></p></body></html>", baseURL: nil)
+                             webView.isHidden=true
+                               webViewSinConexion.isHidden=false
+                               
+                               let decoded = circulares[p].contenido.stringByDecodingHTMLEntities
+                               let html1 = """
+                               <html>
+                                <head>
+                                <style>
+                                    .myDiv {
+                                        background-color: #ffffff;
+                                        color:#0e497B;
+                                        padding:12px;
+                                        width:100%;
+                                    }
+                                .myDiv2 {
+                                    background-color: #ffffff;
+                                    color:#0e497B;
+                                    padding:12px;
+                                    width:100%;
+                                    text-align:right;
+                                }
+                                </style>
+                                </head>
+                               <body>
+                               
+                               <div class="myDiv2"><h5>\(circulares[p].nivel!)</h5></div><div  class="myDiv2"><h5>\(d)</h5></div>
+                               
+                                    <div class="myDiv">\(decoded)<br></div>
+                                   
+                               </body>
+                               </html>
+                               """
+                               
+                               
+                               let modifiedFont = NSString(format:"<span>%@</span>" as NSString, html1) as String
+
+                                          let attrStr = try! NSMutableAttributedString(
+                                              data: modifiedFont.data(using: .unicode, allowLossyConversion: true)!,
+                                              options: [NSAttributedString.DocumentReadingOptionKey.documentType:NSAttributedString.DocumentType.html, NSAttributedString.DocumentReadingOptionKey.characterEncoding: String.Encoding.utf8.rawValue],
+                                              documentAttributes: nil)
+                                          let textRangeForFont : NSRange = NSMakeRange(0, attrStr.length)
+                                          attrStr.addAttributes([NSAttributedString.Key.font : UIFont(name: "Gotham Rounded",size:12)!], range: textRangeForFont)
+                                          
+                                          webViewSinConexion.attributedText = attrStr
+                               
+                               
                             
                        }
             }
@@ -1368,13 +1702,14 @@ class CircularDetalleViewController: UIViewController {
              var fechaCircular="";
              if let fecha = sqlite3_column_text(queryStatement, 8) {
                  fechaCircular = String(cString: fecha)
-                 print("fecha c: \(fechaCircular)")
+                 //print("fecha c: \(fechaCircular)")
+                print("texto c: \(cont)")
                 } else {
                  print("name not found")
              }
              
              
-            self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo.uppercased(),fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,noLeido:0,favorita:Int(favorita)))
+            self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo.uppercased(),fecha: fechaCircular,estado: 0,contenido:cont,adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,noLeido:0,favorita:Int(favorita)))
            }
          
        
@@ -1684,39 +2019,152 @@ class CircularDetalleViewController: UIViewController {
       
       
   }
+    
+    
+    
+    
+    
+    
+    
     let strokeTextAttributes1: [NSAttributedString.Key : Any] = [
     .foregroundColor : UIColor(hex: "#0e2455ff"),
     .backgroundColor:UIColor(hex: "#91caeeff"),
     .strokeWidth : -4.0,
+    .baselineOffset:-8.0,
     ]
     
     let strokeTextAttributes2: [NSAttributedString.Key : Any] = [
     .foregroundColor : UIColor(hex: "#0e497bff"),
     .backgroundColor:UIColor(hex: "#098fcfff"),
     .strokeWidth : -4.0,
+    .baselineOffset:-8.0,
     ]
    
-    func partirTitulo(label1:UILabel, label2:UILabel, titulo:String){
+    func partirTitulo(label1:UILabel,label2:UILabel, titulo:String){
+        
+        
+       
+        
+        
         var totalElementos:Int=0
         var tituloArreglo = titulo.split{$0 == " "}.map(String.init)
         totalElementos = tituloArreglo.count
-        if(totalElementos>2){
-            label1.attributedText = NSAttributedString(string: tituloArreglo[0]+" "+tituloArreglo[1], attributes: strokeTextAttributes1)
+        
+        if(totalElementos>3){
+            
+            let html1 = """
+                   <html>
+                    <head>
+                    <style>
+                        .myDiv {
+                            background-color: #91caee;
+                            color:#0e2455;
+                            text-align: center;
+                            height:50%;
+                            padding:12px;
+                            width:100%;
+                        }
+                    .myDivv {
+                            background-color: #ffffff;
+                            color:#ffffff;
+                            text-align: center;
+                            margin-bottom:0px;
+                            height:50%;
+                            padding:12px;
+                            width:100%;
+                            }
+                    </style>
+                    </head>
+                   <body>
+                        <div class="myDiv">\(tituloArreglo[0]+" "+tituloArreglo[1]+" "+tituloArreglo[2])<br></div>
+                       
+                   </body>
+                   </html>
+                   """
+            
+            
+            /*lblTituloParte1 = PaddingLabel(withInsets: 8, 8, 16, 16)
+            lblTituloParte1.font = .boldSystemFont(ofSize: 16)
+            lblTituloParte1.text = tituloArreglo[0]+" "+tituloArreglo[1]+" "+tituloArreglo[2]
+            lblTituloParte1.backgroundColor = UIColor(hex: "#ff91caee")
+            lblTituloParte1.textColor = UIColor(hex: "#ff0e2455")
+            lblTituloParte1.textAlignment = .center
+            lblTituloParte1.layer.cornerRadius = 0
+            lblTituloParte1.clipsToBounds = true
+            lblTituloParte1.sizeToFit()*/
+            
+            
+            //let data = Data(html1.utf8)
+           
             //label1.text = tituloArreglo[0]+" "+tituloArreglo[1]
+            
+            
+            let modifiedFont = NSString(format:"<span>%@</span>" as NSString, html1) as String
+
+            let attrStr = try! NSMutableAttributedString(
+                data: modifiedFont.data(using: .unicode, allowLossyConversion: true)!,
+                options: [NSAttributedString.DocumentReadingOptionKey.documentType:NSAttributedString.DocumentType.html, NSAttributedString.DocumentReadingOptionKey.characterEncoding: String.Encoding.utf8.rawValue],
+                documentAttributes: nil)
+            let textRangeForFont : NSRange = NSMakeRange(0, attrStr.length)
+            attrStr.addAttributes([NSAttributedString.Key.font : UIFont(name: "Gotham Rounded",size:20)!], range: textRangeForFont)
+            
+            label1.attributedText = attrStr
+            
+            label1.contentMode = .bottom
             label1.sizeToFit()
+ 
+ 
             var t:String=""
             var i:Int=0
-            for i in 2...totalElementos-1{
+            for i in 3...totalElementos-1{
                 t += tituloArreglo[i]+" "
             }
+            
+            
+            let html2 = """
+            <html>
+             <head>
+             <style>
+            
+                 
+                 .myDiv2 {
+                     background-color: #098FCF;
+                     color:#0e497b;
+                     text-align: center;
+                     height:50%;
+                    width:100px;
+                 }
+            
+             </style>
+             </head>
+            <body>
+            <center>
+             <div class="myDiv2">\(t)</div></center>
+            </body>
+            </html>
+            """
+             let modifiedFont2 = NSString(format:"<span>%@</span>" as NSString, html2) as String
+            //
+            
+            let attrStr2 = try! NSMutableAttributedString(
+                data: modifiedFont2.data(using: .unicode, allowLossyConversion: true)!,
+                options: [NSAttributedString.DocumentReadingOptionKey.documentType:NSAttributedString.DocumentType.html, NSAttributedString.DocumentReadingOptionKey.characterEncoding: String.Encoding.utf8.rawValue],
+                documentAttributes: nil)
+            let textRangeForFont1 : NSRange = NSMakeRange(0, attrStr2.length)
+            attrStr2.addAttributes([NSAttributedString.Key.font : UIFont(name: "Gotham Rounded",size:20)!], range: textRangeForFont1)
+           
+            label2.attributedText = attrStr2
+            
             //label2.text = t
-             label2.attributedText = NSAttributedString(string: t, attributes: strokeTextAttributes2)
-            label2.isHidden = false
-            label2.sizeToFit()
+             //label2.attributedText = NSAttributedString(string: t, attributes: strokeTextAttributes2)
+            //label2.isHidden = false
+            //label2.sizeToFit()
+         
         }else{
-             label2.isHidden = true
+             //label2.isHidden = true
             //label1.text = titulo
              label1.attributedText = NSAttributedString(string: titulo, attributes: strokeTextAttributes1)
+           
         }
     }
    

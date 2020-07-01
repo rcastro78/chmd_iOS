@@ -14,6 +14,7 @@
 		530EC2CA23D40A3200A8BDBD /* NotificacionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 530EC2C923D40A3200A8BDBD /* NotificacionTableViewCell.swift */; };
 		531AF3752442888F000E0282 /* NoLeidasCircularesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531AF3742442888F000E0282 /* NoLeidasCircularesViewController.swift */; };
 		5321DB7A242FC5D80027FCA7 /* CheckBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5321DB79242FC5D80027FCA7 /* CheckBox.swift */; };
+		539566A024AB9B6300E713AA /* PaddingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5395669F24AB9B5D00E713AA /* PaddingLabel.swift */; };
 		5397ED832442939A009E3588 /* PapeleraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5397ED822442939A009E3588 /* PapeleraViewController.swift */; };
 		53A8658E24417C53000C19AA /* FavCircularesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53A8658D24417C52000C19AA /* FavCircularesViewController.swift */; };
 		53AB8076239C15890073833F /* GothamRoundedBold_21016.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E0E8293B230CDA4E005D5A6D /* GothamRoundedBold_21016.ttf */; };
@@ -63,6 +64,7 @@
 		530EC2C923D40A3200A8BDBD /* NotificacionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificacionTableViewCell.swift; sourceTree = "<group>"; };
 		531AF3742442888F000E0282 /* NoLeidasCircularesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoLeidasCircularesViewController.swift; sourceTree = "<group>"; };
 		5321DB79242FC5D80027FCA7 /* CheckBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckBox.swift; sourceTree = "<group>"; };
+		5395669F24AB9B5D00E713AA /* PaddingLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddingLabel.swift; sourceTree = "<group>"; };
 		5397ED822442939A009E3588 /* PapeleraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PapeleraViewController.swift; sourceTree = "<group>"; };
 		53A8658D24417C52000C19AA /* FavCircularesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavCircularesViewController.swift; sourceTree = "<group>"; };
 		53AB807A239C91AC0073833F /* ConexionRed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConexionRed.swift; sourceTree = "<group>"; };
@@ -146,6 +148,7 @@
 				53AB807A239C91AC0073833F /* ConexionRed.swift */,
 				53DA15A623F24B2F006D3553 /* SignInWithApple.swift */,
 				5321DB79242FC5D80027FCA7 /* CheckBox.swift */,
+				5395669F24AB9B5D00E713AA /* PaddingLabel.swift */,
 			);
 			path = Utilerias;
 			sourceTree = "<group>";
@@ -459,6 +462,7 @@
 				E0B1E47922E7F71D00CD8EE6 /* CircularNoLeidaTableViewCell.swift in Sources */,
 				E065778822D1126B0089A05A /* ViewController.swift in Sources */,
 				E0B1E48522E7FBF700CD8EE6 /* Circular.swift in Sources */,
+				539566A024AB9B6300E713AA /* PaddingLabel.swift in Sources */,
 				530EC2CA23D40A3200A8BDBD /* NotificacionTableViewCell.swift in Sources */,
 				E06577A722D148950089A05A /* MenuPrincipal.swift in Sources */,
 				E0B1E47D22E7F75B00CD8EE6 /* CircularTableViewCell.swift in Sources */,

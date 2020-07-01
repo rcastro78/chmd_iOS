@@ -1581,14 +1581,14 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             self.isEditing=true
             editando=true
             tableViewCirculares.reloadData()
-            self.btnEditar.title="Cancelar"
+            self.btnEditar.title="CANCELAR"
             
         }else{
             self.isEditing=false
             editando=false
             tableViewCirculares.reloadData()
             seleccion.removeAll()
-            self.btnEditar.title="Editar"
+            self.btnEditar.title="EDITAR"
             btnMarcarFavoritas.isHidden=true
             btnMarcarLeidas.isHidden=true
             btnMarcarNoLeidas.isHidden=true
@@ -1612,7 +1612,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                   if UIApplication.shared.canOpenURL(whatsappURL as URL) {
                       UIApplication.shared.openURL(whatsappURL as URL)
                   } else {
-                      print("Por favor instale whatsapp")
+                      print("Por favor instala whatsapp")
                   }
               }
           }
