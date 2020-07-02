@@ -1011,7 +1011,10 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             
             }.resume()
         
-        self.refreshControl.endRefreshing()
+        if self.refreshControl.isRefreshing {
+          self.refreshControl.endRefreshing()
+        }
+        
     }
     
     func setupLongPressGesture() {

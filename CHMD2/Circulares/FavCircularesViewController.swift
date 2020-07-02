@@ -998,8 +998,10 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             
             
             }.resume()
-        
-        self.refreshControl.endRefreshing()
+        //Si solo se pone el endRefreshing puede dar una excepción
+        if self.refreshControl.isRefreshing {
+          self.refreshControl.endRefreshing()
+        }
     }
     
     

@@ -393,8 +393,12 @@ class CircularDetalleViewController: UIViewController {
             
             
         }else{
+            
+            
             let anio = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
+            
             let mes = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
+            
             let dia = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
             
                             let dateFormatter = DateFormatter()
