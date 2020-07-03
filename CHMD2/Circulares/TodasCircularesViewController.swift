@@ -203,77 +203,86 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "celda", for: indexPath)
             as! CircularTableViewCell
-        let c = circulares[indexPath.row]
-        //cell.lblEncabezado.text? = ""
-        cell.lblTitulo.text? = c.nombre.capitalized
-        /*let favImage = UIImage(named: "favIconCompleto")! as UIImage
-                                 cell.btnHacerFav.setImage(favImage, for: UIControl.State.normal)*/
-        if c.favorita == 1
-        {
-            let favImage = UIImage(named: "favIconCompleto")! as UIImage
-            cell.btnHacerFav.setImage(favImage, for: UIControl.State.normal)
+        
+        if (indexPath.item >= 0 || indexPath.item < circulares.count) {
+        guard let c = circulares[safe: indexPath.row] else{
+            return cell
         }
-        //Para hacer favoritas con un boton
-        cell.btnHacerFav.addTarget(self, action: #selector(toggleFavorita), for: .touchUpInside)
         
-        cell.chkSeleccionar.addTarget(self, action: #selector(seleccionMultiple), for: .touchUpInside)
-       
-        
-        
-         if(c.fecha != "")
-         {
-                          let dateFormatter = DateFormatter()
-                          dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-                          dateFormatter.locale = Locale(identifier: "es_ES_POSIX")
-                          let date1 = dateFormatter.date(from: c.fecha)
-                          
-                          let intervalo = Date() - date1!
-                          let diferenciaDias:Int = intervalo.day!
-                          if(diferenciaDias<=7){
-                              dateFormatter.dateFormat = "EEEE"
-                          }
-                       if(diferenciaDias>7 && diferenciaDias<=365){
-                            dateFormatter.dateFormat = "dd/MM/yyyy"
-                        }
-                        if(diferenciaDias>365){
-                            dateFormatter.dateFormat = "MMMM/yyyy"
-                        }
+      
+            //let c = circulares[indexPath.row]
+             //cell.lblEncabezado.text? = ""
+             cell.lblTitulo.text? = c.nombre.capitalized
+             /*let favImage = UIImage(named: "favIconCompleto")! as UIImage
+                                      cell.btnHacerFav.setImage(favImage, for: UIControl.State.normal)*/
+             if c.favorita == 1
+             {
+                 let favImage = UIImage(named: "favIconCompleto")! as UIImage
+                 cell.btnHacerFav.setImage(favImage, for: UIControl.State.normal)
+             }
+             //Para hacer favoritas con un boton
+             cell.btnHacerFav.addTarget(self, action: #selector(toggleFavorita), for: .touchUpInside)
+             
+             cell.chkSeleccionar.addTarget(self, action: #selector(seleccionMultiple), for: .touchUpInside)
             
-                          let dia = dateFormatter.string(from: date1!)
-                  
+             
+             
+              if(c.fecha != "")
+              {
+                               let dateFormatter = DateFormatter()
+                               dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                               dateFormatter.locale = Locale(identifier: "es_ES_POSIX")
+                               let date1 = dateFormatter.date(from: c.fecha)
+                               
+                               let intervalo = Date() - date1!
+                               let diferenciaDias:Int = intervalo.day!
+                               if(diferenciaDias<=7){
+                                   dateFormatter.dateFormat = "EEEE"
+                               }
+                            if(diferenciaDias>7 && diferenciaDias<=365){
+                                 dateFormatter.dateFormat = "dd/MM/yyyy"
+                             }
+                             if(diferenciaDias>365){
+                                 dateFormatter.dateFormat = "MMMM/yyyy"
+                             }
+                 
+                               let dia = dateFormatter.string(from: date1!)
+                       
+                        
+                        cell.lblFecha.text?=dia
+              }
                    
-                   cell.lblFecha.text?=dia
-         }
-              
-        cell.imgCircular.image = c.imagen
-        
-        if(!seleccion.contains(indexPath.row)){
-              print("No seleccionada")
-            cell.chkSeleccionar.isChecked=false
-        }else{
-            print("Seleccionada")
-            cell.chkSeleccionar.isChecked=true
-        }
-        
-        /*if(c.adjunto==1){
-            cell.imgAdjunto.isHidden=false
-        }
-        if(c.adjunto==0){
-            cell.imgAdjunto.isHidden=true
-        }*/
-       
-       
-        if(editando){
-            let isEditing: Bool = self.isEditing
-            cell.chkSeleccionar.isHidden = !isEditing
-             cell.chkSeleccionar.setVisibility(UIView.Visibility(rawValue: "visible")!)
-        }else{
-            let isEditing: Bool = false
-            cell.chkSeleccionar.isChecked=false
-            cell.chkSeleccionar.isHidden = !isEditing
-            cell.chkSeleccionar.setVisibility(UIView.Visibility(rawValue: "gone")!)
-        }
-       
+             cell.imgCircular.image = c.imagen
+             
+             if(!seleccion.contains(indexPath.row)){
+                   print("No seleccionada")
+                 cell.chkSeleccionar.isChecked=false
+             }else{
+                 print("Seleccionada")
+                 cell.chkSeleccionar.isChecked=true
+             }
+             
+             /*if(c.adjunto==1){
+                 cell.imgAdjunto.isHidden=false
+             }
+             if(c.adjunto==0){
+                 cell.imgAdjunto.isHidden=true
+             }*/
+            
+            
+             if(editando){
+                 let isEditing: Bool = self.isEditing
+                 cell.chkSeleccionar.isHidden = !isEditing
+                  cell.chkSeleccionar.setVisibility(UIView.Visibility(rawValue: "visible")!)
+             }else{
+                 let isEditing: Bool = false
+                 cell.chkSeleccionar.isChecked=false
+                 cell.chkSeleccionar.isHidden = !isEditing
+                 cell.chkSeleccionar.setVisibility(UIView.Visibility(rawValue: "gone")!)
+             }
+            
+             }
+             
         
         return cell
         

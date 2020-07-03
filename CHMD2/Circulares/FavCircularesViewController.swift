@@ -239,8 +239,15 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "celda", for: indexPath)
             as! CircularTableViewCell
-        let c = circulares[indexPath.row]
+        //let c = circulares[indexPath.row]
         //cell.lblEncabezado.text? = ""
+        
+        if (indexPath.item >= 0 || indexPath.item < circulares.count) {
+        guard let c = circulares[safe: indexPath.row] else{
+            return cell
+        }
+        
+        
         cell.lblTitulo.text? = c.nombre.capitalized
         cell.chkSeleccionar.addTarget(self, action: #selector(seleccionMultiple), for: .touchUpInside)
        
@@ -295,7 +302,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                   cell.chkSeleccionar.isHidden = !isEditing
               }
         
-        
+        }
         return cell
         
     }

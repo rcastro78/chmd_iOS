@@ -2087,22 +2087,7 @@ class CircularDetalleViewController: UIViewController {
                    </html>
                    """
             
-            
-            /*lblTituloParte1 = PaddingLabel(withInsets: 8, 8, 16, 16)
-            lblTituloParte1.font = .boldSystemFont(ofSize: 16)
-            lblTituloParte1.text = tituloArreglo[0]+" "+tituloArreglo[1]+" "+tituloArreglo[2]
-            lblTituloParte1.backgroundColor = UIColor(hex: "#ff91caee")
-            lblTituloParte1.textColor = UIColor(hex: "#ff0e2455")
-            lblTituloParte1.textAlignment = .center
-            lblTituloParte1.layer.cornerRadius = 0
-            lblTituloParte1.clipsToBounds = true
-            lblTituloParte1.sizeToFit()*/
-            
-            
-            //let data = Data(html1.utf8)
-           
-            //label1.text = tituloArreglo[0]+" "+tituloArreglo[1]
-            
+        
             
             let modifiedFont = NSString(format:"<span>%@</span>" as NSString, html1) as String
 
@@ -2168,7 +2153,47 @@ class CircularDetalleViewController: UIViewController {
         }else{
              //label2.isHidden = true
             //label1.text = titulo
-             label1.attributedText = NSAttributedString(string: titulo, attributes: strokeTextAttributes1)
+            //1 linea
+            
+            let html1 = """
+                       <html>
+                        <head>
+                        <style>
+                            .myDiv {
+                                background-color: #91caee;
+                                color:#0e2455;
+                                text-align: center;
+                                height:50%;
+                                padding:12px;
+                                width:100%;
+                            }
+                        
+                        </style>
+                        </head>
+                       <body>
+                            <div class="myDiv">\(titulo)<br></div>
+                           
+                       </body>
+                       </html>
+                       """
+                
+            
+                
+                let modifiedFont = NSString(format:"<span>%@</span>" as NSString, html1) as String
+
+                let attrStr = try! NSMutableAttributedString(
+                    data: modifiedFont.data(using: .unicode, allowLossyConversion: true)!,
+                    options: [NSAttributedString.DocumentReadingOptionKey.documentType:NSAttributedString.DocumentType.html, NSAttributedString.DocumentReadingOptionKey.characterEncoding: String.Encoding.utf8.rawValue],
+                    documentAttributes: nil)
+                let textRangeForFont : NSRange = NSMakeRange(0, attrStr.length)
+                attrStr.addAttributes([NSAttributedString.Key.font : UIFont(name: "Gotham Rounded",size:20)!], range: textRangeForFont)
+                
+                label1.attributedText = attrStr
+            
+            
+            
+            
+             //label1.attributedText = NSAttributedString(string: titulo, attributes: strokeTextAttributes1)
            
         }
     }

@@ -130,6 +130,7 @@ class CredencialViewController: UIViewController {
                 }else{
                     let imagen = self.generarQR(from: cifrado)
                     let imageURL = URL(string: fotoUrl.replacingOccurrences(of: " ", with: "%20"))
+                    print("foto: \(fotoUrl)")
                     let placeholderImageURL = URL(string: self.urlFotos+"sinfoto.png")!
                     self.imgFotoPadre.cargar(url: imageURL!)
                     self.qrImage.image = imagen
