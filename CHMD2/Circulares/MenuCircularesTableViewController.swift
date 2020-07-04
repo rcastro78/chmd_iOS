@@ -38,27 +38,33 @@ class MenuCircularesTableViewController: UITableViewController {
         lblNumFamilia.text=familia
         lblCorreo.text=email
          
-         var fotoUrl = UserDefaults.standard.string(forKey: "fotoUrl") ?? ""
+        var fotoUrl = UserDefaults.standard.string(forKey: "fotoUrl") ?? ""
+        print("FOTO: \(fotoUrl)")
         if(ConexionRed.isConnectedToNetwork()){
             
           
             let address=self.urlBase+self.cifrarMetodo+"?idUsuario=\(self.idUsuario)"
             guard let _url = URL(string: address) else { return };
-            
-            
-            let imageURL = URL(string: fotoUrl)!
-              Alamofire.request(imageURL).responseJSON {
+            let imageURL = URL(string: fotoUrl.replacingOccurrences(of: " ", with: "%20"))!
+          
+            Alamofire.request(imageURL).responseJSON {
               response in
 
               let status = response.response?.statusCode
-                if(status!>=200){
+                print("FOTO: \(status)")
+                if(status!>200){
                     
+                    //let imageURL = URL(string: self.urlFotos+"sinfoto.png")!
+                    //self.imgFotoPerfil.cargar(url:imageURL)
                     let imageURL = URL(string: self.urlFotos+"sinfoto.png")!
-                    //self.imgFotoPerfil.sd_setImage(with: imageURL)
-                    self.imgFotoPerfil.cargar(url:imageURL)
+                    self.imgFotoPerfil.cargar(url: imageURL)
+                    
+                    
                 }else{
-                    let placeholderImageURL = URL(string: self.urlFotos+"sinfoto.png")!
-                 self.imgFotoPerfil.cargar(url:placeholderImageURL)
+                    let imageURL = URL(string: fotoUrl.replacingOccurrences(of: " ", with: "%20"))
+                    self.imgFotoPerfil.cargar(url: imageURL!)
+                    //let placeholderImageURL = URL(string: self.urlFotos+"sinfoto.png")!
+                // self.imgFotoPerfil.cargar(url:placeholderImageURL)
                 }
 
             }
@@ -74,7 +80,9 @@ class MenuCircularesTableViewController: UITableViewController {
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
-    }
+    
+        
+}
 
     // MARK: - Table view data source
 

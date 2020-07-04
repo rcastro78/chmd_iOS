@@ -244,7 +244,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         
         
         //cell.lblEncabezado.text? = ""
-        cell.lblTitulo.text? = c.nombre.capitalized
+        cell.lblTitulo.text? = c.nombre
         cell.chkSeleccionar.addTarget(self, action: #selector(seleccionMultiple), for: .touchUpInside)
        
        cell.btnHacerFav.addTarget(self, action: #selector(hacerFavorita), for: .touchUpInside)
@@ -659,7 +659,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                         var titulo:String="";
                 
                        if let name = sqlite3_column_text(queryStatement, 2) {
-                        titulo = String(cString: name).capitalized
+                        titulo = String(cString: name)
                           } else {
                            print("name not found")
                        }
@@ -744,7 +744,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                 imagen = UIImage.init(named: "appmenu07")!
                 if(Int(eliminada) == 0){
         
-                    self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo.capitalized,fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,noLeido:0,favorita:Int(favorita)))
+                    self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo,fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,noLeido:0,favorita:Int(favorita)))
               }
         }
             
@@ -1031,7 +1031,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                           .replacingOccurrences(of: "&amp;ordm;", with: "o.")
                           print("Contenido: "+str)
                           if(Int(eliminada)==1){
-                            self.circulares.append(CircularTodas(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo.capitalized,fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? "",noLeido:0,favorita:0))
+                            self.circulares.append(CircularTodas(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo,fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? "",noLeido:0,favorita:0))
                           }
                        
                       

@@ -326,7 +326,7 @@ class CircularDetalleViewController: UIViewController {
             lblTituloParte1.trailingBuffer = 20.0*/
             
             
-            partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:titulo.capitalized)
+            partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:titulo)
             
         }else{
             id = UserDefaults.standard.string(forKey: "idCircularViaNotif") ?? ""
@@ -501,7 +501,7 @@ class CircularDetalleViewController: UIViewController {
         let endDate = eDate
         let event = EKEvent(eventStore: store)
         event.calendar = calendar
-        event.title = titulo.uppercased()
+        event.title = titulo
         event.startDate = startDate
         event.endDate = eDate
 
@@ -662,9 +662,13 @@ class CircularDetalleViewController: UIViewController {
                 
                 if(nextHoraIniIcs != "00:00:00"){
                     imbCalendario.isHidden=false
+                    btnCalendario.isHidden=false
+                }else{
+                    imbCalendario.isHidden=true
+                    btnCalendario.isHidden=true
                 }
         
-                self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.capitalized)
+                self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo)
                 
                 circularTitulo = nextTitulo
                 let link = URL(string:urlBase+"getCircularId4.php?id=\(nextId)")!
@@ -714,7 +718,7 @@ class CircularDetalleViewController: UIViewController {
                 dateFormatter.dateFormat = "d 'de' MMMM 'de' YYYY"
                 let d = dateFormatter.string(from: date1!)
                 //self.lblTituloParte1.text=circulares[p].nombre
-                self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:circulares[p].nombre.capitalized)
+                self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:circulares[p].nombre)
                webView.isHidden=true
                 webViewSinConexion.isHidden=false
                 
@@ -788,7 +792,7 @@ class CircularDetalleViewController: UIViewController {
             var nextFecha = fechas[p]
             //self.lblTituloParte1.text=nextTitulo
             
-            self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.capitalized)
+            self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo)
             var nextHoraIniIcs = horasInicioIcs[p]
             var nextHoraFinIcs = horasFinIcs[p]
             var nextFechaIcs = fechasIcs[p]
@@ -835,7 +839,7 @@ class CircularDetalleViewController: UIViewController {
             }
             //lblTituloParte1.text = circulares[posicion].nombre
             //lblNivel.text = circulares[posicion].nivel
-            self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:circulares[p].nombre.capitalized)
+            self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:circulares[p].nombre)
             let anio = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
             let mes = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
             let dia = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
@@ -937,7 +941,7 @@ class CircularDetalleViewController: UIViewController {
                        var nextFechaIcs = fechasIcs[p]
                        var nextNivel = niveles[p]
                     //self.lblTituloParte1.text=nextTitulo
-                    self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.capitalized)
+                    self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo)
                        nextHoraIcs = horasInicioIcs[p]
                        if(nextHoraIniIcs != "00:00:00"){
                            imbCalendario.isHidden=false
@@ -969,7 +973,7 @@ class CircularDetalleViewController: UIViewController {
                       
                       p = p-1
                    if(p>0){
-                    self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:circulares[p].nombre.capitalized)
+                    self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:circulares[p].nombre)
                        //lblTituloParte1.text = circulares[posicion].nombre
                        //               lblNivel.text = circulares[posicion].nivel
                                       
@@ -1072,7 +1076,7 @@ class CircularDetalleViewController: UIViewController {
                 
                 //lblNivel.text = nextNivel
                 
-                self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.capitalized)
+                self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo)
                 
                  circularTitulo = nextTitulo
                 let link = URL(string:urlBase+"getCircularId4.php?id=\(nextId)")!
@@ -1102,7 +1106,7 @@ class CircularDetalleViewController: UIViewController {
         }else{
             p = p-1
             if(p>0){
-                self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:circulares[p].nombre.capitalized)
+                self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:circulares[p].nombre)
                                //lblNivel.text = circulares[p].nivel
                                
                                let anio = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
@@ -1641,7 +1645,7 @@ class CircularDetalleViewController: UIViewController {
                      var titulo:String="";
              
                     if let name = sqlite3_column_text(queryStatement, 2) {
-                        titulo = String(cString: name).uppercased()
+                        titulo = String(cString: name)
                        } else {
                         print("name not found")
                     }
@@ -1714,7 +1718,7 @@ class CircularDetalleViewController: UIViewController {
              }
              
              
-            self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo.uppercased(),fecha: fechaCircular,estado: 0,contenido:cont,adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,noLeido:0,favorita:Int(favorita)))
+            self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo,fecha: fechaCircular,estado: 0,contenido:cont,adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,noLeido:0,favorita:Int(favorita)))
            }
          
        
@@ -2006,7 +2010,7 @@ class CircularDetalleViewController: UIViewController {
                     self.title = "Detalles de la circular"*/
                     //self.titulos[0].uppercased()
                 //self.lblTituloParte1.text=self.titulos[0].capitalized
-                    self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:self.titulos[0].capitalized)
+                    self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:self.titulos[0])
               
           
       }
@@ -2063,7 +2067,7 @@ class CircularDetalleViewController: UIViewController {
                     <style>
                         .myDiv {
                             background-color: #91caee;
-                            color:#0e2455;
+                            color:#0c4866;
                             text-align: center;
                             height:50%;
                             padding:12px;
@@ -2119,7 +2123,7 @@ class CircularDetalleViewController: UIViewController {
                  
                  .myDiv2 {
                      background-color: #098FCF;
-                     color:#0e497b;
+                     color:#0c4866;
                      text-align: center;
                      height:50%;
                     width:100px;
@@ -2142,7 +2146,7 @@ class CircularDetalleViewController: UIViewController {
                 documentAttributes: nil)
             let textRangeForFont1 : NSRange = NSMakeRange(0, attrStr2.length)
             attrStr2.addAttributes([NSAttributedString.Key.font : UIFont(name: "Gotham Rounded",size:20)!], range: textRangeForFont1)
-           
+           label2.isHidden=false
             label2.attributedText = attrStr2
             
             //label2.text = t
@@ -2161,7 +2165,7 @@ class CircularDetalleViewController: UIViewController {
                         <style>
                             .myDiv {
                                 background-color: #91caee;
-                                color:#0e2455;
+                                color:#0c4866;
                                 text-align: center;
                                 height:50%;
                                 padding:12px;
@@ -2189,7 +2193,8 @@ class CircularDetalleViewController: UIViewController {
                 attrStr.addAttributes([NSAttributedString.Key.font : UIFont(name: "Gotham Rounded",size:20)!], range: textRangeForFont)
                 
                 label1.attributedText = attrStr
-            
+                label2.text=""
+                label2.isHidden=true
             
             
             
@@ -2305,7 +2310,7 @@ class CircularDetalleViewController: UIViewController {
                        }
                        
                     //self.lblTituloParte1.text=nextTitulo.capitalized
-                    self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo.capitalized)
+                    self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo)
                        self.id = nextId;
                    }else{
                        self.posicion = 0
