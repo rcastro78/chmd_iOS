@@ -357,7 +357,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                                     //capturar la celda
                                                        let cell = self.tableViewCirculares.dequeueReusableCell(withIdentifier: "celda", for: indexPath) as! CircularTableViewCell
                                                            self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: idCircular)
-                                                    let timer = Timer.scheduledTimer(timeInterval: 0.6, target: self, selector: #selector(self.reaccionar), userInfo: nil, repeats: false)
+                                                    let timer = Timer.scheduledTimer(timeInterval: 0.4, target: self, selector: #selector(self.reaccionar), userInfo: nil, repeats: false)
                                                     let favImage = UIImage(named: "favIconCompleto")! as UIImage
                                                       cell.btnHacerFav.setImage(favImage, for: UIControl.State.normal)
                                                     
@@ -380,7 +380,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                                         //capturar la celda
                                                            let cell = self.tableViewCirculares.dequeueReusableCell(withIdentifier: "celda", for: indexPath) as! CircularTableViewCell
                                                                self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: idCircular)
-                                                        let timer = Timer.scheduledTimer(timeInterval: 0.6, target: self, selector: #selector(self.reaccionar), userInfo: nil, repeats: false)
+                                                        let timer = Timer.scheduledTimer(timeInterval: 0.4, target: self, selector: #selector(self.reaccionar), userInfo: nil, repeats: false)
                                                                    //Modificar la imagen de la celda
                                                                     cell.imgCircular.image = UIImage(named:"circle_white")
                                                                     }else{
@@ -399,7 +399,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                                         //capturar la celda
                                                            let cell = self.tableViewCirculares.dequeueReusableCell(withIdentifier: "celda", for: indexPath) as! CircularTableViewCell
                                                                self.noleerCircular(direccion: self.urlBase+self.noleerMetodo, usuario_id: self.idUsuario, circular_id: idCircular)
-                                                        let timer = Timer.scheduledTimer(timeInterval: 0.6, target: self, selector: #selector(self.reaccionar), userInfo: nil, repeats: false)
+                                                        let timer = Timer.scheduledTimer(timeInterval: 0.4, target: self, selector: #selector(self.reaccionar), userInfo: nil, repeats: false)
                                                                    //Modificar la imagen de la celda
                                                                     cell.imgCircular.image = UIImage(named:"circle")
                                                                     }else{
@@ -1103,6 +1103,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     {
         self.viewDidLoad()
         self.viewWillAppear(true)
+        //tableViewCirculares.reloadData()
     }
     
     

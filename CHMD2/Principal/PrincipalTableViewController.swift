@@ -250,6 +250,7 @@ class PrincipalTableViewController: UITableViewController {
                     UserDefaults.standard.set(numero, forKey: "numeroUsuario")
                     UserDefaults.standard.set(familia, forKey: "familia")
                     UserDefaults.standard.set(fotoUrl, forKey: "fotoUrl")
+                    print("FOTO: \(fotoUrl)")
                     UserDefaults.standard.set(responsable, forKey: "responsable")
                     UserDefaults.standard.set(correo, forKey: "correo")
                   

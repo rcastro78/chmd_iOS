@@ -1976,10 +1976,6 @@ class CircularDetalleViewController: UIViewController {
                       print(response.result.error!)
                       return
                   }
-                  /*
-                   [{"id":"1008","titulo":"\u00a1Felices vacaciones!","estatus":"Enviada","ciclo_escolar_id":"4","created_at":"2019-04-12 13:02:19","updated_at":"2019-04-12 13:02:19","leido":"1","favorito":"1","compartida":"1","eliminado":"1","status_envio":null,"envio_todos":"0"},
-                   */
-                  
                   if let diccionarios = response.result.value as? [Dictionary<String,AnyObject>]{
                       for diccionario in diccionarios{
                           //print(diccionario)
@@ -2021,18 +2017,8 @@ class CircularDetalleViewController: UIViewController {
           
    }
       
-          
-    
-          
-          
-      
       
   }
-    
-    
-    
-    
-    
     
     
     let strokeTextAttributes1: [NSAttributedString.Key : Any] = [
@@ -2051,8 +2037,6 @@ class CircularDetalleViewController: UIViewController {
    
     func partirTitulo(label1:UILabel,label2:UILabel, titulo:String){
         
-        
-       
         
         
         var totalElementos:Int=0
@@ -2100,7 +2084,7 @@ class CircularDetalleViewController: UIViewController {
                 options: [NSAttributedString.DocumentReadingOptionKey.documentType:NSAttributedString.DocumentType.html, NSAttributedString.DocumentReadingOptionKey.characterEncoding: String.Encoding.utf8.rawValue],
                 documentAttributes: nil)
             let textRangeForFont : NSRange = NSMakeRange(0, attrStr.length)
-            attrStr.addAttributes([NSAttributedString.Key.font : UIFont(name: "Gotham Rounded",size:20)!], range: textRangeForFont)
+            attrStr.addAttributes([NSAttributedString.Key.font : UIFont(name: "GothamRounded-Medium",size:20)!], range: textRangeForFont)
             
             label1.attributedText = attrStr
             
@@ -2145,7 +2129,7 @@ class CircularDetalleViewController: UIViewController {
                 options: [NSAttributedString.DocumentReadingOptionKey.documentType:NSAttributedString.DocumentType.html, NSAttributedString.DocumentReadingOptionKey.characterEncoding: String.Encoding.utf8.rawValue],
                 documentAttributes: nil)
             let textRangeForFont1 : NSRange = NSMakeRange(0, attrStr2.length)
-            attrStr2.addAttributes([NSAttributedString.Key.font : UIFont(name: "Gotham Rounded",size:20)!], range: textRangeForFont1)
+            attrStr2.addAttributes([NSAttributedString.Key.font : UIFont(name: "GothamRounded-Medium",size:20)!], range: textRangeForFont1)
            label2.isHidden=false
             label2.attributedText = attrStr2
             
@@ -2190,7 +2174,7 @@ class CircularDetalleViewController: UIViewController {
                     options: [NSAttributedString.DocumentReadingOptionKey.documentType:NSAttributedString.DocumentType.html, NSAttributedString.DocumentReadingOptionKey.characterEncoding: String.Encoding.utf8.rawValue],
                     documentAttributes: nil)
                 let textRangeForFont : NSRange = NSMakeRange(0, attrStr.length)
-                attrStr.addAttributes([NSAttributedString.Key.font : UIFont(name: "Gotham Rounded",size:20)!], range: textRangeForFont)
+                attrStr.addAttributes([NSAttributedString.Key.font : UIFont(name: "GothamRounded-Medium",size:20)!], range: textRangeForFont)
                 
                 label1.attributedText = attrStr
                 label2.text=""
