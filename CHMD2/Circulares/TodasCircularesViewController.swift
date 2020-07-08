@@ -71,7 +71,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
          }else{
            self.leerCirculares()
         }
-        //self.tableViewCirculares.reloadData()
+       
     }
     
     override func viewDidLoad() {
@@ -148,13 +148,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
        
         
     }
-    //Función para mantener los botones flotando
-    /*func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        btnFavs.frame.origin.y = 300 + scrollView.contentOffset.y
-        btnNoLeer.frame.origin.y = 380 + scrollView.contentOffset.y
-        btnEliminar.frame.origin.y = 460 + scrollView.contentOffset.y
-        btnDeshacer.frame.origin.y = 540 + scrollView.contentOffset.y
-    }*/
+  
     @objc func refresh(_ sender: AnyObject) {
       circulares.removeAll()
         print("se ha refrescado...")
@@ -172,8 +166,6 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         var valorFinal:Int=5
         let ultimo = circulares.count - 1
         if indexPath.row == ultimo {
-            //El método debe venir con top 15
-            //del registro 1 al 15
             valorFinal = valorFinal+5
             let address=self.urlBase+self.metodoCirculares+"?usuario_id=\(self.idUsuario)"
            guard let _url = URL(string: address) else { return };
@@ -184,7 +176,6 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
         return 1
     }
     
@@ -196,10 +187,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
 }
     
-    
-   
-    
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "celda", for: indexPath)
             as! CircularTableViewCell
@@ -208,13 +196,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         guard let c = circulares[safe: indexPath.row] else{
             return cell
         }
-        
-      
-            //let c = circulares[indexPath.row]
-             //cell.lblEncabezado.text? = ""
-             cell.lblTitulo.text? = c.nombre
-             /*let favImage = UIImage(named: "favIconCompleto")! as UIImage
-                                      cell.btnHacerFav.setImage(favImage, for: UIControl.State.normal)*/
+              cell.lblTitulo.text? = c.nombre
              if c.favorita == 1
              {
                  let favImage = UIImage(named: "favIconCompleto")! as UIImage
@@ -262,13 +244,6 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                  cell.chkSeleccionar.isChecked=true
              }
              
-             /*if(c.adjunto==1){
-                 cell.imgAdjunto.isHidden=false
-             }
-             if(c.adjunto==0){
-                 cell.imgAdjunto.isHidden=true
-             }*/
-            
             
              if(editando){
                  let isEditing: Bool = self.isEditing

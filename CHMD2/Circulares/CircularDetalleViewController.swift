@@ -206,7 +206,7 @@ extension UIView {
 
 
 class CircularDetalleViewController: UIViewController {
-
+//WKNavigationDelegate
     
     @IBOutlet weak var webView: WKWebView!
     
@@ -221,7 +221,6 @@ class CircularDetalleViewController: UIViewController {
       
     @IBOutlet weak var webViewSinConexion: UITextView!
     @IBOutlet weak var btnCalendario: UIButton!
-    //@IBOutlet weak var lblContenidoHTML: UITextView!
     @IBOutlet weak var lblNivel: UILabel!
     var ids = [String]()
     var titulos = [String]()
@@ -255,22 +254,15 @@ class CircularDetalleViewController: UIViewController {
     var db: OpaquePointer?
     var tipoCircular:Int=0
     var noLeido:Int=0
+    
+   
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        /*
-         let label = PaddingLabel(8, 8, 16, 16)
-         label.font = .boldSystemFont(ofSize: 16)
-         label.text = "Hello World"
-         label.backgroundColor = .black
-         label.textColor = .white
-         label.textAlignment = .center
-         label.layer.cornerRadius = 8
-         label.clipsToBounds = true
-         label.sizeToFit()
-         */
+        
         webView.scrollView.showsHorizontalScrollIndicator = false
         webView.scrollView.pinchGestureRecognizer?.isEnabled = false
-        
+        webView.configuration.preferences.javaScriptEnabled = true
         tipoCircular = UserDefaults.standard.integer(forKey: "tipoCircular")
         imbCalendario.isHidden=true
         idUsuario = UserDefaults.standard.string(forKey: "idUsuario") ?? "0"
@@ -317,14 +309,7 @@ class CircularDetalleViewController: UIViewController {
                leerCirculares()
                
             }
-            /*lblTituloParte1.text=circularTitulo
-            lblTituloParte1.type = .continuous
-            lblTituloParte1.scrollDuration = 8.0
-            lblTituloParte1.animationCurve = .easeInOut
-            lblTituloParte1.fadeLength = 10.0
-            lblTituloParte1.leadingBuffer = 20.0
-            lblTituloParte1.trailingBuffer = 20.0*/
-            
+          
             
             partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:titulo)
             
@@ -342,14 +327,12 @@ class CircularDetalleViewController: UIViewController {
           webViewSinConexion.isHidden=true
             let link = URL(string:urlBase+"getCircularId4.php?id=\(id)")!
                   let request = URLRequest(url: link)
-                  //webView = WKWebView(frame: .zero, configuration: webConfiguration)
-                  //webView.scalesPageToFit = true
                   webView.contentMode = .scaleAspectFit
                   webView.load(request)
                   webView.scrollView.isScrollEnabled = true
                   webView.scrollView.bounces = false
                   webView.allowsBackForwardNavigationGestures = false
-                  //webView.contentMode = .scaleToFill
+                 // webView.navigationDelegate = self
                     
             
                   let address=urlBase+"getCircularesUsuarios.php?usuario_id=\(idUsuario)"
@@ -386,8 +369,7 @@ class CircularDetalleViewController: UIViewController {
                     
                     
                 }
-                  
-                 
+                                
                   posicion = find(value: id,in: ids) ?? 0
                   
             
@@ -452,10 +434,6 @@ class CircularDetalleViewController: UIViewController {
                        
                        webViewSinConexion.attributedText = attrStr
             
-            
-            
-            
-             /*webView.loadHTMLString("<html><head><meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=5, minimum-scale=1.0, user-scalable=yes'><meta  http-equiv='X-UA-Compatible'  content='IE=edge,chrome=1'><meta name='HandheldFriendly' content='true'><meta content='text/html;charset=utf-8'></head><body {color: #005188;}><div style='text-align:right; width:100%;text-color:#098FCF'><h5>\(circulares[posicion].nivel)</h5></div><div style='text-align:right; width:100%;text-color:#098FCF'><h5>\(d)</h5></div><h3>\(circulares[posicion].contenido.replacingOccurrences(of: "&aacute;", with: "á").replacingOccurrences(of: "&eacute;", with: "é").replacingOccurrences(of: "&iacute;", with: "í").replacingOccurrences(of: "&oacute;", with: "ó").replacingOccurrences(of: "&uacuﬁte;", with: "ú").replacingOccurrences(of: "&ordm;", with: "o."))</h3></p></body></html>", baseURL: nil)*/
             
             
             
@@ -580,7 +558,6 @@ class CircularDetalleViewController: UIViewController {
               
                let dialogMessage = UIAlertController(title: "CHMD", message: "¿Deseas agregar este evento a tu calendario?", preferredStyle: .alert)
                
-                //Create OK button with action handler
                let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
                  
                    
@@ -589,13 +566,10 @@ class CircularDetalleViewController: UIViewController {
                               switch EKEventStore.authorizationStatus(for: .event) {
                               case .authorized:
                                self.insertarEvento(store: eventStore, titulo: self.circularTitulo, fechaIcs: self.fechaIcs, horaInicioIcs: self.horaInicialIcs, horaFinIcs: self.horaFinalIcs, ubicacionIcs: "")
-                                 
-                                 
-                                 
+                                   
                                   case .denied:
                                       print("Acceso denegado")
                                   case .notDetermined:
-                                  // 3
                                       eventStore.requestAccess(to: .event, completion:
                                         {[weak self] (granted: Bool, error: Error?) -> Void in
                                             if granted {
@@ -614,13 +588,10 @@ class CircularDetalleViewController: UIViewController {
                    
                    
                })
-               
-               // Create Cancel button with action handlder
+
                let cancel = UIAlertAction(title: "Cancelar", style: .cancel) { (action) -> Void in
                    
                }
-               
-               //Add OK and Cancel button to dialog message
                dialogMessage.addAction(ok)
                dialogMessage.addAction(cancel)
             

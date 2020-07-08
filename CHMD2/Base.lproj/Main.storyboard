@@ -84,7 +84,7 @@
             <objects>
                 <tableViewController modalPresentationStyle="fullScreen" id="PSb-uP-hFN" customClass="PrincipalTableViewController" customModule="CHMD" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="nsq-dY-nGg">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -163,7 +163,7 @@
             </objects>
             <point key="canvasLocation" x="1597" y="360"/>
         </scene>
-        <!--Mi Maguen-->
+        <!--MI MAGUEN-->
         <scene sceneID="ahT-cF-yST">
             <objects>
                 <viewController modalPresentationStyle="fullScreen" id="CCr-gp-iFO" customClass="MiMaguenViewController" customModule="CHMD" customModuleProvider="target" sceneMemberID="viewController">
@@ -192,9 +192,9 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="viY-dZ-RKT"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Mi Maguen" id="191-g3-1DF">
+                    <navigationItem key="navigationItem" title="MI MAGUEN" id="191-g3-1DF">
                         <barButtonItem key="backBarButtonItem" title="Retornar" id="ADG-1h-UfQ"/>
-                        <barButtonItem key="leftBarButtonItem" title="&lt; Regresar" id="E1b-PI-liK">
+                        <barButtonItem key="leftBarButtonItem" title="&lt; REGRESAR" id="E1b-PI-liK">
                             <connections>
                                 <segue destination="bHL-Gj-snQ" kind="unwind" unwindAction="unwindToPrincipalWithSegue:" id="JCM-EX-5YY"/>
                             </connections>
@@ -210,7 +210,7 @@
             </objects>
             <point key="canvasLocation" x="1803" y="1346"/>
         </scene>
-        <!--Mi Credencial-->
+        <!--MI CREDENCIAL-->
         <scene sceneID="fwN-ti-S4a">
             <objects>
                 <viewController modalPresentationStyle="fullScreen" id="UNm-ce-fRz" customClass="CredencialViewController" customModule="CHMD" customModuleProvider="target" sceneMemberID="viewController">
@@ -313,17 +313,19 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="firma" translatesAutoresizingMaskIntoConstraints="NO" id="Na7-fr-5lL">
-                                <rect key="frame" x="141" y="630" width="135" height="66"/>
+                                <rect key="frame" x="141" y="712" width="135" height="66"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" secondItem="Na7-fr-5lL" secondAttribute="height" multiplier="37:21" constant="18.714285714285722" id="mKo-2t-ZNY"/>
+                                    <constraint firstAttribute="height" constant="66" id="WuC-RC-DyF"/>
+                                    <constraint firstAttribute="width" constant="135" id="cHe-c8-hkT"/>
+                                    <constraint firstAttribute="width" secondItem="Na7-fr-5lL" secondAttribute="height" multiplier="45:22" id="fg8-ZY-4JN"/>
                                 </constraints>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
                             <constraint firstItem="Trv-Bi-P0J" firstAttribute="leading" secondItem="7cb-FF-6Ku" secondAttribute="leading" constant="1" id="1RJ-SV-6m9"/>
+                            <constraint firstItem="ATw-A2-BV2" firstAttribute="trailing" secondItem="Na7-fr-5lL" secondAttribute="trailing" constant="138" id="5bv-SI-HzV"/>
                             <constraint firstItem="Trv-Bi-P0J" firstAttribute="leading" secondItem="Tve-x4-oKP" secondAttribute="leading" constant="1" id="DhA-LT-jqd"/>
-                            <constraint firstItem="ATw-A2-BV2" firstAttribute="trailing" secondItem="Na7-fr-5lL" secondAttribute="trailing" constant="138" id="E0A-P9-IW2"/>
                             <constraint firstItem="ATw-A2-BV2" firstAttribute="trailing" secondItem="Edf-Bd-j24" secondAttribute="trailing" constant="126" id="FCy-6f-mO2"/>
                             <constraint firstItem="Tve-x4-oKP" firstAttribute="leading" secondItem="ATw-A2-BV2" secondAttribute="leading" id="FDi-v3-GSs"/>
                             <constraint firstItem="Trv-Bi-P0J" firstAttribute="trailing" secondItem="7cb-FF-6Ku" secondAttribute="trailing" constant="1" id="FIn-e7-5YN"/>
@@ -331,21 +333,21 @@
                             <constraint firstItem="Tve-x4-oKP" firstAttribute="top" secondItem="ATw-A2-BV2" secondAttribute="top" id="KVr-pD-u4X"/>
                             <constraint firstItem="Edf-Bd-j24" firstAttribute="top" secondItem="ATw-A2-BV2" secondAttribute="top" constant="114" id="LFE-74-Y7P"/>
                             <constraint firstItem="K6w-PT-2kU" firstAttribute="centerX" secondItem="lfI-db-BVT" secondAttribute="centerX" constant="2" id="OHJ-a2-p6y"/>
-                            <constraint firstItem="Na7-fr-5lL" firstAttribute="leading" secondItem="ATw-A2-BV2" secondAttribute="leading" constant="141" id="OWt-vw-vLG"/>
                             <constraint firstItem="Trv-Bi-P0J" firstAttribute="trailing" secondItem="Tve-x4-oKP" secondAttribute="trailing" constant="1" id="RhU-b2-9ol"/>
                             <constraint firstItem="Trv-Bi-P0J" firstAttribute="top" secondItem="Edf-Bd-j24" secondAttribute="bottom" constant="8" id="XaQ-BB-ibS"/>
-                            <constraint firstItem="Na7-fr-5lL" firstAttribute="top" secondItem="K6w-PT-2kU" secondAttribute="bottom" constant="11" id="YrG-G8-lRd"/>
                             <constraint firstItem="7cb-FF-6Ku" firstAttribute="top" secondItem="Trv-Bi-P0J" secondAttribute="bottom" constant="-3" id="c7e-0G-y2m"/>
                             <constraint firstItem="Edf-Bd-j24" firstAttribute="leading" secondItem="ATw-A2-BV2" secondAttribute="leading" constant="128" id="dxP-wc-aY1"/>
+                            <constraint firstItem="Na7-fr-5lL" firstAttribute="leading" secondItem="ATw-A2-BV2" secondAttribute="leading" constant="141" id="fwh-iC-QIr"/>
                             <constraint firstItem="lfI-db-BVT" firstAttribute="top" secondItem="7cb-FF-6Ku" secondAttribute="bottom" constant="7.3333333333333144" id="nyj-a9-aIM"/>
                             <constraint firstItem="Tve-x4-oKP" firstAttribute="centerX" secondItem="lg2-xr-emq" secondAttribute="centerX" id="oAn-KO-Ykh"/>
                             <constraint firstItem="K6w-PT-2kU" firstAttribute="leading" secondItem="ATw-A2-BV2" secondAttribute="leading" constant="1" id="xlG-Qp-ijT"/>
                             <constraint firstItem="K6w-PT-2kU" firstAttribute="top" secondItem="lfI-db-BVT" secondAttribute="bottom" constant="1" id="z2t-ma-pk4"/>
+                            <constraint firstItem="ATw-A2-BV2" firstAttribute="bottom" secondItem="Na7-fr-5lL" secondAttribute="bottom" constant="30" id="zCw-58-NIJ"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="ATw-A2-BV2"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Mi Credencial" id="SQN-wQ-huR">
-                        <barButtonItem key="leftBarButtonItem" title="&lt; Regresar" id="GR6-O8-DMn">
+                    <navigationItem key="navigationItem" title="MI CREDENCIAL" id="SQN-wQ-huR">
+                        <barButtonItem key="leftBarButtonItem" title="&lt; REGRESAR" id="GR6-O8-DMn">
                             <connections>
                                 <segue destination="75o-qc-IKJ" kind="unwind" unwindAction="unwindToPrincipalWithSegue:" id="ffT-RA-PbM"/>
                             </connections>
@@ -745,7 +747,7 @@
                                                 <state key="normal" image="appmenu07"/>
                                             </button>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Eliminadas" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MgZ-tI-Rri">
-                                                <rect key="frame" x="27" y="49" width="89" height="13"/>
+                                                <rect key="frame" x="27" y="49" width="89.5" height="13"/>
                                                 <fontDescription key="fontDescription" name="GothamRounded-Bold" family="Gotham Rounded" pointSize="10"/>
                                                 <color key="textColor" systemColor="systemRedColor" red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
@@ -1098,7 +1100,7 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="33" id="3ju-Jh-XSe"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <fontDescription key="fontDescription" name="GothamRounded-Medium" family="Gotham Rounded" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -1185,7 +1187,7 @@
             <objects>
                 <viewController modalPresentationStyle="fullScreen" id="1Ea-Ni-u5M" customClass="FavCircularesViewController" customModule="CHMD" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="zyO-YG-ajM">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleAspectFit" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="uaX-5m-VZJ">
@@ -1970,7 +1972,7 @@
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="Rfy-LS-0qo"/>
-        <segue reference="JyY-xE-fgB"/>
+        <segue reference="GvR-aI-VDT"/>
         <segue reference="mtg-fp-Lb4"/>
     </inferredMetricsTieBreakers>
     <resources>
