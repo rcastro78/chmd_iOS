@@ -347,42 +347,52 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                              
                                                 //Mostrar el alert
                                                 let alertController = UIAlertController(title: "Opciones", message: "Elige la opción que deseas", preferredStyle: .actionSheet)
-                                                let actionLeer = UIAlertAction(title: "Mover a leídas", style: .default) { (action:UIAlertAction) in
-                                                    
-                                                    if(ConexionRed.isConnectedToNetwork()){
-                                                                                                          
-                                                        //capturar la celda
-                                                           let cell = self.tableViewCirculares.dequeueReusableCell(withIdentifier: "celda", for: indexPath) as! CircularTableViewCell
-                                                               self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: idCircular)
-                                                                   self.circulares.remove(at: indexPath.row)
-                                                        let timer = Timer.scheduledTimer(timeInterval: 0.4, target: self, selector: #selector(self.reaccionar), userInfo: nil, repeats: false)
-                                                        
-                                                        
-                                                                    }else{
-                                                                    var alert = UIAlertView(title: "No está conectado a Internet", message: "Esta opción solo funciona con una conexión a Internet", delegate: nil, cancelButtonTitle: "Aceptar")
-                                                                alert.show()
-                                                           }
-                                                    
-                                                    }
+                                               let actionLeer = UIAlertAction(title: "Mover a leídas", style: .default) { (action:UIAlertAction) in
+                                                                                                  
+                                                  if(ConexionRed.isConnectedToNetwork()){
+                                                  //capturar la celda
+                                                  let cell = self.tableViewCirculares.dequeueReusableCell(withIdentifier: "celda", for: indexPath) as! CircularTableViewCell
+                                                  self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: idCircular)
+                                                                                                      //let timer = Timer.scheduledTimer(timeInterval: 0.4, target: self, selector: #selector(self.reaccionar), userInfo: nil, repeats: false)
+                                                                                                                 //Modificar la imagen de la celda
+                                                                                                                  cell.imgCircular.image = UIImage(named:"circle_white")
+                                                                                                                                                                        self.tableViewCirculares.reloadRows(at: [indexPath], with: .fade)
+                                                                                                      
+                                                                                                      let timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.reaccionar), userInfo: nil, repeats: false)
+                                                                                                      //Modificar la imagen de la celda
+                                                                                                      
+                                                                                                      
+                                                                                                                  }else{
+                                                                                                                  var alert = UIAlertView(title: "No está conectado a Internet", message: "Esta opción solo funciona con una conexión a Internet", delegate: nil, cancelButtonTitle: "Aceptar")
+                                                                                                              alert.show()
+                                                                                                         }
+                                                                                                  
+                                                 }
                                                 
-                                                let actionNoLeer = UIAlertAction(title: "Mover a favoritas", style: .default) { (action:UIAlertAction) in
-                                                
-                                                    
-                                                    
-                                                    if(ConexionRed.isConnectedToNetwork()){
+                                                 let actionFavorita = UIAlertAction(title: "Mover a favoritas", style: .default) { (action:UIAlertAction) in
+                                                                                               
+                                                                                               if(ConexionRed.isConnectedToNetwork()){
+                                                                                                                                                     
+                                                                                                   //capturar la celda
+                                                                                                      let cell = self.tableViewCirculares.dequeueReusableCell(withIdentifier: "celda", for: indexPath) as! CircularTableViewCell
+                                                                                                          self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: idCircular)
+                                                                                                 
+                                                                                                   let favImage = UIImage(named: "favIconCompleto")! as UIImage
+                                                                                                     cell.btnHacerFav.setImage(favImage, for: UIControl.State.normal)
+                                                                                                   
+                                                                                                   
+                                                                                                   self.tableViewCirculares.reloadRows(at: [indexPath], with: .fade)
+                                                                                                                                                         
+                                                                                                   let timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.reaccionar), userInfo: nil, repeats: false)
                                                                                                           
-                                                        //capturar la celda
-                                                           let cell = self.tableViewCirculares.dequeueReusableCell(withIdentifier: "celda", for: indexPath) as! CircularTableViewCell
-                                                               self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: idCircular)
-                                                                    self.circulares.remove(at: indexPath.row)
-                                                        let timer = Timer.scheduledTimer(timeInterval: 0.4, target: self, selector: #selector(self.reaccionar), userInfo: nil, repeats: false)
-                                                        
-                                                                    }else{
-                                                                    var alert = UIAlertView(title: "No está conectado a Internet", message: "Esta opción solo funciona con una conexión a Internet", delegate: nil, cancelButtonTitle: "Aceptar")
-                                                                alert.show()
-                                                           }
-                                                    
-                                                }
+                                                                                                              //Modificar la imagen de la celda
+                                                                                                               //cell.imgCircular.image = UIImage(named:"star")
+                                                                                                               }else{
+                                                                                                               var alert = UIAlertView(title: "No está conectado a Internet", message: "Esta opción solo funciona con una conexión a Internet", delegate: nil, cancelButtonTitle: "Aceptar")
+                                                                                                           alert.show()
+                                                                                                      }
+                                                                                               
+                                                                                               }
                                                     
                                                 
                                                 let actionCompartir = UIAlertAction(title: "Compartir", style: .default) { (action:UIAlertAction) in
@@ -416,7 +426,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                                            }
                                                 
                                                 alertController.addAction(actionLeer)
-                                                alertController.addAction(actionNoLeer)
+                                                alertController.addAction(actionFavorita)
                                                 alertController.addAction(actionCompartir)
                                                 alertController.addAction(actionCancelar)
                                                 self.present(alertController, animated: true, completion: nil)
