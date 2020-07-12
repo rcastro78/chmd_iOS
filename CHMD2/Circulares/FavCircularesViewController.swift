@@ -1184,7 +1184,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     @objc func leer(){
         
-        
+         _ = btnEditar.target?.perform(btnEditar.action, with: nil)
           if ConexionRed.isConnectedToNetwork() == true {
           for c in circularesSeleccionadas{
             self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: "\(c)")
@@ -1228,6 +1228,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     }
     
     @objc func eliminar(){
+         _ = btnEditar.target?.perform(btnEditar.action, with: nil)
          if ConexionRed.isConnectedToNetwork() == true {
                     for c in circularesSeleccionadas{
                       self.delCircular(direccion: self.urlBase+"eliminarCircular.php", usuario_id: self.idUsuario, circular_id: "\(c)")
@@ -1274,7 +1275,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
      @objc func noleer(){
            
-           
+            _ = btnEditar.target?.perform(btnEditar.action, with: nil)
              if ConexionRed.isConnectedToNetwork() == true {
              for c in circularesSeleccionadas{
                self.noleerCircular(direccion: self.urlBase+self.noleerMetodo, usuario_id: self.idUsuario, circular_id: "\(c)")

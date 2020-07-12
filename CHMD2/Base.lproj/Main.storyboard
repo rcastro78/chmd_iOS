@@ -194,7 +194,8 @@
                     </view>
                     <navigationItem key="navigationItem" title="MI MAGUEN" id="191-g3-1DF">
                         <barButtonItem key="backBarButtonItem" title="Retornar" id="ADG-1h-UfQ"/>
-                        <barButtonItem key="leftBarButtonItem" title="&lt; REGRESAR" id="E1b-PI-liK">
+                        <barButtonItem key="leftBarButtonItem" image="homeIconBar" id="E1b-PI-liK">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <connections>
                                 <segue destination="bHL-Gj-snQ" kind="unwind" unwindAction="unwindToPrincipalWithSegue:" id="JCM-EX-5YY"/>
                             </connections>
@@ -347,7 +348,8 @@
                         <viewLayoutGuide key="safeArea" id="ATw-A2-BV2"/>
                     </view>
                     <navigationItem key="navigationItem" title="MI CREDENCIAL" id="SQN-wQ-huR">
-                        <barButtonItem key="leftBarButtonItem" title="&lt; REGRESAR" id="GR6-O8-DMn">
+                        <barButtonItem key="leftBarButtonItem" image="homeIconBar" id="GR6-O8-DMn">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <connections>
                                 <segue destination="75o-qc-IKJ" kind="unwind" unwindAction="unwindToPrincipalWithSegue:" id="ffT-RA-PbM"/>
                             </connections>
@@ -1992,6 +1994,7 @@
         <image name="firma" width="267" height="193"/>
         <image name="flecha_der_icono" width="64" height="64"/>
         <image name="flecha_izq_icono" width="64" height="64"/>
+        <image name="homeIconBar" width="32" height="32"/>
         <image name="home_blanco" width="256" height="263"/>
         <image name="ic_hamburguesa" width="32" height="24"/>
         <image name="icon_non_profile" width="420" height="420"/>

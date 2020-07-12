@@ -252,6 +252,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
              }else{
                  let isEditing: Bool = false
                  cell.chkSeleccionar.isChecked=false
+                
                  cell.chkSeleccionar.isHidden = !isEditing
                  cell.chkSeleccionar.setVisibility(UIView.Visibility(rawValue: "gone")!)
              }
@@ -1012,11 +1013,17 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                         self.circulares.append(CircularTodas(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo,fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? "",noLeido:noLeida,favorita:Int(favorito)!))
                        }
                     
+                    
+                    
+                    
+                    
+                    
                      self.guardarCirculares(idCircular: Int(id)!, idUsuario: Int(self.idUsuario)!, nombre: titulo, textoCircular: str, no_leida: noLeida, leida: Int(leido)!, favorita: Int(favorito)!, compartida: 0, eliminada: Int(eliminada)!,fecha: fecha,fechaIcs: fechaIcs,horaInicioIcs: horaInicioIcs,horaFinIcs: horaFinIcs,nivel: nv ?? "",adjunto:adj)
                     
                     
                 }
                 OperationQueue.main.addOperation {
+                    
                     self.tableViewCirculares.reloadData();
                 }
             }else{
@@ -1273,6 +1280,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                       btnNoLeer.isHidden=true
                       btnEliminar.isHidden=true
                       btnDeshacer.isHidden=true*/
+                    
                     btnMarcarFavoritas.isHidden=true
                     btnMarcarNoLeidas.isHidden=true
                     btnMarcarLeidas.isHidden=true
@@ -1296,7 +1304,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     
     @objc func agregarFavoritos(){
-        
+         _ = btnEditar.target?.perform(btnEditar.action, with: nil)
         circulares.removeAll()
           if ConexionRed.isConnectedToNetwork() == true {
           for c in circularesSeleccionadas{
@@ -1350,7 +1358,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     
    @objc func noleer(){
-       
+        _ = btnEditar.target?.perform(btnEditar.action, with: nil)
        circulares.removeAll()
          if ConexionRed.isConnectedToNetwork() == true {
          for c in circularesSeleccionadas{
@@ -1389,7 +1397,9 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
    
     @objc func eliminar(){
+       
          if ConexionRed.isConnectedToNetwork() == true {
+             _ = btnEditar.target?.perform(btnEditar.action, with: nil)
                     for c in circularesSeleccionadas{
                       self.delCircularTodas(direccion: self.urlBase+"eliminarCircular.php", usuario_id: self.idUsuario, circular_id: "\(c)")
                      
@@ -1437,7 +1447,11 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     }
     
      @objc func leer(){
-           
+        //Esto hace desaparecer los checkboxes, ya que llama al evento del boton
+        //Esta es la forma de llamar programaticamente la accion de un boton asociado a
+        //un @IBAction
+        _ = btnEditar.target?.perform(btnEditar.action, with: nil)
+        
            circulares.removeAll()
              if ConexionRed.isConnectedToNetwork() == true {
              for c in circularesSeleccionadas{
@@ -1454,12 +1468,17 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                   cell.chkSeleccionar.isChecked=false
                                   cell.imgCircular.image=UIImage(named:"circle_white")
                               }
-                          }
+                
+                //self.tableViewCirculares.reloadRows(at: [indexPath], with: .fade)
+                               
+               }
              circulares.removeAll()
              circularesSeleccionadas.removeAll()
              seleccion.removeAll()
+                
+                 
                
-                let timer = Timer.scheduledTimer(timeInterval: 0.6, target: self, selector: #selector(reaccionar), userInfo: nil, repeats: false)
+                let timer = Timer.scheduledTimer(timeInterval: 0.4, target: self, selector: #selector(reaccionar), userInfo: nil, repeats: false)
                
              }else{
                var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
