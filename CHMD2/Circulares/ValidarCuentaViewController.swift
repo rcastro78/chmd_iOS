@@ -24,10 +24,8 @@ class ValidarCuentaViewController: UIViewController {
      override func viewDidLoad() {
          super.viewDidLoad()
          email = UserDefaults.standard.string(forKey: "email") ?? ""
-        // Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { (timer) in
-        //self.v.isHidden = true
-        //}
-        
+         
+        //let timer = Timer.scheduledTimer(timeInterval: 0.4, target: self, selector: #selector(self.reaccionar), userInfo: nil, repeats: false)
         
         
   }

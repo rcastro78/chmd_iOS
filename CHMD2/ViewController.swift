@@ -67,15 +67,20 @@ extension ViewController: ASAuthorizationControllerDelegate {
             let appleUserEmail = appleIDCredential.email
             
             //Revisar que el correo exista en el server del colegio
-            UserDefaults.standard.set(appleUserFirstName, forKey: "nombre")
+            UserDefaults.standard.set(appleUserFirstName!, forKey: "nombre")
             UserDefaults.standard.set(appleId, forKey: "appleId")
-            UserDefaults.standard.set(appleIDCredential.email, forKey: "email")
+            UserDefaults.standard.set(appleIDCredential.email!, forKey: "email")
+            UserDefaults.standard.set(1,forKey: "autenticado")
+            UserDefaults.standard.set(1,forKey: "cuentaValida")
+            UserDefaults.standard.set(1,forKey: "manzana")
             performSegue(withIdentifier: "inicioSegue", sender: self)
+            
             
         } else if let passwordCredential = authorization.credential as? ASPasswordCredential {
             
             let appleUsername = passwordCredential.user
             let applePassword = passwordCredential.password
+            
             //Write your code
            
         }
@@ -227,9 +232,11 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
          idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,compartida,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel
          */
         
-        let crearTablaCirculares = "CREATE TABLE IF NOT EXISTS appCirculares(idCircular INTEGER, idUsuario INTEGER, nombre TEXT, textoCircular TEXT, no_leida INTEGER, leida INTEGER, favorita INTEGER, compartida INTEGER, eliminada INTEGER, created_at TEXT,fechaIcs TEXT, horaInicioIcs TEXT, horaFinIcs TEXT, nivel TEXT, adjunto INT,updated_at TEXT)"
+        let crearTablaCirculares = "CREATE TABLE IF NOT EXISTS appCircularCHMD(idCircular INTEGER, idUsuario INTEGER, nombre TEXT, textoCircular TEXT, no_leida INTEGER, leida INTEGER, favorita INTEGER, compartida INTEGER, eliminada INTEGER, created_at TEXT,fechaIcs TEXT, horaInicioIcs TEXT, horaFinIcs TEXT, nivel TEXT, adjunto INT,updated_at TEXT)"
         if sqlite3_exec(db, crearTablaCirculares, nil, nil, nil) != SQLITE_OK {
             print("Error creando la tabla de las circulares")
+        }else{
+           print("creada la tabla de las circulares")
         }
         
         let crearTablaNotificaciones="CREATE TABLE IF NOT EXISTS appNotificacion(idCircular INTEGER, notificacion INTEGER)"
@@ -260,7 +267,7 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
             UserDefaults.standard.set(1,forKey: "autenticado")
             UserDefaults.standard.set(nombre, forKey: "nombre")
             UserDefaults.standard.set(email, forKey: "email")
-            
+            UserDefaults.standard.set(0,forKey: "manzana")
             
            
         }
@@ -302,6 +309,7 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
             print("Valida")
             
              if ConexionRed.isConnectedToNetwork() == true {
+                
                 performSegue(withIdentifier: "inicioSegue", sender: self)
              }else{
                 performSegue(withIdentifier: "validarSinInternetSegue", sender: self)
@@ -330,11 +338,11 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
     @IBAction func appleLogin(_ sender: UIButton) {
         if #available(iOS 13.0, *){
             //Esta función maneja el login via Apple
-            //actionHandleAppleSignin()
+            actionHandleAppleSignin()
             
-            let alert = UIAlertController(title: "CHMD", message: "Esta opción estará disponible muy pronto", preferredStyle: .alert)
+            /*let alert = UIAlertController(title: "CHMD", message: "Esta opción estará disponible muy pronto", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Cerrar", style: .cancel, handler: nil))
-            self.present(alert, animated: true)
+            self.present(alert, animated: true)*/
             
             
         }else{
@@ -399,9 +407,49 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
             authorizationController.delegate = self
             authorizationController.presentationContextProvider = self as! ASAuthorizationControllerPresentationContextProviding
             authorizationController.performRequests()
+    
+            
+    
+    /*
+     
+     UserDefaults.standard.set(1,forKey: "autenticado")
+                UserDefaults.standard.set(nombre, forKey: "nombre")
+                UserDefaults.standard.set(email, forKey: "email")
+               
+     
+     */
+    
 
         }
     }
+    
+    
+    //Se ocupara solo para iOS
+    func validarEmail(url:URL)->Int{
+        var valida:Int=0
+        //self.lblMensaje.text="Validando cuenta de correo"
+        URLSession.shared.dataTask(with: url) {
+            (data, response, error) in
+            if let datos = try? JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String:Any]] {
+                
+                let obj = datos[0] as! [String : AnyObject]
+                    let existe = obj["existe"] as! String
+                    print("existe: "+existe)
+                    valida = Int(existe) ?? 0
+                    print("valida: \(valida)")
+                    UserDefaults.standard.set(existe, forKey: "valida")
+                if(valida==1){
+                    self.performSegue(withIdentifier:"inicio2Segue",sender:nil)
+                }
+                 
+            }
+            
+            }.resume()
+        
+        return valida
+        
+    }
+    
     
     
 }

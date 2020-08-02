@@ -73,12 +73,14 @@ class ValidarCorreoViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         print(email)
         let existe:String = UserDefaults.standard.string(forKey: "valida") ?? "0"
+        let manzana:Int = UserDefaults.standard.integer(forKey: "manzana") ?? 0
         let valida = Int(existe) ?? 0
         if(valida==0){
             self.lblMensaje.text="La cuenta no es válida"
             self.btnContinuar.setTitle("Salir", for: .normal)
           
-        }else{
+        }
+        if(valida==1 || manzana==1){
             self.lblMensaje.text="La cuenta es válida"
             //self.btnContinuar.setTitle("Continuar", for: .normal)
             //self.btnContinuar.visiblity(gone: true, dimension: 0)

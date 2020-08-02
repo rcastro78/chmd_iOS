@@ -411,6 +411,7 @@ class PrincipalTableViewController: UITableViewController {
         let valor = menu[indexPath.row]
         
         if (valor.id==1){
+            UserDefaults.standard.set(1,forKey:"descarga")
             performSegue(withIdentifier: "inicioSegue", sender: self)
           }
         if (valor.id==2){

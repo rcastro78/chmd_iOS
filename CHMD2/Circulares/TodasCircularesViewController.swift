@@ -47,6 +47,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     var circularesFiltradas = [CircularTodas]()
     var db: OpaquePointer?
     var idUsuario:String=""
+    var descarga:Int=0
     var urlBase:String="https://www.chmd.edu.mx/WebAdminCirculares/ws/"
     var noleerMetodo:String="noleerCircular.php"
     var leerMetodo:String="leerCircular.php"
@@ -63,11 +64,18 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(_:true)
          circulares.removeAll()
+        descarga = UserDefaults.standard.integer(forKey: "descarga")
          if ConexionRed.isConnectedToNetwork() == true {
             let address=self.urlBase+self.metodoCirculares+"?usuario_id=\(self.idUsuario)"
              guard let _url = URL(string: address) else { return };
-             self.getDataFromURL(url: _url)
-            
+            //La primera vez, va a descargar, las siguientes siempre leer desde la base local
+            if(descarga==1){
+                self.getDataFromURL(url: _url)
+            }else{
+              self.leerCirculares()
+            }
+                
+           
          }else{
            self.leerCirculares()
         }
@@ -128,10 +136,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         
      
         if ConexionRed.isConnectedToNetwork() == true {
-            self.delete()
-          
-             
-             
+            
         } else {
             var alert = UIAlertView(title: "No está conectado a Internet", message: "Se muestran las últimas circulares registradas", delegate: nil, cancelButtonTitle: "Aceptar")
             alert.show()
@@ -201,6 +206,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
              {
                  let favImage = UIImage(named: "favIconCompleto")! as UIImage
                  cell.btnHacerFav.setImage(favImage, for: UIControl.State.normal)
+                
              }
              //Para hacer favoritas con un boton
              cell.btnHacerFav.addTarget(self, action: #selector(toggleFavorita), for: .touchUpInside)
@@ -299,8 +305,10 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                                 let idCircular:String = "\(circular.id)"
                                             if ConexionRed.isConnectedToNetwork() == true {
                                             self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: idCircular)
-                                              self.circulares.remove(at: indexPath.row)
-                                              self.tableViewCirculares.reloadData()
+                                              //self.circulares.remove(at: indexPath.row)
+                                              //self.tableViewCirculares.reloadData()
+                                                self.actualizaLeidosCirculares(idCircular: Int(idCircular)!, idUsuario: Int(self.idUsuario)!)
+                                                                                              
                                                }else{
                                                   var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
                                                   alert.show()
@@ -338,7 +346,14 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                                       cell.btnHacerFav.setImage(favImage, for: UIControl.State.normal)
                                                     
                                                     
-                                                    self.tableViewCirculares.reloadRows(at: [indexPath], with: .fade)
+                                                    self.actualizaFavoritosCirculares(idCircular: Int(idCircular)!, idUsuario: Int(self.idUsuario)!)
+                                                    
+                                                    //self.circulares.removeAll()
+                                                    //self.leerCirculares()
+                                                    self.viewWillAppear(true)
+                                                    self.viewDidLoad()
+                                                    
+                                                   /* self.tableViewCirculares.reloadRows(at: [indexPath], with: .fade)
                                                                                                           
                                                     let timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.reaccionar), userInfo: nil, repeats: false)
                                                            
@@ -346,7 +361,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                                                 //cell.imgCircular.image = UIImage(named:"star")
                                                                 }else{
                                                                 var alert = UIAlertView(title: "No está conectado a Internet", message: "Esta opción solo funciona con una conexión a Internet", delegate: nil, cancelButtonTitle: "Aceptar")
-                                                            alert.show()
+                                                            alert.show()*/
                                                        }
                                                 
                                                 }
@@ -360,13 +375,20 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                                         //capturar la celda
                                                            let cell = self.tableViewCirculares.dequeueReusableCell(withIdentifier: "celda", for: indexPath) as! CircularTableViewCell
                                                                self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: idCircular)
+                                                        
+                                                        self.actualizaLeidosCirculares(idCircular: Int(idCircular)!, idUsuario: Int(self.idUsuario)!)
+                                                                                                     
+                                                      self.viewWillAppear(true)
+                                                      self.viewDidLoad()
+                                                       
+                                                        
                                                         //let timer = Timer.scheduledTimer(timeInterval: 0.4, target: self, selector: #selector(self.reaccionar), userInfo: nil, repeats: false)
                                                                    //Modificar la imagen de la celda
-                                                                    cell.imgCircular.image = UIImage(named:"circle_white")
+                                                             /*       cell.imgCircular.image = UIImage(named:"circle_white")
                                                         
                                                         self.tableViewCirculares.reloadRows(at: [indexPath], with: .fade)
                                                         
-                                                        let timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.reaccionar), userInfo: nil, repeats: false)
+                                                        let timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.reaccionar), userInfo: nil, repeats: false)*/
                                                         //Modificar la imagen de la celda
                                                         
                                                         
@@ -387,13 +409,18 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                                          //capturar la celda
                                                               let cell = self.tableViewCirculares.dequeueReusableCell(withIdentifier: "celda", for: indexPath) as! CircularTableViewCell
                                                                   self.noleerCircular(direccion: self.urlBase+self.noleerMetodo, usuario_id: self.idUsuario, circular_id: idCircular)
+                                                        
+                                                        self.actualizaNoLeidosCirculares(idCircular: Int(idCircular)!, idUsuario: Int(self.idUsuario)!)
+                                                                                                     
+                                                      
+                                                      
                                                            //let timer = Timer.scheduledTimer(timeInterval: 0.4, target: self, selector: #selector(self.reaccionar), userInfo: nil, repeats: false)
                                                                       //Modificar la imagen de la celda
                                                                        cell.imgCircular.image = UIImage(named:"circle")
                                                            
-                                                           self.tableViewCirculares.reloadRows(at: [indexPath], with: .fade)
+                                                          /* self.tableViewCirculares.reloadRows(at: [indexPath], with: .fade)
                                                            
-                                                           let timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.reaccionar), userInfo: nil, repeats: false)
+                                                           let timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.reaccionar), userInfo: nil, repeats: false)*/
                                                            //Modificar la imagen de la celda
                                                         
                                                                     //self.tableViewCirculares.reloadData()
@@ -510,8 +537,14 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                                 let idCircular:String = "\(circular.id)"
                                             if ConexionRed.isConnectedToNetwork() == true {
                                             self.noleerCircular(direccion: self.urlBase+self.noleerMetodo, usuario_id: self.idUsuario, circular_id: idCircular)
-                                                self.viewDidLoad()
-                                                self.viewWillAppear(true)
+                                                //self.viewDidLoad()
+                                                //self.viewWillAppear(true)
+                                                self.actualizaNoLeidosCirculares(idCircular: Int(idCircular)!, idUsuario: Int(self.idUsuario)!)
+                                                
+                                                
+                                                
+                                                
+                                                
                                                }else{
                                                   var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
                                                   alert.show()
@@ -540,14 +573,24 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                                      UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
                                                 }
                                                 
-                                            self.delCircular(direccion: self.urlBase+"eliminarCircular.php", usuario_id: self.idUsuario, circular_id: idCircular)
+                                                
+                                            //Borrar en el servidor
                                             
-                                                let address=self.urlBase+self.metodoCirculares+"?usuario_id=\(self.idUsuario)"
+                                            self.delCircular(direccion: self.urlBase+"eliminarCircular.php", usuario_id: self.idUsuario, circular_id: idCircular)
+                                            self.borraCirculares(idCircular: Int(idCircular)!, idUsuario: Int(self.idUsuario)!)
+                                            
+                                               
+                                              
+                                                
+                                               /* let address=self.urlBase+self.metodoCirculares+"?usuario_id=\(self.idUsuario)"
                                                                        guard let _url = URL(string: address) else { return };
                                                                        self.getDataFromURL(url: _url)
                                                 
                                                 
-                                                self.indexEliminar=indexPath.row
+                                                self.indexEliminar=indexPath.row*/
+                                                
+                                                
+                                                
                                         
                                             }else{
                                                 var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
@@ -591,6 +634,11 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             UserDefaults.standard.set(0, forKey: "viaNotif")
             UserDefaults.standard.set(c.noLeido, forKey: "noLeido")
             UserDefaults.standard.set(1, forKey: "tipoCircular")
+            
+            self.actualizaLeidosCirculares(idCircular: c.id, idUsuario: Int(self.idUsuario)!)
+                                                           
+            
+            
             performSegue(withIdentifier: "TcircularSegue", sender:self)
             }
         }else{
@@ -614,7 +662,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     //Leer las circulares cuando no haya internet
     func leerCirculares(){
-        
+        print("Leer desde la base de datos local")
         let fileUrl = try!
                    FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd.sqlite")
         
@@ -622,7 +670,11 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             print("error opening database")
         }
         
-           let consulta = "SELECT * FROM appCirculares"
+        /*
+         idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
+         */
+        
+           let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto  FROM appCircularCHMD"
            var queryStatement: OpaquePointer? = nil
         var imagen:UIImage
         imagen = UIImage.init(named: "appmenu05")!
@@ -635,7 +687,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                      let id = sqlite3_column_int(queryStatement, 0)
                         var titulo:String="";
                 
-                       if let name = sqlite3_column_text(queryStatement, 2) {
+                       if let name = sqlite3_column_text(queryStatement, 1) {
                            titulo = String(cString: name)
                           } else {
                            print("name not found")
@@ -644,30 +696,31 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                 
                         var cont:String="";
                 
-                       if let contenido = sqlite3_column_text(queryStatement,3) {
+                       if let contenido = sqlite3_column_text(queryStatement,2) {
                            cont = String(cString: contenido)
                           } else {
                            print("name not found")
                        }
               
-                        let leida = sqlite3_column_int(queryStatement, 5)
-                        let favorita = sqlite3_column_int(queryStatement, 6)
-                        let eliminada = sqlite3_column_int(queryStatement, 8)
-                        
+                        let leida = sqlite3_column_int(queryStatement, 3)
+                        let favorita = sqlite3_column_int(queryStatement, 4)
+                        let eliminada = sqlite3_column_int(queryStatement, 5)
+                        print("leida: \(leida)")
+                        print("favorita: \(favorita)")
                 
-                                        var fechaIcs:String="";
-                                        if let fIcs = sqlite3_column_text(queryStatement, 10) {
-                                          fechaIcs = String(cString: fIcs)
-                                         } else {
-                                          print("name not found")
-                                      }
+                         var fechaIcs:String="";
+                         if let fIcs = sqlite3_column_text(queryStatement, 6) {
+                         fechaIcs = String(cString: fIcs)
+                         } else {
+                              print("name not found")
+                         }
                 
                                
                                     
                 
                        
                   var hIniIcs:String="";
-                  if  let horaInicioIcs = sqlite3_column_text(queryStatement, 11) {
+                  if  let horaInicioIcs = sqlite3_column_text(queryStatement, 8) {
                     hIniIcs = String(cString: horaInicioIcs)
                    } else {
                     print("name not found")
@@ -675,7 +728,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                         
                 
                  var hFinIcs:String="";
-                 if  let horaFinIcs = sqlite3_column_text(queryStatement, 12) {
+                 if  let horaFinIcs = sqlite3_column_text(queryStatement, 9) {
                      hFinIcs = String(cString: horaFinIcs)
                      } else {
                        print("name not found")
@@ -687,40 +740,47 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                         
                 
                 var nivel:String="";
-                if  let nv = sqlite3_column_text(queryStatement, 12) {
+                if  let nv = sqlite3_column_text(queryStatement, 10) {
                     nivel = String(cString: nv)
                     } else {
                       print("name not found")
                     }
                 
-                        let adj = sqlite3_column_int(queryStatement, 13)
-                        if(Int(leida)>0){
-                           imagen = UIImage.init(named: "circle_white")!
-                         }
+                        let adj = sqlite3_column_int(queryStatement, 14)
+                       
                         
                         if(Int(leida) == 1){
-                    
+                           imagen = UIImage.init(named: "circle_white")!
+                        }else{
+                            imagen = UIImage.init(named: "circle")!
                         }
                 
                         if(Int(favorita)==1){
                            imagen = UIImage.init(named: "circle_white")!
-                          }
-                        var noLeida:Int = 0
-                        if(Int(leida) == 0){
-                            noLeida = 1
+                        }
+                
+                        /*if(Int(favorita)==1 && Int(leida) == 0){
                             imagen = UIImage.init(named: "circle")!
-                           }
+                         }
+                        if(Int(favorita)==1 && Int(leida) == 1){
+                            imagen = UIImage.init(named: "circle_white")!
+                        }*/
+                
+                        var noLeida:Int = 0
+                       
                 var fechaCircular="";
-                if let fecha = sqlite3_column_text(queryStatement, 8) {
+                if let fecha = sqlite3_column_text(queryStatement, 6) {
                     fechaCircular = String(cString: fecha)
-                    print("fecha c: \(fechaCircular)")
+                   
                    } else {
                     print("name not found")
                 }
                 
                 
-        
-                self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo,fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,noLeido:noLeida,favorita: Int(favorita)))
+                if(eliminada==0 ){
+                   self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo,fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,noLeido:noLeida,favorita: Int(favorita)))
+                }
+               
               }
             
             self.tableViewCirculares.reloadData()
@@ -744,7 +804,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                    print("Error en la base de datos")
                }else{
                         var statement:OpaquePointer?
-                let query = "DELETE FROM appCircular";
+                let query = "DELETE FROM appCircularCHMD";
                 if sqlite3_prepare(db,query,-1,&statement,nil) != SQLITE_OK {
                     print("Error")
                 }
@@ -763,7 +823,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
             print("Error en la base de datos")
         }else{
-        let q = "DELETE FROM appCirculares"
+        let q = "DELETE FROM appCircularCHMD"
             var statement:OpaquePointer?
         if sqlite3_prepare(db,q,-1,&statement,nil) != SQLITE_OK {
             print("Error")
@@ -790,7 +850,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                }else{
         
       var deleteStatement: OpaquePointer?
-        var deleteStatementString="DELETE FROM appCirculares"
+        var deleteStatementString="DELETE FROM appCircularCHMD"
       if sqlite3_prepare_v2(db, deleteStatementString, -1, &deleteStatement, nil) ==
           SQLITE_OK {
         if sqlite3_step(deleteStatement) == SQLITE_DONE {
@@ -806,6 +866,200 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         }
     
     }
+    
+    func borraCirculares(idCircular:Int,idUsuario:Int){
+        let fileUrl = try!
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd.sqlite")
+        
+        if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
+            print("Error en la base de datos")
+        }else{
+            
+            //La base de datos abrió correctamente
+            var statement:OpaquePointer?
+            
+             //Vaciar la tabla
+            
+            
+            let query = "UPDATE appCircularCHMD SET eliminada=1,favorita=0 WHERE idCircular=? AND idUsuario=?"
+            
+            if sqlite3_prepare(db,query,-1,&statement,nil) != SQLITE_OK {
+                print("Error")
+            }
+            
+            if sqlite3_bind_int(statement,1,Int32(idCircular)) != SQLITE_OK {
+                print("Error campo 1")
+            }
+            
+            if sqlite3_bind_int(statement,2,Int32(idUsuario)) != SQLITE_OK {
+                print("Error campo 2")
+            }
+            
+            if sqlite3_step(statement) == SQLITE_DONE {
+                    print("Circular eliminada correctamente")
+                }else{
+                    print("Circular no se pudo eliminar")
+                }
+                
+            }
+            
+    }
+    
+    func actualizaFavoritosCirculares(idCircular:Int,idUsuario:Int){
+        let fileUrl = try!
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd.sqlite")
+        
+        if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
+            print("Error en la base de datos")
+        }else{
+            
+            //La base de datos abrió correctamente
+            var statement:OpaquePointer?
+            
+             //Vaciar la tabla
+            
+            self.circulares.removeAll()
+            let query = "UPDATE appCircularCHMD SET favorita=1 WHERE idCircular=? AND idUsuario=?"
+            
+            if sqlite3_prepare(db,query,-1,&statement,nil) != SQLITE_OK {
+                print("Error")
+            }
+            
+            if sqlite3_bind_int(statement,1,Int32(idCircular)) != SQLITE_OK {
+                print("Error campo 1")
+            }
+            
+            if sqlite3_bind_int(statement,2,Int32(idUsuario)) != SQLITE_OK {
+                print("Error campo 2")
+            }
+            
+            if sqlite3_step(statement) == SQLITE_DONE {
+                    print("Circular eliminada correctamente")
+                }else{
+                    print("Circular no se pudo eliminar")
+                }
+                
+            }
+            
+    }
+    
+    func eliminaFavoritosCirculares(idCircular:Int,idUsuario:Int){
+        let fileUrl = try!
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd.sqlite")
+        
+        if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
+            print("Error en la base de datos")
+        }else{
+            
+            //La base de datos abrió correctamente
+            var statement:OpaquePointer?
+            
+             //Vaciar la tabla
+            
+            self.circulares.removeAll()
+            let query = "UPDATE appCircularCHMD SET favorita=0 WHERE idCircular=? AND idUsuario=?"
+            
+            if sqlite3_prepare(db,query,-1,&statement,nil) != SQLITE_OK {
+                print("Error")
+            }
+            
+            if sqlite3_bind_int(statement,1,Int32(idCircular)) != SQLITE_OK {
+                print("Error campo 1")
+            }
+            
+            if sqlite3_bind_int(statement,2,Int32(idUsuario)) != SQLITE_OK {
+                print("Error campo 2")
+            }
+            
+            if sqlite3_step(statement) == SQLITE_DONE {
+                    print("Circular actualizada correctamente")
+                }else{
+                    print("Circular no se pudo eliminar")
+                }
+                
+            }
+            
+    }
+    
+    
+    func actualizaLeidosCirculares(idCircular:Int,idUsuario:Int){
+        let fileUrl = try!
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd.sqlite")
+        
+        if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
+            print("Error en la base de datos")
+        }else{
+            
+            //La base de datos abrió correctamente
+            var statement:OpaquePointer?
+            
+             //Vaciar la tabla
+            
+            self.circulares.removeAll()
+            let query = "UPDATE appCircularCHMD SET leida=1 WHERE idCircular=? AND idUsuario=?"
+            
+            if sqlite3_prepare(db,query,-1,&statement,nil) != SQLITE_OK {
+                print("Error")
+            }
+            
+            if sqlite3_bind_int(statement,1,Int32(idCircular)) != SQLITE_OK {
+                print("Error campo 1")
+            }
+            
+            if sqlite3_bind_int(statement,2,Int32(idUsuario)) != SQLITE_OK {
+                print("Error campo 2")
+            }
+            
+            if sqlite3_step(statement) == SQLITE_DONE {
+                    print("Circular actualizada correctamente")
+                }else{
+                    print("Circular no se pudo actualizar")
+                }
+                
+            }
+            
+    }
+    
+    
+    
+    func actualizaNoLeidosCirculares(idCircular:Int,idUsuario:Int){
+        let fileUrl = try!
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd.sqlite")
+        
+        if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
+            print("Error en la base de datos")
+        }else{
+            
+            //La base de datos abrió correctamente
+            var statement:OpaquePointer?
+            
+             //Vaciar la tabla
+            
+            self.circulares.removeAll()
+            let query = "UPDATE appCircularCHMD SET leida=0 WHERE idCircular=? AND idUsuario=?"
+            
+            if sqlite3_prepare(db,query,-1,&statement,nil) != SQLITE_OK {
+                print("Error")
+            }
+            
+            if sqlite3_bind_int(statement,1,Int32(idCircular)) != SQLITE_OK {
+                print("Error campo 1")
+            }
+            
+            if sqlite3_bind_int(statement,2,Int32(idUsuario)) != SQLITE_OK {
+                print("Error campo 2")
+            }
+            
+            if sqlite3_step(statement) == SQLITE_DONE {
+                    print("Circular actualizada correctamente")
+                }else{
+                    print("Circular no se pudo actualizar")
+                }
+                
+            }
+            
+    }
+    
     
     
     
@@ -829,7 +1083,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
              //Vaciar la tabla
             
             
-            let query = "INSERT INTO appCirculares(idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,compartida,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+            let query = "INSERT INTO appCircularCHMD(idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)"
             if sqlite3_prepare(db,query,-1,&statement,nil) != SQLITE_OK {
                 print("Error")
             }
@@ -863,29 +1117,29 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             }
             
             if sqlite3_bind_int(statement,8,Int32(eliminada)) != SQLITE_OK {
-                           print("Error campo 7")
-                       }
+                           print("Error campo 8")
+              }
             
            if sqlite3_bind_text(statement,9,fecha, -1, nil) != SQLITE_OK {
-               print("Error campo 3")
+               print("Error campo 9")
            }
-            
-            if sqlite3_bind_text(statement,10,fechaIcs, -1, nil) != SQLITE_OK {
-                print("Error campo 3")
+             let fiIcs = fechaIcs as NSString
+            if sqlite3_bind_text(statement,10,fiIcs.utf8String, -1, nil) != SQLITE_OK {
+                print("Error campo 10")
             }
-            if sqlite3_bind_text(statement,11,horaInicioIcs, -1, nil) != SQLITE_OK {
-                           print("Error campo 3")
+            let hiIcs = horaInicioIcs as NSString
+            if sqlite3_bind_text(statement,11,hiIcs.utf8String, -1, nil) != SQLITE_OK {
+                           print("Error campo 11")
             }
-            if sqlite3_bind_text(statement,12,horaFinIcs, -1, nil) != SQLITE_OK {
-                           print("Error campo 3")
+            let hfIcs = horaFinIcs as NSString
+            if sqlite3_bind_text(statement,12,hfIcs.utf8String, -1, nil) != SQLITE_OK {
+                           print("Error campo 12")
             }
             if sqlite3_bind_text(statement,13,nivel, -1, nil) != SQLITE_OK {
-                           print("Error campo 3")
+                           print("Error campo 13")
             }
             
-            if sqlite3_bind_int(statement,14,Int32(adjunto)) != SQLITE_OK {
-                print("Error campo 7")
-            }
+           
             
             
             if sqlite3_step(statement) == SQLITE_DONE {
@@ -903,9 +1157,10 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     
     func getDataFromURL(url: URL) {
-        print("get data")
+        print("Leer desde el servidor....")
         print(url)
         circulares.removeAll()
+        self.delete()
         URLSession.shared.dataTask(with: url) {
             (data, response, error) in
             print(data)
@@ -1009,15 +1264,21 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                        .replacingOccurrences(of: "&amp;uacute;", with: "ú")
                        .replacingOccurrences(of: "&amp;ordm;", with: "o.")
                        print("Contenido: "+str)
+                    
+                    
+                    
+                    
+                    
                        if(Int(eliminada)!==0){
                         self.circulares.append(CircularTodas(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo,fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? "",noLeido:noLeida,favorita:Int(favorito)!))
                        }
                     
-                    
-                    
-                    
-                    
-                    
+                   
+                    print("hora _ics: \(horaInicioIcs)")
+                    print("fecha _ics: \(fechaIcs)")
+                    /*
+                     guardarCirculares(idCircular:Int,idUsuario:Int,nombre:String, textoCircular:String,no_leida:Int, leida:Int,favorita:Int,compartida:Int,eliminada:Int,fecha:String,fechaIcs:String,horaInicioIcs:String,horaFinIcs:String,nivel:String,adjunto:Int)
+                     */
                      self.guardarCirculares(idCircular: Int(id)!, idUsuario: Int(self.idUsuario)!, nombre: titulo, textoCircular: str, no_leida: noLeida, leida: Int(leido)!, favorita: Int(favorito)!, compartida: 0, eliminada: Int(eliminada)!,fecha: fecha,fechaIcs: fechaIcs,horaInicioIcs: horaInicioIcs,horaFinIcs: horaFinIcs,nivel: nv ?? "",adjunto:adj)
                     
                     
@@ -1037,6 +1298,9 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         if self.refreshControl.isRefreshing {
           self.refreshControl.endRefreshing()
         }
+        
+        
+        UserDefaults.standard.set(0, forKey: "descarga")
         
     }
     
@@ -1140,8 +1404,11 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                 }
             
             if c.favorita==1 {
+                
+                              
                 let favImage = UIImage(named: "favIcon")! as UIImage
                               cell.btnHacerFav.setImage(favImage, for: UIControl.State.normal)
+                
             }
             
             
@@ -1150,12 +1417,21 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                     /*self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: String(idCircular))*/
                     if c.favorita==0 {
                     self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: String(idCircular))
-                        self.viewDidLoad()
-                        self.viewWillAppear(true)
+                        //self.viewDidLoad()
+                        //self.viewWillAppear(true)
+                        
+                        self.actualizaFavoritosCirculares(idCircular: idCircular, idUsuario: Int(self.idUsuario)!)
+                        self.circulares.removeAll()
+                        self.leerCirculares()
+                        
                     }else{
                         self.favCircular(direccion: self.urlBase+"elimFavCircular.php", usuario_id: self.idUsuario, circular_id: String(idCircular))
-                                               self.viewDidLoad()
-                                               self.viewWillAppear(true)
+                            //                   self.viewDidLoad()
+                            //                   self.viewWillAppear(true)
+                        self.eliminaFavoritosCirculares(idCircular: idCircular, idUsuario: Int(self.idUsuario)!)
+                        self.circulares.removeAll()
+                        self.leerCirculares()
+                        
                     }
                     
                     
@@ -1212,8 +1488,9 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                 if ConexionRed.isConnectedToNetwork() == true {
                     /*self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: String(idCircular))*/
                     self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: String(idCircular))
-                        self.viewDidLoad()
-                        self.viewWillAppear(true)
+                       // self.viewDidLoad()
+                      //  self.viewWillAppear(true)
+                    self.actualizaFavoritosCirculares(idCircular: idCircular, idUsuario: Int(self.idUsuario)!)
                     }else{
                     var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
                     alert.show()
@@ -1304,140 +1581,78 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     
     @objc func agregarFavoritos(){
-         _ = btnEditar.target?.perform(btnEditar.action, with: nil)
+         
         circulares.removeAll()
           if ConexionRed.isConnectedToNetwork() == true {
           for c in circularesSeleccionadas{
             self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: "\(c)")
-           
-                            
+            self.actualizaFavoritosCirculares(idCircular: c, idUsuario: Int(self.idUsuario)!)
+            
            }
             
-            if(seleccion.count<circulares.count){
-                for s in seleccion{
-                                      let indexPath = IndexPath(row:s, section:0)
-                                           print("index: \(indexPath.row)")
-                                           var r = indexPath.row
-                                           if r>0{
-                                               r = r - 1
-                                           }
-                                           print("index: \(r)")
-                                           self.circulares.remove(at: r)
-                                          
-                           }
-            }else{
-                //Si seleccionó todas, las elimina
-                self.circulares.removeAll()
-            }
-            
-            
-            /*for s in seleccion{
-            let indexPath = IndexPath(row:s, section:0)
-            let cell = self.tableViewCirculares.dequeueReusableCell(withIdentifier: "celda", for: indexPath) as! CircularTableViewCell
-            if(cell.chkSeleccionar.isChecked == true){
-                          cell.chkSeleccionar.isChecked=false
-            }
-                
-                
-           
-          }*/
             circulares.removeAll()
             circularesSeleccionadas.removeAll()
             seleccion.removeAll()
-            
-            let timer = Timer.scheduledTimer(timeInterval: 1.5, target: self, selector: #selector(reaccionar), userInfo: nil, repeats: false)
-            
-           
+            self.leerCirculares()
             
           }else{
             var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
              alert.show()
         }
-        
+         _ = btnEditar.target?.perform(btnEditar.action, with: nil)
     }
     
     
    @objc func noleer(){
-        _ = btnEditar.target?.perform(btnEditar.action, with: nil)
+        //
        circulares.removeAll()
          if ConexionRed.isConnectedToNetwork() == true {
          for c in circularesSeleccionadas{
             self.noleerCircular(direccion: self.urlBase+self.noleerMetodo, usuario_id: self.idUsuario, circular_id: "\(c)")
-          
+           self.actualizaNoLeidosCirculares(idCircular: c, idUsuario: Int(self.idUsuario)!)
+            
+            //Boton fav a favIcon
+            
+            
+            
          }
            
-           if(seleccion.count<circulares.count){
-               for s in seleccion{
-                                     let indexPath = IndexPath(row:s, section:0)
-                                          print("index: \(indexPath.row)")
-                                          var r = indexPath.row
-                                          if r>0{
-                                              r = r - 1
-                                          }
-                                          print("index: \(r)")
-                                          self.circulares.remove(at: r)
-                                         
-                          }
-           }else{
-               //Si seleccionó todas, las elimina
-               self.circulares.removeAll()
-           }
-          circulares.removeAll()
-           circularesSeleccionadas.removeAll()
-           seleccion.removeAll()
-           
-            let timer = Timer.scheduledTimer(timeInterval: 0.6, target: self, selector: #selector(reaccionar), userInfo: nil, repeats: false)
-           
-         }else{
-           var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
-            alert.show()
-       }
+            circulares.removeAll()
+                      circularesSeleccionadas.removeAll()
+                      seleccion.removeAll()
+                      self.leerCirculares()
+                    self.tableViewCirculares.reloadData()
+                    }else{
+                      var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
+                       alert.show()
+                  }
        
+       _ = btnEditar.target?.perform(btnEditar.action, with: nil)
    }
     
    
     @objc func eliminar(){
        
          if ConexionRed.isConnectedToNetwork() == true {
-             _ = btnEditar.target?.perform(btnEditar.action, with: nil)
+             //
                     for c in circularesSeleccionadas{
                       self.delCircularTodas(direccion: self.urlBase+"eliminarCircular.php", usuario_id: self.idUsuario, circular_id: "\(c)")
                      
-                    }
-                      //Con esta porción, se pueden eliminar elementos discontinuos de la lista
-                      if(seleccion.count<circulares.count){
-                          for s in seleccion{
-                                                let indexPath = IndexPath(row:s, section:0)
-                                                     print("index: \(indexPath.row)")
-                                                     var r = indexPath.row
-                                                     if r>0{
-                                                         r = r - 1
-                                                     }
-                                                     print("index: \(r)")
-                                                     self.circulares.remove(at: r)
-                                                    
-                                     }
-                      }else{
-                          //Si seleccionó todas, las elimina
-                          self.circulares.removeAll()
-                      }
-                      circularesSeleccionadas.removeAll()
-                      seleccion.removeAll()
-                      self.tableViewCirculares.reloadData()
-                      
-                      btnMarcarLeidas.isHidden=true
-                      btnMarcarNoLeidas.isHidden=true
-                      btnMarcarEliminadas.isHidden=true
-                      btnMarcarFavoritas.isHidden=true
-                      lblLeidas.isHidden=true
-                      lblNoLeidas.isHidden=true
-                      lblEliminar.isHidden=true
-                      lblFavoritas.isHidden=true
-                      
-                    }else{
-                      var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
-                       alert.show()
-                  }
+                   self.borraCirculares(idCircular: c, idUsuario: Int(self.idUsuario)!)
+                                }
+                                  
+                                   circulares.removeAll()
+                                             circularesSeleccionadas.removeAll()
+                                             seleccion.removeAll()
+                                             self.leerCirculares()
+                                             
+                                           }else{
+                                             var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
+                                              alert.show()
+                                         }
+                              
+                              _ = btnEditar.target?.perform(btnEditar.action, with: nil)
+        
     }
     
     
@@ -1447,44 +1662,26 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     }
     
      @objc func leer(){
-        //Esto hace desaparecer los checkboxes, ya que llama al evento del boton
-        //Esta es la forma de llamar programaticamente la accion de un boton asociado a
-        //un @IBAction
-        _ = btnEditar.target?.perform(btnEditar.action, with: nil)
+     
         
            circulares.removeAll()
              if ConexionRed.isConnectedToNetwork() == true {
              for c in circularesSeleccionadas{
                 self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: "\(c)")
-              
-             }
-               
-               for s in seleccion{
-                              let indexPath = IndexPath(row:s, section:0)
-                              let cell = self.tableViewCirculares.dequeueReusableCell(withIdentifier: "celda", for: indexPath)
-                                        as! CircularTableViewCell
-                              
-                              if(cell.chkSeleccionar.isChecked == true){
-                                  cell.chkSeleccionar.isChecked=false
-                                  cell.imgCircular.image=UIImage(named:"circle_white")
-                              }
-                
-                //self.tableViewCirculares.reloadRows(at: [indexPath], with: .fade)
-                               
-               }
-             circulares.removeAll()
-             circularesSeleccionadas.removeAll()
-             seleccion.removeAll()
-                
-                 
-               
-                let timer = Timer.scheduledTimer(timeInterval: 0.4, target: self, selector: #selector(reaccionar), userInfo: nil, repeats: false)
-               
-             }else{
-               var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
-                alert.show()
-           }
-           
+            self.actualizaLeidosCirculares(idCircular: c, idUsuario: Int(self.idUsuario)!)
+                    }
+                      
+                       circulares.removeAll()
+                                 circularesSeleccionadas.removeAll()
+                                 seleccion.removeAll()
+                                 self.leerCirculares()
+                                 
+                               }else{
+                                 var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
+                                  alert.show()
+                             }
+                  
+                  _ = btnEditar.target?.perform(btnEditar.action, with: nil)
        }
 
     //Pie
@@ -1519,6 +1716,10 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                case .success:
                    print(response)
                     UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
+                   
+                   self.circulares.removeAll()
+                   self.leerCirculares()
+                   
                    break
                case .failure:
                    print(Error.self)
@@ -1532,6 +1733,8 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                switch (response.result) {
                case .success:
                    print(response)
+                   self.circulares.removeAll()
+                   self.leerCirculares()
                    break
                case .failure:
                    print(Error.self)
@@ -1567,8 +1770,11 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                         switch (response.result) {
                         case .success:
                             print(response)
-                            self.circulares.remove(at: self.indexEliminar)
-                            self.tableViewCirculares.reloadData()
+                            //self.circulares.remove(at: self.indexEliminar)
+                            //self.tableViewCirculares.reloadData()
+                            self.circulares.removeAll()
+                            self.leerCirculares()
+                            
                             break
                         case .failure:
                             print(Error.self)

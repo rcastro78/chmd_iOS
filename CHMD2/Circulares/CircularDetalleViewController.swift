@@ -214,8 +214,8 @@ class CircularDetalleViewController: UIViewController {
     @IBOutlet weak var btnSiguiente: UIButton!
     
     @IBOutlet weak var lblFechaCircular: UILabel!
-    @IBOutlet weak var lblTituloParte1: UILabel!
-    @IBOutlet weak var lblTituloParte2: UILabel!
+    //@IBOutlet weak var lblTituloParte1: UILabel!
+    //@IBOutlet weak var lblTituloParte2: UILabel!
     @IBOutlet weak var lblTituloNivel: UILabel!
     @IBOutlet weak var imbCalendario: UIButton!
       
@@ -254,7 +254,7 @@ class CircularDetalleViewController: UIViewController {
     var db: OpaquePointer?
     var tipoCircular:Int=0
     var noLeido:Int=0
-    
+    var globalId:String=""
    
     
     override func viewDidLoad() {
@@ -289,6 +289,7 @@ class CircularDetalleViewController: UIViewController {
             let fecha = UserDefaults.standard.string(forKey: "fecha") ?? ""
             contenido = UserDefaults.standard.string(forKey:"contenido") ?? ""
             id = UserDefaults.standard.string(forKey: "id") ?? ""
+            globalId=id
             idInicial = Int(UserDefaults.standard.string(forKey: "id") ?? "0")!
             noLeido = Int(UserDefaults.standard.string(forKey: "noLeido") ?? "0")!
              let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(imageTapped(tapGestureRecognizer:)))
@@ -306,12 +307,12 @@ class CircularDetalleViewController: UIViewController {
             if(!ConexionRed.isConnectedToNetwork()){
                 webView.isHidden=true
                 webViewSinConexion.isHidden=false
-               leerCirculares()
+               leerCircular(idCircular: idInicial)
                
             }
           
             
-            partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:titulo)
+            //partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:titulo)
             
         }else{
             id = UserDefaults.standard.string(forKey: "idCircularViaNotif") ?? ""
@@ -350,21 +351,21 @@ class CircularDetalleViewController: UIViewController {
                     if(tipoCircular==2){
                          let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCirculares_iOS.php?usuario_id=\(idUsuario)"
                             let _url = URL(string: address);
-                            self.obtenerCirculares(uri:address)
+                            self.obtenerCircularesFavoritas(uri:address)
                     }
                     //No leidas
                     if(tipoCircular==3 || noLeido==1){
                          self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: self.id)
                      let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCirculares_iOS.php?usuario_id=\(idUsuario)"
                       let _url = URL(string: address);
-                      self.obtenerCirculares(uri:address)
+                      self.obtenerCircularesNoLeidas(uri:address)
                   }
                     
                     //Papelera
                       if(tipoCircular==4){
                        let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCirculares_iOS.php?usuario_id=\(idUsuario)"
                         let _url = URL(string: address);
-                        self.obtenerCirculares(uri:address)
+                        self.obtenerCircularesEliminadas(uri:address)
                     }
                     
                     
@@ -376,9 +377,26 @@ class CircularDetalleViewController: UIViewController {
             
         }else{
             
+            if(tipoCircular==1){
+              self.leerCirculares()
+            }
+            if(tipoCircular==2){
+              self.leerCircularesFavoritas()
+             }
+            
+            if(tipoCircular==3){
+              self.leerCircularesNoLeidas()
+             }
+            if(tipoCircular==4){
+             self.leerCircularesEliminadas()
+            }
+            
+            let titulo = circulares[posicion].nombre
+            let tituloP1 = self.partirTituloP1(titulo: titulo)
+            let tituloP2 = self.partirTituloP2(titulo: titulo)
             
             let anio = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
-            
+            //aqui dio error sin internet
             let mes = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
             
             let dia = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
@@ -393,34 +411,94 @@ class CircularDetalleViewController: UIViewController {
             webViewSinConexion.isHidden=false
             
             let decoded = circulares[posicion].contenido.stringByDecodingHTMLEntities
-            let html1 = """
-            <html>
-             <head>
-             <style>
-                 .myDiv {
-                     background-color: #ffffff;
-                     color:#0e497B;
-                     padding:12px;
-                     width:100%;
-                 }
-             .myDiv2 {
-                 background-color: #ffffff;
-                 color:#0e497B;
-                 padding:12px;
-                 width:100%;
-                 text-align:right;
-             }
-             </style>
-             </head>
-            <body>
+            var html1=""
+            if(tituloP1.count>0 && tituloP2.count<=0){
+                html1 = """
+                           <html>
+                            <head>
+                            <style>
+                                .myDiv {
+                                    background-color: #ffffff;
+                                    color:#0e497B;
+                                    padding:12px;
+                                    width:100%;
+                                }
+                            .myDiv2 {
+                                background-color: #ffffff;
+                                color:#0e497B;
+                                padding:12px;
+                                width:100%;
+                                text-align:right;
+                            }
+                           h4 {
+
+                             color:#0E497B;
+                           }
+                            </style>
+                            </head>
+                           <body>
+                           
+                           <div class="myDiv2"><h5>\(circulares[posicion].nivel!)</h5></div><div  class="myDiv2"><h5>\(d)</h5></div>
+                           
+                           <div id="titulo"  style="width:100%;background-color:#91CAEE;height:48px;text-align:center; vertical-align: middle;">
+                           <h4>\(tituloP1)</h4>
+                           </div>
+                           
+                                <div class="myDiv">\(decoded)<br></div>
+                               
+                           
+                           
+                           
+                           </body>
+                           </html>
+                           """
+            }
             
-            <div class="myDiv2"><h5>\(circulares[posicion].nivel!)</h5></div><div  class="myDiv2"><h5>\(d)</h5></div>
             
-                 <div class="myDiv">\(decoded)<br></div>
-                
-            </body>
-            </html>
-            """
+            if(tituloP1.count>0 && tituloP2.count>0){
+                html1 = """
+                           <html>
+                            <head>
+                            <style>
+                                .myDiv {
+                                    background-color: #ffffff;
+                                    color:#0e497B;
+                                    padding:12px;
+                                    width:100%;
+                                }
+                            .myDiv2 {
+                                background-color: #ffffff;
+                                color:#0e497B;
+                                padding:12px;
+                                width:100%;
+                                text-align:right;
+                            }
+                           h4 {
+
+                             color:#0E497B;
+                           }
+                            </style>
+                            </head>
+                           <body>
+                           
+                           <div class="myDiv2"><h5>\(circulares[posicion].nivel!)</h5></div><div  class="myDiv2"><h5>\(d)</h5></div>
+                           
+                           <div id="titulo"  style="width:100%;background-color:#91CAEE;height:48px;text-align:center; vertical-align: middle;">
+                           <h4>\(tituloP1)</h4>
+                           </div>
+                           <div id='titulo2' style='width:100%;background-color:#098FCF;height:48px;text-align:center; vertical-align: middle;margin-top:-24px'>
+                           <h4>\(tituloP2)</h4>
+                           </div>
+                           <div class="myDiv">\(decoded)<br></div>
+                               
+                           
+                           
+                           
+                           </body>
+                           </html>
+                           """
+            }
+           
             
             
             let modifiedFont = NSString(format:"<span>%@</span>" as NSString, html1) as String
@@ -495,6 +573,18 @@ class CircularDetalleViewController: UIViewController {
         
         
     }
+     
+    @IBAction func btnReloadClick(_ sender: UIButton) {
+        if(ConexionRed.isConnectedToNetwork()){
+                let link = URL(string:urlBase+"getCircularId4.php?id=\(globalId)")!
+                circularUrl = urlBase+"getCircularId4.php?id=\(globalId)"
+                let request = URLRequest(url: link)
+                webView.load(request)
+        }else{
+            
+        }
+    }
+    
     
     
     
@@ -617,14 +707,14 @@ class CircularDetalleViewController: UIViewController {
             if(p<ids.count){
                
                 var nextId = ids[p]
-                
+                globalId=nextId
                self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: nextId)
                 
                 
                 
                 var nextTitulo = titulos[p]
                 var nextFecha = fechas[p]
-                self.lblTituloParte1.text=nextTitulo
+                //self.lblTituloParte1.text=nextTitulo
                 var nextHoraIniIcs = horasInicioIcs[p]
                 nextHoraIcs = horasInicioIcs[p]
                 var nextHoraFinIcs = horasFinIcs[p]
@@ -639,7 +729,7 @@ class CircularDetalleViewController: UIViewController {
                     btnCalendario.isHidden=true
                 }
         
-                self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo)
+               // self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo)
                 
                 circularTitulo = nextTitulo
                 let link = URL(string:urlBase+"getCircularId4.php?id=\(nextId)")!
@@ -674,6 +764,7 @@ class CircularDetalleViewController: UIViewController {
                 var nextHoraIniIcs = circulares[p].horaInicialIcs
                 var nextHoraFinIcs = circulares[p].horaFinalIcs
                 var nextFechaIcs = circulares[p].fechaIcs
+                print("NEXT HORA \(nextHoraIcs)")
                 if(nextHoraIniIcs != "00:00:00"){
                     imbCalendario.isHidden=false
                     btnCalendario.isHidden=false
@@ -689,52 +780,116 @@ class CircularDetalleViewController: UIViewController {
                 dateFormatter.dateFormat = "d 'de' MMMM 'de' YYYY"
                 let d = dateFormatter.string(from: date1!)
                 //self.lblTituloParte1.text=circulares[p].nombre
-                self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:circulares[p].nombre)
-               webView.isHidden=true
-                webViewSinConexion.isHidden=false
-                
-                let decoded = circulares[p].contenido.stringByDecodingHTMLEntities
-                print("decoded: \(decoded)")
-                let html1 = """
-                <html>
-                 <head>
-                 <style>
-                     .myDiv {
-                         background-color: #ffffff;
-                         color:#0e497B;
-                         padding:12px;
-                         width:100%;
-                     }
-                 .myDiv2 {
-                     background-color: #ffffff;
-                     color:#0e497B;
-                     padding:12px;
-                     width:100%;
-                     text-align:right;
-                 }
-                 </style>
-                 </head>
-                <body>
-                
-                <div class="myDiv2"><h5>\(circulares[p].nivel!)</h5></div><div  class="myDiv2"><h5>\(d)</h5></div>
-                
-                     <div class="myDiv">\(decoded)<br></div>
-                    
-                </body>
-                </html>
-                """
-                
-                
-                let modifiedFont = NSString(format:"<span>%@</span>" as NSString, html1) as String
-
-                           let attrStr = try! NSMutableAttributedString(
-                               data: modifiedFont.data(using: .unicode, allowLossyConversion: true)!,
-                               options: [NSAttributedString.DocumentReadingOptionKey.documentType:NSAttributedString.DocumentType.html, NSAttributedString.DocumentReadingOptionKey.characterEncoding: String.Encoding.utf8.rawValue],
-                               documentAttributes: nil)
-                           let textRangeForFont : NSRange = NSMakeRange(0, attrStr.length)
-                           attrStr.addAttributes([NSAttributedString.Key.font : UIFont(name: "Gotham Rounded",size:12)!], range: textRangeForFont)
+                //self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:circulares[p].nombre)
+                         webView.isHidden=true
+                         webViewSinConexion.isHidden=false
+                         
+                          let titulo = circulares[p].nombre
+                           let tituloP1 = self.partirTituloP1(titulo: titulo)
+                           let tituloP2 = self.partirTituloP2(titulo: titulo)
                            
-                           webViewSinConexion.attributedText = attrStr
+                          
+                           let decoded = circulares[p].contenido.stringByDecodingHTMLEntities
+                           var html1=""
+                           if(tituloP1.count>0 && tituloP2.count<=0){
+                               html1 = """
+                                          <html>
+                                           <head>
+                                           <style>
+                                               .myDiv {
+                                                   background-color: #ffffff;
+                                                   color:#0e497B;
+                                                   padding:12px;
+                                                   width:100%;
+                                               }
+                                           .myDiv2 {
+                                               background-color: #ffffff;
+                                               color:#0e497B;
+                                               padding:12px;
+                                               width:100%;
+                                               text-align:right;
+                                           }
+                                          h4 {
+
+                                            color:#0E497B;
+                                          }
+                                           </style>
+                                           </head>
+                                          <body>
+                                          
+                                          <div class="myDiv2"><h5>\(circulares[posicion].nivel!)</h5></div><div  class="myDiv2"><h5>\(d)</h5></div>
+                                          
+                                          <div id="titulo"  style="width:100%;background-color:#91CAEE;text-align:center; vertical-align: middle;">
+                                          <h4>\(tituloP1)</h4>
+                                          </div>
+                                          
+                                               <div class="myDiv">\(decoded)<br></div>
+                                              
+                                          
+                                          
+                                          
+                                          </body>
+                                          </html>
+                                          """
+                           }
+                           
+                           
+                           if(tituloP1.count>0 && tituloP2.count>0){
+                               html1 = """
+                                          <html>
+                                           <head>
+                                           <style>
+                                               .myDiv {
+                                                   background-color: #ffffff;
+                                                   color:#0e497B;
+                                                   padding:12px;
+                                                   width:100%;
+                                               }
+                                           .myDiv2 {
+                                               background-color: #ffffff;
+                                               color:#0e497B;
+                                               padding:12px;
+                                               width:100%;
+                                               text-align:right;
+                                           }
+                                          h4 {
+
+                                            color:#0E497B;
+                                          }
+                                           </style>
+                                           </head>
+                                          <body>
+                                          
+                                          <div class="myDiv2"><h5>\(circulares[posicion].nivel!)</h5></div><div  class="myDiv2"><h5>\(d)</h5></div>
+                                          
+                                          <div id="titulo"  style="width:100%;background-color:#91CAEE;text-align:center; vertical-align: middle;">
+                                          <h4>\(tituloP1)</h4>
+                                          </div>
+                                          <div id='titulo2' style='width:100%;background-color:#098FCF;text-align:center; vertical-align: middle;margin-top:-24px'>
+                                          <h4>\(tituloP2)</h4>
+                                          </div>
+                                          <div class="myDiv">\(decoded)<br></div>
+                                              
+                                          
+                                          
+                                          
+                                          </body>
+                                          </html>
+                                          """
+                           }
+                          
+                           
+                           
+                           let modifiedFont = NSString(format:"<span>%@</span>" as NSString, html1) as String
+
+                                      let attrStr = try! NSMutableAttributedString(
+                                          data: modifiedFont.data(using: .unicode, allowLossyConversion: true)!,
+                                          options: [NSAttributedString.DocumentReadingOptionKey.documentType:NSAttributedString.DocumentType.html, NSAttributedString.DocumentReadingOptionKey.characterEncoding: String.Encoding.utf8.rawValue],
+                                          documentAttributes: nil)
+                                      let textRangeForFont : NSRange = NSMakeRange(0, attrStr.length)
+                                      attrStr.addAttributes([NSAttributedString.Key.font : UIFont(name: "Gotham Rounded",size:12)!], range: textRangeForFont)
+                                      
+                                      webViewSinConexion.attributedText = attrStr
                 
             
             }
@@ -758,17 +913,19 @@ class CircularDetalleViewController: UIViewController {
             print("id siguiente: \(nextId)")
             print("pos siguiente: \(p)")
              self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: nextId)
-            
+            globalId=nextId
             var nextTitulo = titulos[p]
             var nextFecha = fechas[p]
             //self.lblTituloParte1.text=nextTitulo
             
-            self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo)
+            //self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo)
             var nextHoraIniIcs = horasInicioIcs[p]
             var nextHoraFinIcs = horasFinIcs[p]
             var nextFechaIcs = fechasIcs[p]
             var nextNivel = niveles[p]
             nextHoraIcs = horasInicioIcs[p]
+            print("NEXT HORA \(nextHoraIcs)")
+            
             if(nextHoraIniIcs != "00:00:00"){
                 imbCalendario.isHidden=false
                 btnCalendario.isHidden=false
@@ -810,16 +967,14 @@ class CircularDetalleViewController: UIViewController {
             }
             //lblTituloParte1.text = circulares[posicion].nombre
             //lblNivel.text = circulares[posicion].nivel
-            self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:circulares[p].nombre)
-            let anio = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
-            let mes = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
-            let dia = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
-            
+            //self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:circulares[p].nombre)
+           
             
             var nextHoraIniIcs = circulares[p].horaInicialIcs
             var nextHoraFinIcs = circulares[p].horaFinalIcs
             var nextFechaIcs = circulares[p].fechaIcs
-            self.lblTituloParte1.text=circulares[p].nombre
+            //self.lblTituloParte1.text=circulares[p].nombre
+            print("NEXT HORA \(nextHoraIcs)")
             if(nextHoraIniIcs != "00:00:00"){
                 imbCalendario.isHidden=false
                 btnCalendario.isHidden=false
@@ -828,61 +983,132 @@ class CircularDetalleViewController: UIViewController {
                 btnCalendario.isHidden=true
             }
             
-           let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "dd/MM/yyyy"
-            dateFormatter.locale = Locale(identifier: "es_ES_POSIX")
-            let date1 = dateFormatter.date(from: "\(dia)/\(mes)/\(anio)")
-            dateFormatter.dateFormat = "d 'de' MMMM 'de' YYYY"
-            let d = dateFormatter.string(from: date1!)
-            //lblFechaCircular.text = d
+         
             
            webView.isHidden=true
            webViewSinConexion.isHidden=false
            
-           let decoded = circulares[p].contenido.stringByDecodingHTMLEntities
-           print("decoded: \(decoded)")
-           let html1 = """
-           <html>
-            <head>
-            <style>
-                .myDiv {
-                    background-color: #ffffff;
-                    color:#0e497B;
-                    padding:12px;
-                    width:100%;
-                }
-            .myDiv2 {
-                background-color: #ffffff;
-                color:#0e497B;
-                padding:12px;
-                width:100%;
-                text-align:right;
-            }
-            </style>
-            </head>
-           <body>
-           
-           <div class="myDiv2"><h5>\(circulares[p].nivel!)</h5></div><div  class="myDiv2"><h5>\(d)</h5></div>
-           
-                <div class="myDiv">\(decoded)<br></div>
-               
-           </body>
-           </html>
-           """
-           
-           
-           let modifiedFont = NSString(format:"<span>%@</span>" as NSString, html1) as String
+            let titulo = circulares[p].nombre
+             let tituloP1 = self.partirTituloP1(titulo: titulo)
+             let tituloP2 = self.partirTituloP2(titulo: titulo)
+             
+             let anio = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
+             //aqui dio error sin internet
+             let mes = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
+             
+             let dia = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
+             
+                             let dateFormatter = DateFormatter()
+                            dateFormatter.dateFormat = "dd/MM/yyyy"
+                            dateFormatter.locale = Locale(identifier: "es_ES_POSIX")
+                            let date1 = dateFormatter.date(from: "\(dia)/\(mes)/\(anio)")
+                            dateFormatter.dateFormat = "d 'de' MMMM 'de' YYYY"
+                            let d = dateFormatter.string(from: date1!)
+             webView.isHidden=true
+             webViewSinConexion.isHidden=false
+             
+             let decoded = circulares[p].contenido.stringByDecodingHTMLEntities
+             var html1=""
+             if(tituloP1.count>0 && tituloP2.count<=0){
+                 html1 = """
+                            <html>
+                             <head>
+                             <style>
+                                 .myDiv {
+                                     background-color: #ffffff;
+                                     color:#0e497B;
+                                     padding:12px;
+                                     width:100%;
+                                 }
+                             .myDiv2 {
+                                 background-color: #ffffff;
+                                 color:#0e497B;
+                                 padding:12px;
+                                 width:100%;
+                                 text-align:right;
+                             }
+                            h4 {
 
-                      let attrStr = try! NSMutableAttributedString(
-                          data: modifiedFont.data(using: .unicode, allowLossyConversion: true)!,
-                          options: [NSAttributedString.DocumentReadingOptionKey.documentType:NSAttributedString.DocumentType.html, NSAttributedString.DocumentReadingOptionKey.characterEncoding: String.Encoding.utf8.rawValue],
-                          documentAttributes: nil)
-                      let textRangeForFont : NSRange = NSMakeRange(0, attrStr.length)
-                      attrStr.addAttributes([NSAttributedString.Key.font : UIFont(name: "Gotham Rounded",size:12)!], range: textRangeForFont)
-                      
-                      webViewSinConexion.attributedText = attrStr
-           
-           
+                              color:#0E497B;
+                            }
+                             </style>
+                             </head>
+                            <body>
+                            
+                            <div class="myDiv2"><h5>\(circulares[posicion].nivel!)</h5></div><div  class="myDiv2"><h5>\(d)</h5></div>
+                            
+                            <div id="titulo"  style="width:100%;background-color:#91CAEE;text-align:center; vertical-align: middle;">
+                            <h4>\(tituloP1)</h4>
+                            </div>
+                            
+                                 <div class="myDiv">\(decoded)<br></div>
+                                
+                            
+                            
+                            
+                            </body>
+                            </html>
+                            """
+             }
+             
+             
+             if(tituloP1.count>0 && tituloP2.count>0){
+                 html1 = """
+                            <html>
+                             <head>
+                             <style>
+                                 .myDiv {
+                                     background-color: #ffffff;
+                                     color:#0e497B;
+                                     padding:12px;
+                                     width:100%;
+                                 }
+                             .myDiv2 {
+                                 background-color: #ffffff;
+                                 color:#0e497B;
+                                 padding:12px;
+                                 width:100%;
+                                 text-align:right;
+                             }
+                            h4 {
+
+                              color:#0E497B;
+                            }
+                             </style>
+                             </head>
+                            <body>
+                            
+                            <div class="myDiv2"><h5>\(circulares[posicion].nivel!)</h5></div><div  class="myDiv2"><h5>\(d)</h5></div>
+                            
+                            <div id="titulo"  style="width:100%;background-color:#91CAEE;text-align:center; vertical-align: middle;">
+                            <h4>\(tituloP1)</h4>
+                            </div>
+                            <div id='titulo2' style='width:100%;background-color:#098FCF;text-align:center; vertical-align: middle;margin-top:-24px'>
+                            <h4>\(tituloP2)</h4>
+                            </div>
+                            <div class="myDiv">\(decoded)<br></div>
+                                
+                            
+                            
+                            
+                            </body>
+                            </html>
+                            """
+             }
+            
+             
+             
+             let modifiedFont = NSString(format:"<span>%@</span>" as NSString, html1) as String
+
+                        let attrStr = try! NSMutableAttributedString(
+                            data: modifiedFont.data(using: .unicode, allowLossyConversion: true)!,
+                            options: [NSAttributedString.DocumentReadingOptionKey.documentType:NSAttributedString.DocumentType.html, NSAttributedString.DocumentReadingOptionKey.characterEncoding: String.Encoding.utf8.rawValue],
+                            documentAttributes: nil)
+                        let textRangeForFont : NSRange = NSMakeRange(0, attrStr.length)
+                        attrStr.addAttributes([NSAttributedString.Key.font : UIFont(name: "Gotham Rounded",size:12)!], range: textRangeForFont)
+                        
+                        webViewSinConexion.attributedText = attrStr
+             
             
         
         }
@@ -904,6 +1130,7 @@ class CircularDetalleViewController: UIViewController {
                    print("Anterior...")
                    if(p>=0){
                        var nextId = ids[p]
+                        globalId=nextId
                        var nextTitulo = titulos[p]
                        var nextFecha = fechas[p]
                         self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: nextId)
@@ -912,7 +1139,7 @@ class CircularDetalleViewController: UIViewController {
                        var nextFechaIcs = fechasIcs[p]
                        var nextNivel = niveles[p]
                     //self.lblTituloParte1.text=nextTitulo
-                    self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo)
+                    //self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo)
                        nextHoraIcs = horasInicioIcs[p]
                        if(nextHoraIniIcs != "00:00:00"){
                            imbCalendario.isHidden=false
@@ -944,75 +1171,133 @@ class CircularDetalleViewController: UIViewController {
                       
                       p = p-1
                    if(p>0){
-                    self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:circulares[p].nombre)
+                    //self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:circulares[p].nombre)
                        //lblTituloParte1.text = circulares[posicion].nombre
                        //               lblNivel.text = circulares[posicion].nivel
                                       
-                                      let anio = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
-                                      let mes = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
-                                      let dia = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
-                                      
-                                     let dateFormatter = DateFormatter()
-                                      dateFormatter.dateFormat = "dd/MM/yyyy"
-                                      dateFormatter.locale = Locale(identifier: "es_ES_POSIX")
-                                      let date1 = dateFormatter.date(from: "\(dia)/\(mes)/\(anio)")
-                                      dateFormatter.dateFormat = "d 'de' MMMM 'de' YYYY"
-                                      let d = dateFormatter.string(from: date1!)
-                    //self.lblTituloParte1.text=circulares[p].nombre
-                                      var nextHoraIniIcs = circulares[p].horaInicialIcs
-                                                 var nextHoraFinIcs = circulares[p].horaFinalIcs
-                                                 var nextFechaIcs = circulares[p].fechaIcs
-                                                 if(nextHoraIniIcs != "00:00:00"){
-                                                            imbCalendario.isHidden=false
-                                                 }else{
-                                                            imbCalendario.isHidden=true
-                                                 }
-                    webView.isHidden=true
-                    webViewSinConexion.isHidden=false
-                    
-                    let decoded = circulares[p].contenido.stringByDecodingHTMLEntities
-                    let html1 = """
-                    <html>
-                     <head>
-                     <style>
-                         .myDiv {
-                             background-color: #ffffff;
-                             color:#0e497B;
-                             padding:12px;
-                             width:100%;
-                         }
-                     .myDiv2 {
-                         background-color: #ffffff;
-                         color:#0e497B;
-                         padding:12px;
-                         width:100%;
-                         text-align:right;
-                     }
-                     </style>
-                     </head>
-                    <body>
-                    
-                    <div class="myDiv2"><h5>\(circulares[p].nivel!)</h5></div><div  class="myDiv2"><h5>\(d)</h5></div>
-                    
-                         <div class="myDiv">\(decoded)<br></div>
-                        
-                    </body>
-                    </html>
-                    """
-                    
-                    
-                    let modifiedFont = NSString(format:"<span>%@</span>" as NSString, html1) as String
+                                   webView.isHidden=true
+                                             webViewSinConexion.isHidden=false
+                                             
+                                              let titulo = circulares[p].nombre
+                                               let tituloP1 = self.partirTituloP1(titulo: titulo)
+                                               let tituloP2 = self.partirTituloP2(titulo: titulo)
+                                               
+                                               let anio = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
+                                               //aqui dio error sin internet
+                                               let mes = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
+                                               
+                                               let dia = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
+                                               
+                                                               let dateFormatter = DateFormatter()
+                                                              dateFormatter.dateFormat = "dd/MM/yyyy"
+                                                              dateFormatter.locale = Locale(identifier: "es_ES_POSIX")
+                                                              let date1 = dateFormatter.date(from: "\(dia)/\(mes)/\(anio)")
+                                                              dateFormatter.dateFormat = "d 'de' MMMM 'de' YYYY"
+                                                              let d = dateFormatter.string(from: date1!)
+                                               webView.isHidden=true
+                                               webViewSinConexion.isHidden=false
+                                               
+                                               let decoded = circulares[p].contenido.stringByDecodingHTMLEntities
+                                               var html1=""
+                                               if(tituloP1.count>0 && tituloP2.count<=0){
+                                                   html1 = """
+                                                              <html>
+                                                               <head>
+                                                               <style>
+                                                                   .myDiv {
+                                                                       background-color: #ffffff;
+                                                                       color:#0e497B;
+                                                                       padding:12px;
+                                                                       width:100%;
+                                                                   }
+                                                               .myDiv2 {
+                                                                   background-color: #ffffff;
+                                                                   color:#0e497B;
+                                                                   padding:12px;
+                                                                   width:100%;
+                                                                   text-align:right;
+                                                               }
+                                                              h4 {
 
-                               let attrStr = try! NSMutableAttributedString(
-                                   data: modifiedFont.data(using: .unicode, allowLossyConversion: true)!,
-                                   options: [NSAttributedString.DocumentReadingOptionKey.documentType:NSAttributedString.DocumentType.html, NSAttributedString.DocumentReadingOptionKey.characterEncoding: String.Encoding.utf8.rawValue],
-                                   documentAttributes: nil)
-                               let textRangeForFont : NSRange = NSMakeRange(0, attrStr.length)
-                               attrStr.addAttributes([NSAttributedString.Key.font : UIFont(name: "Gotham Rounded",size:12)!], range: textRangeForFont)
-                               
-                               webViewSinConexion.attributedText = attrStr
-                    
-                    
+                                                                color:#0E497B;
+                                                              }
+                                                               </style>
+                                                               </head>
+                                                              <body>
+                                                              
+                                                              <div class="myDiv2"><h5>\(circulares[posicion].nivel!)</h5></div><div  class="myDiv2"><h5>\(d)</h5></div>
+                                                              
+                                                              <div id="titulo"  style="width:100%;background-color:#91CAEE;text-align:center; vertical-align: middle;">
+                                                              <h4>\(tituloP1)</h4>
+                                                              </div>
+                                                              
+                                                                   <div class="myDiv">\(decoded)<br></div>
+                                                                  
+                                                              
+                                                              
+                                                              
+                                                              </body>
+                                                              </html>
+                                                              """
+                                               }
+                                               
+                                               
+                                               if(tituloP1.count>0 && tituloP2.count>0){
+                                                   html1 = """
+                                                              <html>
+                                                               <head>
+                                                               <style>
+                                                                   .myDiv {
+                                                                       background-color: #ffffff;
+                                                                       color:#0e497B;
+                                                                       padding:12px;
+                                                                       width:100%;
+                                                                   }
+                                                               .myDiv2 {
+                                                                   background-color: #ffffff;
+                                                                   color:#0e497B;
+                                                                   padding:12px;
+                                                                   width:100%;
+                                                                   text-align:right;
+                                                               }
+                                                              h4 {
+
+                                                                color:#0E497B;
+                                                              }
+                                                               </style>
+                                                               </head>
+                                                              <body>
+                                                              
+                                                              <div class="myDiv2"><h5>\(circulares[posicion].nivel!)</h5></div><div  class="myDiv2"><h5>\(d)</h5></div>
+                                                              
+                                                              <div id="titulo"  style="width:100%;background-color:#91CAEE;text-align:center; vertical-align: middle;">
+                                                              <h4>\(tituloP1)</h4>
+                                                              </div>
+                                                              <div id='titulo2' style='width:100%;background-color:#098FCF;text-align:center; vertical-align: middle;margin-top:-24px'>
+                                                              <h4>\(tituloP2)</h4>
+                                                              </div>
+                                                              <div class="myDiv">\(decoded)<br></div>
+                                                                  
+                                                              
+                                                              
+                                                              
+                                                              </body>
+                                                              </html>
+                                                              """
+                                               }
+                                              
+                                               
+                                               
+                                               let modifiedFont = NSString(format:"<span>%@</span>" as NSString, html1) as String
+
+                                                          let attrStr = try! NSMutableAttributedString(
+                                                              data: modifiedFont.data(using: .unicode, allowLossyConversion: true)!,
+                                                              options: [NSAttributedString.DocumentReadingOptionKey.documentType:NSAttributedString.DocumentType.html, NSAttributedString.DocumentReadingOptionKey.characterEncoding: String.Encoding.utf8.rawValue],
+                                                              documentAttributes: nil)
+                                                          let textRangeForFont : NSRange = NSMakeRange(0, attrStr.length)
+                                                          attrStr.addAttributes([NSAttributedString.Key.font : UIFont(name: "Gotham Rounded",size:12)!], range: textRangeForFont)
+                                                          
+                                                          webViewSinConexion.attributedText = attrStr
                                    
                               }
                    }
@@ -1028,6 +1313,7 @@ class CircularDetalleViewController: UIViewController {
             }
             if(p>=0){
                 var nextId = ids[p]
+                globalId=nextId
                 var nextTitulo = titulos[p]
                 var nextFecha = fechas[p]
                  self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id:nextId)
@@ -1036,7 +1322,7 @@ class CircularDetalleViewController: UIViewController {
                 var nextFechaIcs = fechasIcs[p]
                 var nextNivel = niveles[p]
                 nextHoraIcs = horasInicioIcs[p]
-                self.lblTituloParte1.text=nextTitulo
+                //self.lblTituloParte1.text=nextTitulo
                 if(nextHoraIniIcs != "00:00:00"){
                     imbCalendario.isHidden=false
                     btnCalendario.isHidden=false
@@ -1047,7 +1333,7 @@ class CircularDetalleViewController: UIViewController {
                 
                 //lblNivel.text = nextNivel
                 
-                self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo)
+                //self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo)
                 
                  circularTitulo = nextTitulo
                 let link = URL(string:urlBase+"getCircularId4.php?id=\(nextId)")!
@@ -1077,84 +1363,131 @@ class CircularDetalleViewController: UIViewController {
         }else{
             p = p-1
             if(p>0){
-                self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:circulares[p].nombre)
+                //self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:circulares[p].nombre)
                                //lblNivel.text = circulares[p].nivel
-                               
-                               let anio = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
-                               let mes = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
-                               let dia = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
-                               
-                              /*let dateFormatter = DateFormatter()
-                               dateFormatter.dateFormat = "dd/MM/yyyy"
-                               dateFormatter.locale = Locale(identifier: "es_ES_POSIX")
-                               let date1 = dateFormatter.date(from: "\(dia)/\(mes)/\(anio)")
-                               dateFormatter.dateFormat = "d 'de' MMMM 'de' YYYY"
-                               let d = dateFormatter.string(from: date1!)
-                               lblFechaCircular.text = d*/
-                               var nextHoraIniIcs = circulares[p].horaInicialIcs
-                                          var nextHoraFinIcs = circulares[p].horaFinalIcs
-                                          var nextFechaIcs = circulares[p].fechaIcs
-                                          if(nextHoraIniIcs != "00:00:00"){
-                                                     imbCalendario.isHidden=false
-                                          }else{
-                                                     imbCalendario.isHidden=true
-                                          }
-                
-                
-                
-                            let dateFormatter = DateFormatter()
-                              dateFormatter.dateFormat = "dd/MM/yyyy"
-                              dateFormatter.locale = Locale(identifier: "es_ES_POSIX")
-                              let date1 = dateFormatter.date(from: "\(dia)/\(mes)/\(anio)")
-                              dateFormatter.dateFormat = "d 'de' MMMM 'de' YYYY"
-                              let d = dateFormatter.string(from: date1!)
-                
-                             webView.isHidden=true
-                               webViewSinConexion.isHidden=false
-                               
-                               let decoded = circulares[p].contenido.stringByDecodingHTMLEntities
-                               let html1 = """
-                               <html>
-                                <head>
-                                <style>
-                                    .myDiv {
-                                        background-color: #ffffff;
-                                        color:#0e497B;
-                                        padding:12px;
-                                        width:100%;
-                                    }
-                                .myDiv2 {
-                                    background-color: #ffffff;
-                                    color:#0e497B;
-                                    padding:12px;
-                                    width:100%;
-                                    text-align:right;
-                                }
-                                </style>
-                                </head>
-                               <body>
-                               
-                               <div class="myDiv2"><h5>\(circulares[p].nivel!)</h5></div><div  class="myDiv2"><h5>\(d)</h5></div>
-                               
-                                    <div class="myDiv">\(decoded)<br></div>
-                                   
-                               </body>
-                               </html>
-                               """
-                               
-                               
-                               let modifiedFont = NSString(format:"<span>%@</span>" as NSString, html1) as String
+            webView.isHidden=true
+            webViewSinConexion.isHidden=false
+            
+             let titulo = circulares[p].nombre
+              let tituloP1 = self.partirTituloP1(titulo: titulo)
+              let tituloP2 = self.partirTituloP2(titulo: titulo)
+              
+              let anio = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
+              //aqui dio error sin internet
+              let mes = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
+              
+              let dia = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
+              
+                              let dateFormatter = DateFormatter()
+                             dateFormatter.dateFormat = "dd/MM/yyyy"
+                             dateFormatter.locale = Locale(identifier: "es_ES_POSIX")
+                             let date1 = dateFormatter.date(from: "\(dia)/\(mes)/\(anio)")
+                             dateFormatter.dateFormat = "d 'de' MMMM 'de' YYYY"
+                             let d = dateFormatter.string(from: date1!)
+              webView.isHidden=true
+              webViewSinConexion.isHidden=false
+              
+              let decoded = circulares[p].contenido.stringByDecodingHTMLEntities
+              var html1=""
+              if(tituloP1.count>0 && tituloP2.count<=0){
+                  html1 = """
+                             <html>
+                              <head>
+                              <style>
+                                  .myDiv {
+                                      background-color: #ffffff;
+                                      color:#0e497B;
+                                      padding:12px;
+                                      width:100%;
+                                  }
+                              .myDiv2 {
+                                  background-color: #ffffff;
+                                  color:#0e497B;
+                                  padding:12px;
+                                  width:100%;
+                                  text-align:right;
+                              }
+                             h4 {
 
-                                          let attrStr = try! NSMutableAttributedString(
-                                              data: modifiedFont.data(using: .unicode, allowLossyConversion: true)!,
-                                              options: [NSAttributedString.DocumentReadingOptionKey.documentType:NSAttributedString.DocumentType.html, NSAttributedString.DocumentReadingOptionKey.characterEncoding: String.Encoding.utf8.rawValue],
-                                              documentAttributes: nil)
-                                          let textRangeForFont : NSRange = NSMakeRange(0, attrStr.length)
-                                          attrStr.addAttributes([NSAttributedString.Key.font : UIFont(name: "Gotham Rounded",size:12)!], range: textRangeForFont)
-                                          
-                                          webViewSinConexion.attributedText = attrStr
-                               
-                               
+                               color:#0E497B;
+                             }
+                              </style>
+                              </head>
+                             <body>
+                             
+                             <div class="myDiv2"><h5>\(circulares[posicion].nivel!)</h5></div><div  class="myDiv2"><h5>\(d)</h5></div>
+                             
+                             <div id="titulo"  style="width:100%;background-color:#91CAEE;text-align:center; vertical-align: middle;">
+                             <h4>\(tituloP1)</h4>
+                             </div>
+                             
+                                  <div class="myDiv">\(decoded)<br></div>
+                                 
+                             
+                             
+                             
+                             </body>
+                             </html>
+                             """
+              }
+              
+              
+              if(tituloP1.count>0 && tituloP2.count>0){
+                  html1 = """
+                             <html>
+                              <head>
+                              <style>
+                                  .myDiv {
+                                      background-color: #ffffff;
+                                      color:#0e497B;
+                                      padding:12px;
+                                      width:100%;
+                                  }
+                              .myDiv2 {
+                                  background-color: #ffffff;
+                                  color:#0e497B;
+                                  padding:12px;
+                                  width:100%;
+                                  text-align:right;
+                              }
+                             h4 {
+
+                               color:#0E497B;
+                             }
+                              </style>
+                              </head>
+                             <body>
+                             
+                             <div class="myDiv2"><h5>\(circulares[posicion].nivel!)</h5></div><div  class="myDiv2"><h5>\(d)</h5></div>
+                             
+                             <div id="titulo"  style="width:100%;background-color:#91CAEE;text-align:center; vertical-align: middle;">
+                             <h4>\(tituloP1)</h4>
+                             </div>
+                             <div id='titulo2' style='width:100%;background-color:#098FCF;text-align:center; vertical-align: middle;margin-top:-24px'>
+                             <h4>\(tituloP2)</h4>
+                             </div>
+                             <div class="myDiv">\(decoded)<br></div>
+                                 
+                             
+                             
+                             
+                             </body>
+                             </html>
+                             """
+              }
+             
+              
+              
+              let modifiedFont = NSString(format:"<span>%@</span>" as NSString, html1) as String
+
+                         let attrStr = try! NSMutableAttributedString(
+                             data: modifiedFont.data(using: .unicode, allowLossyConversion: true)!,
+                             options: [NSAttributedString.DocumentReadingOptionKey.documentType:NSAttributedString.DocumentType.html, NSAttributedString.DocumentReadingOptionKey.characterEncoding: String.Encoding.utf8.rawValue],
+                             documentAttributes: nil)
+                         let textRangeForFont : NSRange = NSMakeRange(0, attrStr.length)
+                         attrStr.addAttributes([NSAttributedString.Key.font : UIFont(name: "Gotham Rounded",size:12)!], range: textRangeForFont)
+                         
+                         webViewSinConexion.attributedText = attrStr
                             
                        }
             }
@@ -1360,7 +1693,7 @@ class CircularDetalleViewController: UIViewController {
                           let d = dateFormatter.string(from: date1!)
                           self.lblFechaCircular.text = d*/
                       
-                          self.lblTituloParte1.text=nextTitulo
+                          //self.lblTituloParte1.text=nextTitulo
                           
                           
                           self.id = nextId;
@@ -1435,7 +1768,7 @@ class CircularDetalleViewController: UIViewController {
                     let d = dateFormatter.string(from: date1!)
                     self.lblFechaCircular.text = d*/
                 
-                    self.lblTituloParte1.text=nextTitulo
+                    //self.lblTituloParte1.text=nextTitulo
                     
                     
                     self.id = nextId;
@@ -1593,7 +1926,7 @@ class CircularDetalleViewController: UIViewController {
     */
     
     
-    func leerCirculares(){
+   /* func leerCirculares(){
      
      let fileUrl = try!
                 FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd.sqlite")
@@ -1701,8 +2034,632 @@ class CircularDetalleViewController: UIViewController {
 
         sqlite3_finalize(queryStatement)
     }
+    */
     
     
+    func leerCirculares(){
+           print("Leer desde la base de datos local")
+           let fileUrl = try!
+                      FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd.sqlite")
+           
+           if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
+               print("error opening database")
+           }
+           
+           /*
+            idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
+            */
+           
+              let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto FROM appCircularCHMD"
+           var queryStatement: OpaquePointer? = nil
+           var imagen:UIImage
+           imagen = UIImage.init(named: "appmenu05")!
+           
+           if sqlite3_prepare_v2(db, consulta, -1, &queryStatement, nil) == SQLITE_OK {
+          
+              
+               
+                while(sqlite3_step(queryStatement) == SQLITE_ROW) {
+                        let id = sqlite3_column_int(queryStatement, 0)
+                           var titulo:String="";
+                   
+                          if let name = sqlite3_column_text(queryStatement, 1) {
+                              titulo = String(cString: name)
+                             } else {
+                              print("name not found")
+                          }
+                   
+                   
+                           var cont:String="";
+                   
+                          if let contenido = sqlite3_column_text(queryStatement,2) {
+                              cont = String(cString: contenido)
+                             } else {
+                              print("name not found")
+                          }
+                 
+                           let leida = sqlite3_column_int(queryStatement, 3)
+                           let favorita = sqlite3_column_int(queryStatement, 4)
+                           let eliminada = sqlite3_column_int(queryStatement, 5)
+                           
+                           
+                   
+                            var fechaIcs:String="";
+                            if let fIcs = sqlite3_column_text(queryStatement, 7) {
+                            fechaIcs = String(cString: fIcs)
+                            } else {
+                                 print("name not found")
+                            }
+                        
+                    
+                     var hIniIcs:String="";
+                     if  let horaInicioIcs = sqlite3_column_text(queryStatement, 8) {
+                       hIniIcs = String(cString: horaInicioIcs)
+                      } else {
+                       print("hIniIcs not found")
+                   }
+                    
+                    
+                    var hFinIcs:String="";
+                    if  let horaFinIcs = sqlite3_column_text(queryStatement, 9) {
+                        hFinIcs = String(cString: horaFinIcs)
+                        } else {
+                          print("name not found")
+                        }
+                    
+                   var nivel:String="";
+                   if  let nv = sqlite3_column_text(queryStatement, 10) {
+                       nivel = String(cString: nv)
+                       } else {
+                         print("name not found")
+                       }
+                   
+                           let adj = sqlite3_column_int(queryStatement, 11)
+                          
+                           
+                           if(Int(leida) == 1){
+                              imagen = UIImage.init(named: "circle_white")!
+                           }else{
+                               imagen = UIImage.init(named: "circle")!
+                           }
+                   
+                           if(Int(favorita)==1){
+                              imagen = UIImage.init(named: "circle_white")!
+                           }
+                   
+                           /*if(Int(favorita)==1 && Int(leida) == 0){
+                               imagen = UIImage.init(named: "circle")!
+                            }
+                           if(Int(favorita)==1 && Int(leida) == 1){
+                               imagen = UIImage.init(named: "circle_white")!
+                           }*/
+                   
+                           var noLeida:Int = 0
+                          
+                   var fechaCircular="";
+                   if let fecha = sqlite3_column_text(queryStatement, 6) {
+                       fechaCircular = String(cString: fecha)
+                      
+                   } else {
+                       print("name not found")
+                   }
+                   
+                   
+                   if(eliminada==0 ){
+                      self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo,fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,noLeido:noLeida,favorita: Int(favorita)))
+                   }
+                  
+                 }
+               
+              
+                }
+               else {
+                print("SELECT statement could not be prepared")
+              }
+
+              sqlite3_finalize(queryStatement)
+          }
+    
+    func leerCircularesNoLeidas(){
+     print("Leer desde la base de datos local")
+     let fileUrl = try!
+                FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd.sqlite")
+     
+     if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
+         print("error opening database")
+     }
+     
+     /*
+      idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
+      */
+     
+        let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto  FROM appCircularCHMD WHERE leida=0 and favorita=0"
+     var queryStatement: OpaquePointer? = nil
+         var imagen:UIImage
+         imagen = UIImage.init(named: "appmenu05")!
+         
+         if sqlite3_prepare_v2(db, consulta, -1, &queryStatement, nil) == SQLITE_OK {
+        
+            
+             
+              while(sqlite3_step(queryStatement) == SQLITE_ROW) {
+                      let id = sqlite3_column_int(queryStatement, 0)
+                         var titulo:String="";
+                 
+                        if let name = sqlite3_column_text(queryStatement, 1) {
+                            titulo = String(cString: name)
+                           } else {
+                            print("name not found")
+                        }
+                 
+                 
+                         var cont:String="";
+                 
+                        if let contenido = sqlite3_column_text(queryStatement,2) {
+                            cont = String(cString: contenido)
+                           } else {
+                            print("name not found")
+                        }
+               
+                         let leida = sqlite3_column_int(queryStatement, 3)
+                         let favorita = sqlite3_column_int(queryStatement, 4)
+                         let eliminada = sqlite3_column_int(queryStatement, 5)
+                         
+                         
+                 
+                          var fechaIcs:String="";
+                          if let fIcs = sqlite3_column_text(queryStatement, 7) {
+                          fechaIcs = String(cString: fIcs)
+                          } else {
+                               print("name not found")
+                          }
+                      
+                  
+                   var hIniIcs:String="";
+                   if  let horaInicioIcs = sqlite3_column_text(queryStatement, 8) {
+                     hIniIcs = String(cString: horaInicioIcs)
+                    } else {
+                     print("hIniIcs not found")
+                 }
+                  
+                  
+                  var hFinIcs:String="";
+                  if  let horaFinIcs = sqlite3_column_text(queryStatement, 9) {
+                      hFinIcs = String(cString: horaFinIcs)
+                      } else {
+                        print("name not found")
+                      }
+                  
+                 var nivel:String="";
+                 if  let nv = sqlite3_column_text(queryStatement, 10) {
+                     nivel = String(cString: nv)
+                     } else {
+                       print("name not found")
+                     }
+                 
+                         let adj = sqlite3_column_int(queryStatement, 11)
+                        
+                         
+                         if(Int(leida) == 1){
+                            imagen = UIImage.init(named: "circle_white")!
+                         }else{
+                             imagen = UIImage.init(named: "circle")!
+                         }
+                 
+                         if(Int(favorita)==1){
+                            imagen = UIImage.init(named: "circle_white")!
+                         }
+                 
+                         /*if(Int(favorita)==1 && Int(leida) == 0){
+                             imagen = UIImage.init(named: "circle")!
+                          }
+                         if(Int(favorita)==1 && Int(leida) == 1){
+                             imagen = UIImage.init(named: "circle_white")!
+                         }*/
+                 
+                         var noLeida:Int = 0
+                        
+                 var fechaCircular="";
+                 if let fecha = sqlite3_column_text(queryStatement, 6) {
+                     fechaCircular = String(cString: fecha)
+                    
+                 } else {
+                     print("name not found")
+                 }
+                 
+                 
+               
+                    self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo,fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,noLeido:noLeida,favorita: Int(favorita)))
+                 
+                
+               }
+             
+            
+              }
+             else {
+              print("SELECT statement could not be prepared")
+            }
+
+            sqlite3_finalize(queryStatement)
+    }
+    
+    func leerCircularesEliminadas(){
+     print("Leer desde la base de datos local")
+     let fileUrl = try!
+                FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd.sqlite")
+     
+     if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
+         print("error opening database")
+     }
+     
+     /*
+      idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
+      */
+     
+        let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto  FROM appCircularCHMD WHERE eliminada=1"
+     var queryStatement: OpaquePointer? = nil
+         var imagen:UIImage
+         imagen = UIImage.init(named: "appmenu05")!
+         
+         if sqlite3_prepare_v2(db, consulta, -1, &queryStatement, nil) == SQLITE_OK {
+        
+            
+             
+              while(sqlite3_step(queryStatement) == SQLITE_ROW) {
+                      let id = sqlite3_column_int(queryStatement, 0)
+                         var titulo:String="";
+                 
+                        if let name = sqlite3_column_text(queryStatement, 1) {
+                            titulo = String(cString: name)
+                           } else {
+                            print("name not found")
+                        }
+                 
+                 
+                         var cont:String="";
+                 
+                        if let contenido = sqlite3_column_text(queryStatement,2) {
+                            cont = String(cString: contenido)
+                           } else {
+                            print("name not found")
+                        }
+               
+                         let leida = sqlite3_column_int(queryStatement, 3)
+                         let favorita = sqlite3_column_int(queryStatement, 4)
+                         let eliminada = sqlite3_column_int(queryStatement, 5)
+                         
+                         
+                 
+                          var fechaIcs:String="";
+                          if let fIcs = sqlite3_column_text(queryStatement, 7) {
+                          fechaIcs = String(cString: fIcs)
+                          } else {
+                               print("name not found")
+                          }
+                      
+                  
+                   var hIniIcs:String="";
+                   if  let horaInicioIcs = sqlite3_column_text(queryStatement, 8) {
+                     hIniIcs = String(cString: horaInicioIcs)
+                    } else {
+                     print("hIniIcs not found")
+                 }
+                  
+                  
+                  var hFinIcs:String="";
+                  if  let horaFinIcs = sqlite3_column_text(queryStatement, 9) {
+                      hFinIcs = String(cString: horaFinIcs)
+                      } else {
+                        print("name not found")
+                      }
+                  
+                 var nivel:String="";
+                 if  let nv = sqlite3_column_text(queryStatement, 10) {
+                     nivel = String(cString: nv)
+                     } else {
+                       print("name not found")
+                     }
+                 
+                         let adj = sqlite3_column_int(queryStatement, 11)
+                        
+                         
+                         if(Int(leida) == 1){
+                            imagen = UIImage.init(named: "circle_white")!
+                         }else{
+                             imagen = UIImage.init(named: "circle")!
+                         }
+                 
+                         if(Int(favorita)==1){
+                            imagen = UIImage.init(named: "circle_white")!
+                         }
+                 
+                         /*if(Int(favorita)==1 && Int(leida) == 0){
+                             imagen = UIImage.init(named: "circle")!
+                          }
+                         if(Int(favorita)==1 && Int(leida) == 1){
+                             imagen = UIImage.init(named: "circle_white")!
+                         }*/
+                 
+                         var noLeida:Int = 0
+                        
+                 var fechaCircular="";
+                 if let fecha = sqlite3_column_text(queryStatement, 6) {
+                     fechaCircular = String(cString: fecha)
+                    
+                 } else {
+                     print("name not found")
+                 }
+                 
+                 
+                 
+                    self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo,fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,noLeido:noLeida,favorita: Int(favorita)))
+                 
+                
+               }
+             
+            
+              }
+             else {
+              print("SELECT statement could not be prepared")
+            }
+
+            sqlite3_finalize(queryStatement)
+    }
+    
+    func leerCircularesFavoritas(){
+     print("Leer desde la base de datos local")
+     let fileUrl = try!
+                FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd.sqlite")
+     
+     if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
+         print("error opening database")
+     }
+     
+     /*
+      idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
+      */
+     
+        let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto  FROM appCircularCHMD WHERE favorita=1"
+    var queryStatement: OpaquePointer? = nil
+         var imagen:UIImage
+         imagen = UIImage.init(named: "appmenu05")!
+         
+         if sqlite3_prepare_v2(db, consulta, -1, &queryStatement, nil) == SQLITE_OK {
+        
+            
+             
+              while(sqlite3_step(queryStatement) == SQLITE_ROW) {
+                      let id = sqlite3_column_int(queryStatement, 0)
+                         var titulo:String="";
+                 
+                        if let name = sqlite3_column_text(queryStatement, 1) {
+                            titulo = String(cString: name)
+                           } else {
+                            print("name not found")
+                        }
+                 
+                 
+                         var cont:String="";
+                 
+                        if let contenido = sqlite3_column_text(queryStatement,2) {
+                            cont = String(cString: contenido)
+                           } else {
+                            print("name not found")
+                        }
+               
+                         let leida = sqlite3_column_int(queryStatement, 3)
+                         let favorita = sqlite3_column_int(queryStatement, 4)
+                         let eliminada = sqlite3_column_int(queryStatement, 5)
+                         
+                         
+                 
+                          var fechaIcs:String="";
+                          if let fIcs = sqlite3_column_text(queryStatement, 7) {
+                          fechaIcs = String(cString: fIcs)
+                          } else {
+                               print("name not found")
+                          }
+                      
+                  
+                   var hIniIcs:String="";
+                   if  let horaInicioIcs = sqlite3_column_text(queryStatement, 8) {
+                     hIniIcs = String(cString: horaInicioIcs)
+                    } else {
+                     print("hIniIcs not found")
+                 }
+                  
+                  
+                  var hFinIcs:String="";
+                  if  let horaFinIcs = sqlite3_column_text(queryStatement, 9) {
+                      hFinIcs = String(cString: horaFinIcs)
+                      } else {
+                        print("name not found")
+                      }
+                  
+                 var nivel:String="";
+                 if  let nv = sqlite3_column_text(queryStatement, 10) {
+                     nivel = String(cString: nv)
+                     } else {
+                       print("name not found")
+                     }
+                 
+                         let adj = sqlite3_column_int(queryStatement, 11)
+                        
+                         
+                         if(Int(leida) == 1){
+                            imagen = UIImage.init(named: "circle_white")!
+                         }else{
+                             imagen = UIImage.init(named: "circle")!
+                         }
+                 
+                         if(Int(favorita)==1){
+                            imagen = UIImage.init(named: "circle_white")!
+                         }
+                 
+                         /*if(Int(favorita)==1 && Int(leida) == 0){
+                             imagen = UIImage.init(named: "circle")!
+                          }
+                         if(Int(favorita)==1 && Int(leida) == 1){
+                             imagen = UIImage.init(named: "circle_white")!
+                         }*/
+                 
+                         var noLeida:Int = 0
+                        
+                 var fechaCircular="";
+                 if let fecha = sqlite3_column_text(queryStatement, 6) {
+                     fechaCircular = String(cString: fecha)
+                    
+                 } else {
+                     print("name not found")
+                 }
+                 
+                 
+                 
+                    self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo,fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,noLeido:noLeida,favorita: Int(favorita)))
+                 
+                
+               }
+             
+            
+              }
+             else {
+              print("SELECT statement could not be prepared")
+            }
+
+            sqlite3_finalize(queryStatement)
+    }
+    
+    
+    func leerCircular(idCircular:Int){
+     print("Leer desde la base de datos local")
+     let fileUrl = try!
+                FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd.sqlite")
+     
+     if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
+         print("error opening database")
+     }
+     
+     /*
+      idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
+      */
+     
+        let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto  FROM appCircularCHMD WHERE idCircular=\(idCircular)"
+        var queryStatement: OpaquePointer? = nil
+     var imagen:UIImage
+     imagen = UIImage.init(named: "appmenu05")!
+     
+     if sqlite3_prepare_v2(db, consulta, -1, &queryStatement, nil) == SQLITE_OK {
+    
+        
+         
+          while(sqlite3_step(queryStatement) == SQLITE_ROW) {
+                  let id = sqlite3_column_int(queryStatement, 0)
+                     var titulo:String="";
+             
+                    if let name = sqlite3_column_text(queryStatement, 1) {
+                        titulo = String(cString: name)
+                       } else {
+                        print("name not found")
+                    }
+             
+             
+                     var cont:String="";
+             
+                    if let contenido = sqlite3_column_text(queryStatement,2) {
+                        cont = String(cString: contenido)
+                       } else {
+                        print("name not found")
+                    }
+           
+                     let leida = sqlite3_column_int(queryStatement, 3)
+                     let favorita = sqlite3_column_int(queryStatement, 4)
+                     let eliminada = sqlite3_column_int(queryStatement, 5)
+                     print("leida: \(leida)")
+                     print("favorita: \(favorita)")
+             
+                      var fechaIcs:String="";
+                      if let fIcs = sqlite3_column_text(queryStatement, 6) {
+                      fechaIcs = String(cString: fIcs)
+                      } else {
+                           print("name not found")
+                      }
+             
+                            
+                                 
+             
+                    
+               var hIniIcs:String="";
+               if  let horaInicioIcs = sqlite3_column_text(queryStatement, 8) {
+                 hIniIcs = String(cString: horaInicioIcs)
+                } else {
+                 print("name not found")
+             }
+                     
+             
+              var hFinIcs:String="";
+              if  let horaFinIcs = sqlite3_column_text(queryStatement, 9) {
+                  hFinIcs = String(cString: horaFinIcs)
+                  } else {
+                    print("name not found")
+                  }
+             
+             
+             
+                     
+                     
+             
+             var nivel:String="";
+             if  let nv = sqlite3_column_text(queryStatement, 10) {
+                 nivel = String(cString: nv)
+                 } else {
+                   print("name not found")
+                 }
+             
+                     let adj = sqlite3_column_int(queryStatement, 14)
+                    
+                     
+                     if(Int(leida) == 1){
+                        imagen = UIImage.init(named: "circle_white")!
+                     }else{
+                         imagen = UIImage.init(named: "circle")!
+                     }
+             
+                     if(Int(favorita)==1){
+                        imagen = UIImage.init(named: "circle_white")!
+                     }
+             
+                     /*if(Int(favorita)==1 && Int(leida) == 0){
+                         imagen = UIImage.init(named: "circle")!
+                      }
+                     if(Int(favorita)==1 && Int(leida) == 1){
+                         imagen = UIImage.init(named: "circle_white")!
+                     }*/
+             
+                     var noLeida:Int = 0
+                    
+             var fechaCircular="";
+             if let fecha = sqlite3_column_text(queryStatement, 6) {
+                 fechaCircular = String(cString: fecha)
+                
+             } else {
+                 print("name not found")
+             }
+             
+             
+             if(eliminada==0 ){
+                self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo,fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,noLeido:noLeida,favorita: Int(favorita)))
+             }
+            
+           }
+         
+        
+          }
+         else {
+          print("SELECT statement could not be prepared")
+        }
+
+        sqlite3_finalize(queryStatement)
+    }
     
     func obtenerCirculares(uri:String){
         
@@ -1934,8 +2891,227 @@ class CircularDetalleViewController: UIViewController {
                    
             }
         }
+    
+    
+    
+    func obtenerCircularesNoLeidas(uri:String){
+               
+               Alamofire.request(uri)
+                   .responseJSON { response in
+                       // check for errors
+                       guard response.result.error == nil else {
+                           // got an error in getting the data, need to handle it
+                           print("error en la consulta")
+                           print(response.result.error!)
+                           return
+                       }
+                       /*
+                        [{"id":"1008","titulo":"\u00a1Felices vacaciones!","estatus":"Enviada","ciclo_escolar_id":"4","created_at":"2019-04-12 13:02:19","updated_at":"2019-04-12 13:02:19","leido":"1","favorito":"1","compartida":"1","eliminado":"1","status_envio":null,"envio_todos":"0"},
+                        */
+                       
+                       if let diccionarios = response.result.value as? [Dictionary<String,AnyObject>]{
+                           for diccionario in diccionarios{
+                               //print(diccionario)
+                               
+                               guard let id = diccionario["id"] as? String else {
+                                   print("No se pudo obtener el id")
+                                   return
+                               }
+                               print(id)
+                               
+                               guard let titulo = diccionario["titulo"] as? String else {
+                                   print("No se pudo obtener el titulo")
+                                   return
+                               }
+                             guard let fecha = diccionario["updated_at"] as? String else {
+                                                                                 print("No se pudo obtener la fecha")
+                                                                                 return
+                                                                             }
+                               guard let fechaIcs = diccionario["fecha_ics"] as? String else {
+                                                       return
+                                                     }
+                                                     guard let horaInicioIcs = diccionario["hora_inicial_ics"] as? String else {
+                                                                              return
+                                                                            }
+                                                     
+                                                    
+                                                     guard let horaFinIcs = diccionario["hora_final_ics"] as? String else {
+                                                                                                     return
+                                                                                                   }
+                                                     
+                                                     //Esto si viene null desde el servicio web
+                                                                       var nv:String?
+                                                                            if (diccionario["nivel"] == nil){
+                                                                                nv=""
+                                                                            }else{
+                                                                                nv=diccionario["nivel"] as? String
+                                                                            }
+                               guard let leido = diccionario["leido"] as? String else {
+                                                          return
+                                                      }
+                            if(Int(leido)==0){
+                                self.ids.append(id)
+                                                                                            self.titulos.append(titulo)
+                                                                                            self.fechas.append(fecha)
+                                                                                               
+                                                                                           self.fechasIcs.append(fechaIcs)
+                                                                                           self.horasInicioIcs.append(horaInicioIcs)
+                                                                                           self.horasFinIcs.append(horaFinIcs)
+                                                                                           self.niveles.append(nv ?? "")
+                            }
+                                                                                
+                       }
+                 }
+               
+        }
+    }
+    
+    
+    func obtenerCircularesEliminadas(uri:String){
+               
+               Alamofire.request(uri)
+                   .responseJSON { response in
+                       // check for errors
+                       guard response.result.error == nil else {
+                           // got an error in getting the data, need to handle it
+                           print("error en la consulta")
+                           print(response.result.error!)
+                           return
+                       }
+                       /*
+                        [{"id":"1008","titulo":"\u00a1Felices vacaciones!","estatus":"Enviada","ciclo_escolar_id":"4","created_at":"2019-04-12 13:02:19","updated_at":"2019-04-12 13:02:19","leido":"1","favorito":"1","compartida":"1","eliminado":"1","status_envio":null,"envio_todos":"0"},
+                        */
+                       
+                       if let diccionarios = response.result.value as? [Dictionary<String,AnyObject>]{
+                           for diccionario in diccionarios{
+                               //print(diccionario)
+                               
+                               guard let id = diccionario["id"] as? String else {
+                                   print("No se pudo obtener el id")
+                                   return
+                               }
+                               print(id)
+                               
+                               guard let titulo = diccionario["titulo"] as? String else {
+                                   print("No se pudo obtener el titulo")
+                                   return
+                               }
+                             guard let fecha = diccionario["updated_at"] as? String else {
+                                                                                 print("No se pudo obtener la fecha")
+                                                                                 return
+                                                                             }
+                               guard let fechaIcs = diccionario["fecha_ics"] as? String else {
+                                                       return
+                                                     }
+                                                     guard let horaInicioIcs = diccionario["hora_inicial_ics"] as? String else {
+                                                                              return
+                                                                            }
+                                                     
+                                                    
+                                                     guard let horaFinIcs = diccionario["hora_final_ics"] as? String else {
+                                                                                                     return
+                                                                                                   }
+                                                     
+                                                     //Esto si viene null desde el servicio web
+                                                                       var nv:String?
+                                                                            if (diccionario["nivel"] == nil){
+                                                                                nv=""
+                                                                            }else{
+                                                                                nv=diccionario["nivel"] as? String
+                                                                            }
+                               guard let eliminado = diccionario["eliminado"] as? String else {
+                                                          return
+                                                      }
+                            if(Int(eliminado)==1){
+                                self.ids.append(id)
+                                                                                            self.titulos.append(titulo)
+                                                                                            self.fechas.append(fecha)
+                                                                                               
+                                                                                           self.fechasIcs.append(fechaIcs)
+                                                                                           self.horasInicioIcs.append(horaInicioIcs)
+                                                                                           self.horasFinIcs.append(horaFinIcs)
+                                                                                           self.niveles.append(nv ?? "")
+                            }
+                                                                                
+                       }
+                 }
+               
+        }
+    }
         
-        
+      
+    func obtenerCircularesFavoritas(uri:String){
+               
+               Alamofire.request(uri)
+                   .responseJSON { response in
+                       // check for errors
+                       guard response.result.error == nil else {
+                           // got an error in getting the data, need to handle it
+                           print("error en la consulta")
+                           print(response.result.error!)
+                           return
+                       }
+                       /*
+                        [{"id":"1008","titulo":"\u00a1Felices vacaciones!","estatus":"Enviada","ciclo_escolar_id":"4","created_at":"2019-04-12 13:02:19","updated_at":"2019-04-12 13:02:19","leido":"1","favorito":"1","compartida":"1","eliminado":"1","status_envio":null,"envio_todos":"0"},
+                        */
+                       
+                       if let diccionarios = response.result.value as? [Dictionary<String,AnyObject>]{
+                           for diccionario in diccionarios{
+                               //print(diccionario)
+                               
+                               guard let id = diccionario["id"] as? String else {
+                                   print("No se pudo obtener el id")
+                                   return
+                               }
+                               print(id)
+                               
+                               guard let titulo = diccionario["titulo"] as? String else {
+                                   print("No se pudo obtener el titulo")
+                                   return
+                               }
+                             guard let fecha = diccionario["updated_at"] as? String else {
+                                                                                 print("No se pudo obtener la fecha")
+                                                                                 return
+                                                                             }
+                               guard let fechaIcs = diccionario["fecha_ics"] as? String else {
+                                                       return
+                                                     }
+                                                     guard let horaInicioIcs = diccionario["hora_inicial_ics"] as? String else {
+                                                                              return
+                                                                            }
+                                                     
+                                                    
+                                                     guard let horaFinIcs = diccionario["hora_final_ics"] as? String else {
+                                                                                                     return
+                                                                                                   }
+                                                     
+                                                     //Esto si viene null desde el servicio web
+                                                                       var nv:String?
+                                                                            if (diccionario["nivel"] == nil){
+                                                                                nv=""
+                                                                            }else{
+                                                                                nv=diccionario["nivel"] as? String
+                                                                            }
+                               guard let fav = diccionario["favorito"] as? String else {
+                                                          return
+                                                      }
+                            if(Int(fav)==1){
+                                self.ids.append(id)
+                                                                                            self.titulos.append(titulo)
+                                                                                            self.fechas.append(fecha)
+                                                                                               
+                                                                                           self.fechasIcs.append(fechaIcs)
+                                                                                           self.horasInicioIcs.append(horaInicioIcs)
+                                                                                           self.horasFinIcs.append(horaFinIcs)
+                                                                                           self.niveles.append(nv ?? "")
+                            }
+                                                                                
+                       }
+                 }
+               
+        }
+    }
+    
   func obtenerCircular(uri:String){
           
           Alamofire.request(uri)
@@ -1977,7 +3153,7 @@ class CircularDetalleViewController: UIViewController {
                     self.title = "Detalles de la circular"*/
                     //self.titulos[0].uppercased()
                 //self.lblTituloParte1.text=self.titulos[0].capitalized
-                    self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:self.titulos[0])
+                   // self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:self.titulos[0])
               
           
       }
@@ -2006,6 +3182,40 @@ class CircularDetalleViewController: UIViewController {
     .baselineOffset:-8.0,
     ]
    
+    
+    func partirTituloP1(titulo:String)->String{
+        var totalElementos:Int=0
+        var t=""
+              var tituloArreglo = titulo.split{$0 == " "}.map(String.init)
+              totalElementos = tituloArreglo.count
+              
+              if(totalElementos>4){
+                t=tituloArreglo[0]+" "+tituloArreglo[1]+" "+tituloArreglo[2]+" "+tituloArreglo[3]
+              }else{
+                t = titulo
+            }
+        
+        return t
+    }
+    
+    func partirTituloP2(titulo:String)->String{
+        var totalElementos:Int=0
+        var tituloArreglo = titulo.split{$0 == " "}.map(String.init)
+        totalElementos = tituloArreglo.count
+        var t:String=""
+        var i:Int=0
+        if(totalElementos>4){
+            for i in 4...totalElementos-1{
+                t += tituloArreglo[i]+" "
+            }
+        }else{
+            t=""
+        }
+        
+        
+        return t
+    }
+    
     func partirTitulo(label1:UILabel,label2:UILabel, titulo:String){
         
         
@@ -2260,12 +3470,12 @@ class CircularDetalleViewController: UIViewController {
                        self.lblFechaCircular.text = "\(dia)/\(mes)/\(anio)"*/
                        
                        if(ConexionRed.isConnectedToNetwork()){
-                           self.lblTituloParte1.isHidden=true
+                         //  self.lblTituloParte1.isHidden=true
                            //self.lblTituloParte1?.visiblity(gone: true, dimension: 0)
                        }
                        
                     //self.lblTituloParte1.text=nextTitulo.capitalized
-                    self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo)
+                   // self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo)
                        self.id = nextId;
                    }else{
                        self.posicion = 0
