@@ -367,7 +367,12 @@ class CircularDetalleViewController: UIViewController {
                         let _url = URL(string: address);
                         self.obtenerCircularesEliminadas(uri:address)
                     }
-                    
+                    //Notificaciones
+                    if(tipoCircular==5){
+                      let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getNotificaciones_iOS.php?usuario_id=\(idUsuario)"
+                       let _url = URL(string: address);
+                       self.obtenerCircularesEliminadas(uri:address)
+                    }
                     
                 }
                                 
@@ -389,6 +394,9 @@ class CircularDetalleViewController: UIViewController {
              }
             if(tipoCircular==4){
              self.leerCircularesEliminadas()
+            }
+            if(tipoCircular==5){
+             self.leerNotificaciones()
             }
             
             let titulo = circulares[posicion].nombre
@@ -1498,29 +1506,22 @@ class CircularDetalleViewController: UIViewController {
    
     
     @IBAction func btnFavoritoClick(_ sender: Any) {
-        if(ConexionRed.isConnectedToNetwork()){
-                   //let dialogMessage = UIAlertController(title: "CHMD", message: "¿Deseas agregar esta circular a tus favoritas?", preferredStyle: .alert)
-                   
-                   // Create OK button with action handler
-                   //let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
-                       self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: self.id)
-                   //})
-                   
-                   // Create Cancel button with action handlder
-                   //let cancel = UIAlertAction(title: "Cancelar", style: .cancel) { (action) -> Void in
-                       
-                   //}
-                   
-                   //Add OK and Cancel button to dialog message
-                   //dialogMessage.addAction(ok)
-                   //dialogMessage.addAction(cancel)
-                   
-                   // Present dialog message to user
-                   //self.present(dialogMessage, animated: true, completion: nil)
-               }else{
-                   var alert = UIAlertView(title: "No está conectado a Internet", message: "Esta opción solo funciona con una conexión a Internet", delegate: nil, cancelButtonTitle: "Aceptar")
-                              alert.show()
-               }
+        
+        if(tipoCircular != 5){
+            if(ConexionRed.isConnectedToNetwork()){
+               
+                    self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: self.id)
+               
+            }else{
+                var alert = UIAlertView(title: "No está conectado a Internet", message: "Esta opción solo funciona con una conexión a Internet", delegate: nil, cancelButtonTitle: "Aceptar")
+                           alert.show()
+            }
+        }else{
+            var alert = UIAlertView(title: "No Permitido", message: "Esta opción solo funciona con una circular y no una notificación", delegate: nil, cancelButtonTitle: "Aceptar")
+             alert.show()
+        }
+        
+        
     }
     
     
@@ -2159,6 +2160,130 @@ class CircularDetalleViewController: UIViewController {
 
               sqlite3_finalize(queryStatement)
           }
+    
+    
+    func leerNotificaciones(){
+     print("Leer desde la base de datos local")
+     let fileUrl = try!
+                FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd.sqlite")
+     
+     if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
+         print("error opening database")
+     }
+     
+     /*
+      idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
+      */
+     
+        let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto FROM appNotificacionCHMD"
+     var queryStatement: OpaquePointer? = nil
+     var imagen:UIImage
+     imagen = UIImage.init(named: "appmenu05")!
+     
+     if sqlite3_prepare_v2(db, consulta, -1, &queryStatement, nil) == SQLITE_OK {
+    
+        
+         
+          while(sqlite3_step(queryStatement) == SQLITE_ROW) {
+                  let id = sqlite3_column_int(queryStatement, 0)
+                     var titulo:String="";
+             
+                    if let name = sqlite3_column_text(queryStatement, 1) {
+                        titulo = String(cString: name)
+                       } else {
+                        print("name not found")
+                    }
+             
+             
+                     var cont:String="";
+             
+                    if let contenido = sqlite3_column_text(queryStatement,2) {
+                        cont = String(cString: contenido)
+                       } else {
+                        print("name not found")
+                    }
+           
+                     let leida = sqlite3_column_int(queryStatement, 3)
+                     let favorita = sqlite3_column_int(queryStatement, 4)
+                     let eliminada = sqlite3_column_int(queryStatement, 5)
+                     
+                     
+             
+                      var fechaIcs:String="";
+                      if let fIcs = sqlite3_column_text(queryStatement, 7) {
+                      fechaIcs = String(cString: fIcs)
+                      } else {
+                           print("name not found")
+                      }
+                  
+              
+               var hIniIcs:String="";
+               if  let horaInicioIcs = sqlite3_column_text(queryStatement, 8) {
+                 hIniIcs = String(cString: horaInicioIcs)
+                } else {
+                 print("hIniIcs not found")
+             }
+              
+              
+              var hFinIcs:String="";
+              if  let horaFinIcs = sqlite3_column_text(queryStatement, 9) {
+                  hFinIcs = String(cString: horaFinIcs)
+                  } else {
+                    print("name not found")
+                  }
+              
+             var nivel:String="";
+             if  let nv = sqlite3_column_text(queryStatement, 10) {
+                 nivel = String(cString: nv)
+                 } else {
+                   print("name not found")
+                 }
+             
+                     let adj = sqlite3_column_int(queryStatement, 11)
+                    
+                     
+                     if(Int(leida) == 1){
+                        imagen = UIImage.init(named: "circle_white")!
+                     }else{
+                         imagen = UIImage.init(named: "circle")!
+                     }
+             
+                     if(Int(favorita)==1){
+                        imagen = UIImage.init(named: "circle_white")!
+                     }
+             
+                     /*if(Int(favorita)==1 && Int(leida) == 0){
+                         imagen = UIImage.init(named: "circle")!
+                      }
+                     if(Int(favorita)==1 && Int(leida) == 1){
+                         imagen = UIImage.init(named: "circle_white")!
+                     }*/
+             
+                     var noLeida:Int = 0
+                    
+             var fechaCircular="";
+             if let fecha = sqlite3_column_text(queryStatement, 6) {
+                 fechaCircular = String(cString: fecha)
+                
+             } else {
+                 print("name not found")
+             }
+             
+             
+             if(eliminada==0 ){
+                self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo,fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,noLeido:noLeida,favorita: Int(favorita)))
+             }
+            
+           }
+         
+        
+          }
+         else {
+          print("SELECT statement could not be prepared")
+        }
+
+        sqlite3_finalize(queryStatement)
+    }
     
     func leerCircularesNoLeidas(){
      print("Leer desde la base de datos local")

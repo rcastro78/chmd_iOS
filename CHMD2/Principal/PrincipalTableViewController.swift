@@ -57,11 +57,12 @@ class PrincipalTableViewController: UITableViewController {
         let MAGUEN=2
         let SIGN_OUT=3
         let CREDENCIAL=4
- 
+        //let NOTIFICACION=4
             
             menu.append(MenuPrincipal(id: INICIO, imagen:UIImage.init(named: "circulares256")!))
             menu.append(MenuPrincipal(id: MAGUEN,  imagen:UIImage.init(named: "mi_maguen256")!))
             menu.append(MenuPrincipal(id: CREDENCIAL,  imagen:UIImage.init(named: "mi_credencial256")!))
+            //menu.append(MenuPrincipal(id: NOTIFICACION,  imagen:UIImage.init(named: "mi_maguen256")!))
             menu.append(MenuPrincipal(id: SIGN_OUT, imagen:UIImage.init(named: "cerrar_sesion256")!))
         
     
@@ -461,6 +462,11 @@ class PrincipalTableViewController: UITableViewController {
         if (valor.id==4){
            performSegue(withIdentifier: "credencialSegue", sender: self)
         }
+        
+        /*if (valor.id==5){
+            
+            performSegue(withIdentifier: "notificacionesSegue", sender: self)
+        }*/
         
     }
     

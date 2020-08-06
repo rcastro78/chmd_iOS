@@ -12,8 +12,6 @@ import SQLite3
 import Firebase
 
 
-
-
 class TodasCircularesViewController: UIViewController,UITableViewDelegate, UITableViewDataSource,UISearchBarDelegate,UIGestureRecognizerDelegate,UITableViewDataSourcePrefetching {
 func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
         print("prefetching row of \(indexPaths)")
@@ -52,6 +50,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     var noleerMetodo:String="noleerCircular.php"
     var leerMetodo:String="leerCircular.php"
     var metodoCirculares:String="getCirculares_iOS.php"
+    var metodoNotificaciones:String="getNotificaciones_iOS.php"
     var selecMultiple=false
     var circularesSeleccionadas = [Int]()
     var seleccion=[Int]()
@@ -60,7 +59,6 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     }
     var refreshControl = UIRefreshControl()
     
-    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(_:true)
          circulares.removeAll()
@@ -68,9 +66,14 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
          if ConexionRed.isConnectedToNetwork() == true {
             let address=self.urlBase+self.metodoCirculares+"?usuario_id=\(self.idUsuario)"
              guard let _url = URL(string: address) else { return };
+            
+            let addressN=self.urlBase+self.metodoNotificaciones+"?usuario_id=\(self.idUsuario)"
+            guard let _urlN = URL(string: addressN) else { return };
+            
             //La primera vez, va a descargar, las siguientes siempre leer desde la base local
             if(descarga==1){
                 self.getDataFromURL(url: _url)
+                self.getDataFromURLNotificaciones(url:_urlN)
             }else{
               self.leerCirculares()
             }
@@ -161,6 +164,11 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
          let address=self.urlBase+self.metodoCirculares+"?usuario_id=\(self.idUsuario)"
           guard let _url = URL(string: address) else { return };
           self.getDataFromURL(url: _url)
+        //Actualizar las notificaciones
+        let addressN=self.urlBase+self.metodoNotificaciones+"?usuario_id=\(self.idUsuario)"
+                   guard let _urlN = URL(string: addressN) else { return };
+        self.getDataFromURLNotificaciones(url:_urlN)
+        
       }
     }
 
@@ -796,48 +804,6 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     //Esta función se utiliza para limpiar
     //la base de datos cuando se abra al tener conexión a internet
-    func limpiarCirculares(){
-        let fileUrl = try!
-                   FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd.sqlite")
-               
-               if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
-                   print("Error en la base de datos")
-               }else{
-                        var statement:OpaquePointer?
-                let query = "DELETE FROM appCircularCHMD";
-                if sqlite3_prepare(db,query,-1,&statement,nil) != SQLITE_OK {
-                    print("Error")
-                }
-                if sqlite3_step(statement) == SQLITE_DONE {
-                    print("Tabla borrada")
-                }
-                
-                
-        }
-    }
-    
-    func borrarCirculares(){
-        let fileUrl = try!
-            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd.sqlite")
-        
-        if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
-            print("Error en la base de datos")
-        }else{
-        let q = "DELETE FROM appCircularCHMD"
-            var statement:OpaquePointer?
-        if sqlite3_prepare(db,q,-1,&statement,nil) != SQLITE_OK {
-            print("Error")
-        }
-            
-            if sqlite3_step(statement) == SQLITE_DONE {
-                           print("Tabla borrada correctamente")
-                       }else{
-                           print("No se pudo borrar")
-                       }
-        
-        }
-        
-    }
     
     
     func delete() {
@@ -866,6 +832,34 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         }
     
     }
+    
+    
+    func deleteNotificaciones() {
+           
+           let fileUrl = try!
+                      FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd.sqlite")
+                  
+                  if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
+                      print("Error en la base de datos")
+                  }else{
+           
+         var deleteStatement: OpaquePointer?
+           var deleteStatementString="DELETE FROM appNotificacionCHMD"
+         if sqlite3_prepare_v2(db, deleteStatementString, -1, &deleteStatement, nil) ==
+             SQLITE_OK {
+           if sqlite3_step(deleteStatement) == SQLITE_DONE {
+             print("BASE:Successfully deleted row.")
+           } else {
+             print("BASE:Could not delete row.")
+           }
+         } else {
+           print("BASE:DELETE statement could not be prepared")
+         }
+         
+         sqlite3_finalize(deleteStatement)
+           }
+       
+       }
     
     func borraCirculares(idCircular:Int,idUsuario:Int){
         let fileUrl = try!
@@ -1154,13 +1148,104 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         
     }
     
+    func guardarNotificaciones(idCircular:Int,idUsuario:Int,nombre:String, textoCircular:String,no_leida:Int, leida:Int,favorita:Int,compartida:Int,eliminada:Int,fecha:String,fechaIcs:String,horaInicioIcs:String,horaFinIcs:String,nivel:String,adjunto:Int){
+        
+        //Abrir la base
+        let fileUrl = try!
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd.sqlite")
+        
+        if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
+            print("Error en la base de datos")
+        }else{
+            
+           
+            
+            
+            
+            //La base de datos abrió correctamente
+            var statement:OpaquePointer?
+            
+             //Vaciar la tabla
+            
+            
+            let query = "INSERT INTO appNotificacionCHMD(idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)"
+            if sqlite3_prepare(db,query,-1,&statement,nil) != SQLITE_OK {
+                print("Error")
+            }
+            
+            if sqlite3_bind_int(statement,1,Int32(idCircular)) != SQLITE_OK {
+                print("Error campo 1")
+            }
+            
+            if sqlite3_bind_int(statement,2,Int32(idUsuario)) != SQLITE_OK {
+                print("Error campo 2")
+            }
+            let n = nombre as NSString
+            if sqlite3_bind_text(statement,3,n.utf8String, -1, nil) != SQLITE_OK {
+                print("Error campo 3")
+            }
+            let texto = textoCircular as NSString
+            if sqlite3_bind_text(statement,4,texto.utf8String, -1, nil) != SQLITE_OK {
+                print("Error campo 4")
+            }
+            
+            if sqlite3_bind_int(statement,5,Int32(no_leida)) != SQLITE_OK {
+                print("Error campo 5")
+            }
+            
+            if sqlite3_bind_int(statement,6,Int32(leida)) != SQLITE_OK {
+                print("Error campo 6")
+            }
+            
+            if sqlite3_bind_int(statement,7,Int32(favorita)) != SQLITE_OK {
+                print("Error campo 7")
+            }
+            
+            if sqlite3_bind_int(statement,8,Int32(eliminada)) != SQLITE_OK {
+                           print("Error campo 8")
+              }
+            
+           if sqlite3_bind_text(statement,9,fecha, -1, nil) != SQLITE_OK {
+               print("Error campo 9")
+           }
+             let fiIcs = fechaIcs as NSString
+            if sqlite3_bind_text(statement,10,fiIcs.utf8String, -1, nil) != SQLITE_OK {
+                print("Error campo 10")
+            }
+            let hiIcs = horaInicioIcs as NSString
+            if sqlite3_bind_text(statement,11,hiIcs.utf8String, -1, nil) != SQLITE_OK {
+                           print("Error campo 11")
+            }
+            let hfIcs = horaFinIcs as NSString
+            if sqlite3_bind_text(statement,12,hfIcs.utf8String, -1, nil) != SQLITE_OK {
+                           print("Error campo 12")
+            }
+            if sqlite3_bind_text(statement,13,nivel, -1, nil) != SQLITE_OK {
+                           print("Error campo 13")
+            }
+            
+           
+            
+            
+            if sqlite3_step(statement) == SQLITE_DONE {
+                print("Circular almacenada correctamente")
+            }else{
+                print("Circular no se pudo guardar")
+            }
+            
+        }
+        
     
+        
+    }
     
     func getDataFromURL(url: URL) {
         print("Leer desde el servidor....")
         print(url)
         circulares.removeAll()
+        
         self.delete()
+               
         URLSession.shared.dataTask(with: url) {
             (data, response, error) in
             print(data)
@@ -1303,6 +1388,141 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         UserDefaults.standard.set(0, forKey: "descarga")
         
     }
+    
+    
+    func getDataFromURLNotificaciones(url: URL) {
+        print("Leer desde el servidor....")
+        print(url)
+        circulares.removeAll()
+        self.deleteNotificaciones()
+        URLSession.shared.dataTask(with: url) {
+            (data, response, error) in
+            print(data)
+            
+            if let datos = try? JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String:Any]] {
+                print(datos.count)
+                for index in 0...((datos).count) - 1
+                {
+                    let obj = datos[index] as! [String : AnyObject]
+                    guard let id = obj["id"] as? String else {
+                        print("No se pudo obtener el id")
+                        return
+                    }
+                    guard let titulo = obj["titulo"] as? String else {
+                        print("No se pudo obtener el titulo")
+                        return
+                    }
+                    
+                    var imagen:UIImage
+                       imagen = UIImage.init(named: "appmenu05")!
+                       
+                       
+                       guard let leido = obj["leido"] as? String else {
+                           return
+                       }
+                       
+                       guard let fecha = obj["created_at"] as? String else {
+                                                  return
+                                              }
+                       
+                       guard let favorito = obj["favorito"] as? String else {
+                           return
+                       }
+                       
+                       guard let adjunto = obj["adjunto"] as? String else {
+                                                  return
+                                              }
+                       
+                       guard let eliminada = obj["eliminado"] as? String else {
+                           return
+                       }
+                       
+                       guard let texto = obj["contenido"] as? String else {
+                           return
+                       }
+                       
+                       guard let fechaIcs = obj["fecha_ics"] as? String else {
+                         return
+                       }
+                       guard let horaInicioIcs = obj["hora_inicial_ics"] as? String else {
+                                                return
+                                              }
+                       
+                      
+                       guard let horaFinIcs = obj["hora_final_ics"] as? String else {
+                                                                       return
+                                                                     }
+                       
+                    
+                       //Con esto se evita la excepcion por los valores nulos
+                       var nv:String?
+                       if (obj["nivel"] == nil){
+                           nv=""
+                       }else{
+                           nv=obj["nivel"] as? String
+                       }
+
+                       
+                    var noLeido:Int=0
+                       
+                       //leídas
+                       if(Int(leido)!>0){
+                           imagen = UIImage.init(named: "circle_white")!
+                       }
+                       //No leídas
+                       if(Int(leido)==0 && Int(favorito)==0){
+                           imagen = UIImage.init(named: "circle")!
+                        noLeido=1
+                       }
+                       
+                       var noLeida:Int = 0
+                       if(Int(leido)! == 0){
+                           noLeida = 1
+                       }
+                       
+                       var adj=0;
+                       if(Int(adjunto)!==1){
+                           adj=1
+                       }
+                      
+                       if(Int(favorito)!>0){
+                           imagen = UIImage.init(named: "circle_white")!
+                        //imagen = nil
+                       }
+                       
+                       var str = texto.replacingOccurrences(of: "&lt;", with: "<").replacingOccurrences(of: "&gt;", with: ">")
+                       .replacingOccurrences(of: "&amp;aacute;", with: "á")
+                       .replacingOccurrences(of: "&amp;eacute;", with: "é")
+                       .replacingOccurrences(of: "&amp;iacute;", with: "í")
+                       .replacingOccurrences(of: "&amp;oacute;", with: "ó")
+                       .replacingOccurrences(of: "&amp;uacute;", with: "ú")
+                       .replacingOccurrences(of: "&amp;ordm;", with: "o.")
+                     
+                    
+                  
+                    /*
+                     guardarCirculares(idCircular:Int,idUsuario:Int,nombre:String, textoCircular:String,no_leida:Int, leida:Int,favorita:Int,compartida:Int,eliminada:Int,fecha:String,fechaIcs:String,horaInicioIcs:String,horaFinIcs:String,nivel:String,adjunto:Int)
+                     */
+                     self.guardarNotificaciones(idCircular: Int(id)!, idUsuario: Int(self.idUsuario)!, nombre: titulo, textoCircular: str, no_leida: noLeida, leida: Int(leido)!, favorita: Int(favorito)!, compartida: 0, eliminada: Int(eliminada)!,fecha: fecha,fechaIcs: fechaIcs,horaInicioIcs: horaInicioIcs,horaFinIcs: horaFinIcs,nivel: nv ?? "",adjunto:adj)
+                    
+                    
+                }
+                OperationQueue.main.addOperation {
+                    
+                }
+            }else{
+                print(error.debugDescription)
+                print(error?.localizedDescription)
+            }
+            
+            
+            }.resume()
+        
+        
+        
+    }
+    
+    
     
     func setupLongPressGesture() {
         let longPressGesture:UILongPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(self.handleLongPress))

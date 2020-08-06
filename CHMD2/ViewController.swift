@@ -239,7 +239,7 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
            print("creada la tabla de las circulares")
         }
         
-        let crearTablaNotificaciones="CREATE TABLE IF NOT EXISTS appNotificacion(idCircular INTEGER, notificacion INTEGER)"
+        let crearTablaNotificaciones="CREATE TABLE IF NOT EXISTS appNotificacionCHMD(idCircular INTEGER, idUsuario INTEGER, nombre TEXT, textoCircular TEXT, no_leida INTEGER, leida INTEGER, favorita INTEGER, compartida INTEGER, eliminada INTEGER, created_at TEXT,fechaIcs TEXT, horaInicioIcs TEXT, horaFinIcs TEXT, nivel TEXT, adjunto INT,updated_at TEXT)"
         if sqlite3_exec(db, crearTablaNotificaciones, nil, nil, nil) != SQLITE_OK {
             print("Error creando la tabla de las notificaciones")
         }else{

@@ -23,6 +23,7 @@
 		53AB807B239C91AC0073833F /* ConexionRed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53AB807A239C91AC0073833F /* ConexionRed.swift */; };
 		53AC31AF243D1D6C00CD0678 /* MenuCircularesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53AC31AE243D1D6C00CD0678 /* MenuCircularesTableViewController.swift */; };
 		53ACC4952449145900BA64BF /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 53ACC4942449145800BA64BF /* GoogleService-Info.plist */; };
+		53BFA86824D8CB86003891B9 /* NotificacionTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53BFA86724D8CB86003891B9 /* NotificacionTableViewController.swift */; };
 		53DA15A723F24B2F006D3553 /* SignInWithApple.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53DA15A623F24B2F006D3553 /* SignInWithApple.swift */; };
 		53F6187B243D3E5A00A8B4A9 /* MenuCirculares.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53F6187A243D3E5A00A8B4A9 /* MenuCirculares.swift */; };
 		53F6187D243D40C900A8B4A9 /* MenuCircularTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53F6187C243D40C900A8B4A9 /* MenuCircularTableViewCell.swift */; };
@@ -70,6 +71,7 @@
 		53AB807A239C91AC0073833F /* ConexionRed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConexionRed.swift; sourceTree = "<group>"; };
 		53AC31AE243D1D6C00CD0678 /* MenuCircularesTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuCircularesTableViewController.swift; sourceTree = "<group>"; };
 		53ACC4942449145800BA64BF /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		53BFA86724D8CB86003891B9 /* NotificacionTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificacionTableViewController.swift; sourceTree = "<group>"; };
 		53DA15A623F24B2F006D3553 /* SignInWithApple.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInWithApple.swift; sourceTree = "<group>"; };
 		53F6187A243D3E5A00A8B4A9 /* MenuCirculares.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuCirculares.swift; sourceTree = "<group>"; };
 		53F6187C243D40C900A8B4A9 /* MenuCircularTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuCircularTableViewCell.swift; sourceTree = "<group>"; };
@@ -130,7 +132,6 @@
 			isa = PBXGroup;
 			children = (
 				530EC2C723D409F300A8BDBD /* NotificacionesTableViewController.swift */,
-				530EC2C923D40A3200A8BDBD /* NotificacionTableViewCell.swift */,
 			);
 			path = Notificaciones;
 			sourceTree = "<group>";
@@ -263,6 +264,7 @@
 				E0B1E47622E7F6C000CD8EE6 /* CircularLeidaTableViewCell.swift */,
 				E0B1E47822E7F71D00CD8EE6 /* CircularNoLeidaTableViewCell.swift */,
 				E0B1E47A22E7F74700CD8EE6 /* CircularFavoritaTableViewCell.swift */,
+				530EC2C923D40A3200A8BDBD /* NotificacionTableViewCell.swift */,
 				E0B1E47C22E7F75B00CD8EE6 /* CircularTableViewCell.swift */,
 				E0B1E47E22E7F76F00CD8EE6 /* CircularCompartidaTableViewCell.swift */,
 				E0090AEC22EBE92B00BC236C /* CircularesLeidasTableViewController.swift */,
@@ -276,6 +278,7 @@
 				5302F87E24422DF4000B3167 /* ValidarCuentaViewController.swift */,
 				531AF3742442888F000E0282 /* NoLeidasCircularesViewController.swift */,
 				5397ED822442939A009E3588 /* PapeleraViewController.swift */,
+				53BFA86724D8CB86003891B9 /* NotificacionTableViewController.swift */,
 			);
 			path = Circulares;
 			sourceTree = "<group>";
@@ -493,6 +496,7 @@
 				E0B1E48322E7FB4000CD8EE6 /* CircularTodas.swift in Sources */,
 				5302F87D24422A29000B3167 /* CHMDValidarCorreoViewController.swift in Sources */,
 				E0090AED22EBE92B00BC236C /* CircularesLeidasTableViewController.swift in Sources */,
+				53BFA86824D8CB86003891B9 /* NotificacionTableViewController.swift in Sources */,
 				E06577A522D146A90089A05A /* PrincipalTableViewCell.swift in Sources */,
 				E0F7AD0C2356A51F002ECB1B /* CredencialViewController.swift in Sources */,
 			);
