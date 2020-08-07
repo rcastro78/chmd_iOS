@@ -28,7 +28,7 @@ class MenuCircularesTableViewController: UITableViewController {
           menu.append(MenuCirculares(id: 2, nombre: "Favoritos", imagen:#imageLiteral(resourceName: "appmenu06")))
           menu.append(MenuCirculares(id: 3, nombre: "No leídos", imagen:#imageLiteral(resourceName: "appmenu05")))
           menu.append(MenuCirculares(id: 4, nombre: "Papelera", imagen:#imageLiteral(resourceName: "appmenu07")))
-          menu.append(MenuCirculares(id: 5, nombre: "Notificaciones", imagen:#imageLiteral(resourceName: "appmenu08")))
+          menu.append(MenuCirculares(id: 5, nombre: "Notificaciones", imagen:#imageLiteral(resourceName: "campana")))
           menu.append(MenuCirculares(id: 6, nombre: "Menú principal", imagen:#imageLiteral(resourceName: "appmenu09")))
         
                var nombre = UserDefaults.standard.string(forKey: "nombreUsuario") ?? ""
