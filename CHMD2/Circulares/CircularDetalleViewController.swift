@@ -205,14 +205,16 @@ extension UIView {
 
 
 
-class CircularDetalleViewController: UIViewController {
+class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
 //WKNavigationDelegate
     
     @IBOutlet weak var webView: WKWebView!
     
+    @IBOutlet weak var btnFavorita: UIButton!
     @IBOutlet weak var btnAnterior: UIButton!
     @IBOutlet weak var btnSiguiente: UIButton!
     
+    @IBOutlet weak var btnRecargar: UIBarButtonItem!
     @IBOutlet weak var lblFechaCircular: UILabel!
     //@IBOutlet weak var lblTituloParte1: UILabel!
     //@IBOutlet weak var lblTituloParte2: UILabel!
@@ -239,6 +241,7 @@ class CircularDetalleViewController: UIViewController {
     var horaFinalIcs=""
     var fechaIcs=""
     var nivel=""
+    var esFavorita:Int=0
     var favMetodo:String="favCircular.php"
     var delMetodo:String="eliminarCircular.php"
     var noleerMetodo:String="noleerCircular.php"
@@ -255,14 +258,21 @@ class CircularDetalleViewController: UIViewController {
     var tipoCircular:Int=0
     var noLeido:Int=0
     var globalId:String=""
-   
+    var circFav:Int=0
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        circFav = UserDefaults.standard.integer(forKey: "circFav")
+        if(circFav==1)
+        {
+             self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono_completo"), for: .normal)
+        }else{
+             self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono"), for: .normal)
+        }
         webView.scrollView.showsHorizontalScrollIndicator = false
         webView.scrollView.pinchGestureRecognizer?.isEnabled = false
         webView.configuration.preferences.javaScriptEnabled = true
+        webView.navigationDelegate = self
         tipoCircular = UserDefaults.standard.integer(forKey: "tipoCircular")
         imbCalendario.isHidden=true
         idUsuario = UserDefaults.standard.string(forKey: "idUsuario") ?? "0"
@@ -271,7 +281,8 @@ class CircularDetalleViewController: UIViewController {
         horaFinalIcs = UserDefaults.standard.string(forKey: "horaFinalIcs") ?? "0"
         fechaIcs = UserDefaults.standard.string(forKey: "fechaIcs") ?? "0"
         nivel = UserDefaults.standard.string(forKey: "nivel") ?? "0"
-        
+        self.btnRecargar.isEnabled=false
+        self.btnRecargar.tintColor = UIColor.clear
         
          if(horaInicialIcs != "00:00:00"){
             imbCalendario.isHidden=false
@@ -352,10 +363,14 @@ class CircularDetalleViewController: UIViewController {
                          let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCirculares_iOS.php?usuario_id=\(idUsuario)"
                             let _url = URL(string: address);
                             self.obtenerCircularesFavoritas(uri:address)
+                            self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono_completo"), for: .normal)
                     }
                     //No leidas
                     if(tipoCircular==3 || noLeido==1){
                          self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: self.id)
+                        //Actualizarla en la base de datos
+                        self.leeCirc(idCircular:Int(self.id) ?? 0,idUsuario:Int(self.idUsuario) ?? 0)
+                        
                      let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCirculares_iOS.php?usuario_id=\(idUsuario)"
                       let _url = URL(string: address);
                       self.obtenerCircularesNoLeidas(uri:address)
@@ -386,6 +401,7 @@ class CircularDetalleViewController: UIViewController {
               self.leerCirculares()
             }
             if(tipoCircular==2){
+              self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono_completo"), for: .normal)
               self.leerCircularesFavoritas()
              }
             
@@ -582,8 +598,12 @@ class CircularDetalleViewController: UIViewController {
         
     }
      
-    @IBAction func btnReloadClick(_ sender: UIButton) {
+   
+    
+    @IBAction func reload(_ sender: UIBarButtonItem) {
         if(ConexionRed.isConnectedToNetwork()){
+                self.btnRecargar.isEnabled=false
+                self.btnRecargar.tintColor = UIColor.clear
                 let link = URL(string:urlBase+"getCircularId4.php?id=\(globalId)")!
                 circularUrl = urlBase+"getCircularId4.php?id=\(globalId)"
                 let request = URLRequest(url: link)
@@ -592,7 +612,6 @@ class CircularDetalleViewController: UIViewController {
             
         }
     }
-    
     
     
     
@@ -716,9 +735,17 @@ class CircularDetalleViewController: UIViewController {
                
                 var nextId = ids[p]
                 globalId=nextId
+                //leer al server
                self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: nextId)
+                //leer local
+                self.leeCirc(idCircular:Int(nextId) ?? 0,idUsuario:Int(self.idUsuario) ?? 0)
                 
-                
+                let f = self.getFavorita(idCircular:Int(nextId) ?? 0)
+                if(f==1){
+                 self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono_completo"), for: .normal)
+                }else{
+                 self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono"), for: .normal)
+                }
                 
                 var nextTitulo = titulos[p]
                 var nextFecha = fechas[p]
@@ -906,6 +933,9 @@ class CircularDetalleViewController: UIViewController {
         }
     }
     
+    
+    
+    
   
     @IBAction func btnNextClick(_ sender: UIButton) {
        //obtener la posición del elemento cargado
@@ -920,7 +950,17 @@ class CircularDetalleViewController: UIViewController {
             var nextId = ids[p]
             print("id siguiente: \(nextId)")
             print("pos siguiente: \(p)")
+            let f = self.getFavorita(idCircular:Int(nextId) ?? 0)
+            if(f==1){
+             self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono_completo"), for: .normal)
+            }else{
+             self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono"), for: .normal)
+            }
+            //Saber si la circular es favorita
+            
              self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: nextId)
+            
+            self.leeCirc(idCircular:Int(nextId) ?? 0,idUsuario:Int(self.idUsuario) ?? 0)
             globalId=nextId
             var nextTitulo = titulos[p]
             var nextFecha = fechas[p]
@@ -977,7 +1017,12 @@ class CircularDetalleViewController: UIViewController {
             //lblNivel.text = circulares[posicion].nivel
             //self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:circulares[p].nombre)
            
-            
+            let f = self.getFavorita(idCircular:Int(circulares[p].id) ?? 0)
+            if(f==1){
+             self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono_completo"), for: .normal)
+            }else{
+             self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono"), for: .normal)
+            }
             var nextHoraIniIcs = circulares[p].horaInicialIcs
             var nextHoraFinIcs = circulares[p].horaFinalIcs
             var nextFechaIcs = circulares[p].fechaIcs
@@ -1139,9 +1184,22 @@ class CircularDetalleViewController: UIViewController {
                    if(p>=0){
                        var nextId = ids[p]
                         globalId=nextId
+                    
+                    let f = self.getFavorita(idCircular:Int(nextId) ?? 0)
+                    if(f==1){
+                     self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono_completo"), for: .normal)
+                    }else{
+                     self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono"), for: .normal)
+                    }
+                    
+                    
+                    
                        var nextTitulo = titulos[p]
                        var nextFecha = fechas[p]
                         self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: nextId)
+                    
+                    self.leeCirc(idCircular:Int(nextId) ?? 0,idUsuario:Int(self.idUsuario) ?? 0)
+                    
                        var nextHoraIniIcs = horasInicioIcs[p]
                        var nextHoraFinIcs = horasFinIcs[p]
                        var nextFechaIcs = fechasIcs[p]
@@ -1179,9 +1237,12 @@ class CircularDetalleViewController: UIViewController {
                       
                       p = p-1
                    if(p>0){
-                    //self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:circulares[p].nombre)
-                       //lblTituloParte1.text = circulares[posicion].nombre
-                       //               lblNivel.text = circulares[posicion].nivel
+                    let f = self.getFavorita(idCircular:Int(circulares[p].id) ?? 0)
+                    if(f==1){
+                     self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono_completo"), for: .normal)
+                    }else{
+                     self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono"), for: .normal)
+                    }
                                       
                                    webView.isHidden=true
                                              webViewSinConexion.isHidden=false
@@ -1321,10 +1382,19 @@ class CircularDetalleViewController: UIViewController {
             }
             if(p>=0){
                 var nextId = ids[p]
+                
+                let f = self.getFavorita(idCircular:Int(nextId) ?? 0)
+                if(f==1){
+                 self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono_completo"), for: .normal)
+                }else{
+                 self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono"), for: .normal)
+                }
+                
                 globalId=nextId
                 var nextTitulo = titulos[p]
                 var nextFecha = fechas[p]
                  self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id:nextId)
+                self.leeCirc(idCircular:Int(nextId) ?? 0,idUsuario:Int(self.idUsuario) ?? 0)
                 var nextHoraIniIcs = horasInicioIcs[p]
                 var nextHoraFinIcs = horasFinIcs[p]
                 var nextFechaIcs = fechasIcs[p]
@@ -1375,7 +1445,12 @@ class CircularDetalleViewController: UIViewController {
                                //lblNivel.text = circulares[p].nivel
             webView.isHidden=true
             webViewSinConexion.isHidden=false
-            
+                let f = self.getFavorita(idCircular:Int(circulares[p].id) ?? 0)
+            if(f==1){
+             self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono_completo"), for: .normal)
+            }else{
+             self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono"), for: .normal)
+            }
              let titulo = circulares[p].nombre
               let tituloP1 = self.partirTituloP1(titulo: titulo)
               let tituloP2 = self.partirTituloP2(titulo: titulo)
@@ -1503,15 +1578,131 @@ class CircularDetalleViewController: UIViewController {
         
     }
     
-   
+   func eliminaFavoritosCirculares(idCircular:Int,idUsuario:Int){
+       let fileUrl = try!
+           FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd.sqlite")
+       
+       if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
+           print("Error en la base de datos")
+       }else{
+           
+           //La base de datos abrió correctamente
+           var statement:OpaquePointer?
+           
+            //Vaciar la tabla
+           
+          
+           let query = "UPDATE appCircularCHMD SET favorita=0 WHERE idCircular=\(idCircular) AND idUsuario=\(idUsuario)"
+           
+           if sqlite3_prepare(db,query,-1,&statement,nil) != SQLITE_OK {
+               print("Error")
+           }
+           
+          
+           if sqlite3_step(statement) == SQLITE_DONE {
+                   print("Circular actualizada correctamente")
+               }else{
+                   print("Circular no se pudo eliminar")
+               }
+               
+           }
+           
+   }
+    
+    
+    
+    func eliminaCircular(idCircular:Int,idUsuario:Int){
+        let fileUrl = try!
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd.sqlite")
+        
+        if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
+            print("Error en la base de datos")
+        }else{
+            
+            //La base de datos abrió correctamente
+            var statement:OpaquePointer?
+            
+             //Vaciar la tabla
+            
+           
+            let query = "UPDATE appCircularCHMD SET eliminada=1,favorita=0,leida=1 WHERE idCircular=\(idCircular) AND idUsuario=\(idUsuario)"
+            
+            if sqlite3_prepare(db,query,-1,&statement,nil) != SQLITE_OK {
+                print("Error")
+            }
+            
+           
+            if sqlite3_step(statement) == SQLITE_DONE {
+                    print("Circular actualizada correctamente")
+                }else{
+                    print("Circular no se pudo eliminar")
+                }
+                
+            }
+            
+    }
+    
+    
+    
+    func leeCirc(idCircular:Int,idUsuario:Int){
+        let fileUrl = try!
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd.sqlite")
+        
+        if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
+            print("Error en la base de datos")
+        }else{
+            
+            //La base de datos abrió correctamente
+            var statement:OpaquePointer?
+            
+             //Vaciar la tabla
+            
+           
+            let query = "UPDATE appCircularCHMD SET leida=1 WHERE idCircular=\(idCircular) AND idUsuario=\(idUsuario)"
+            
+            if sqlite3_prepare(db,query,-1,&statement,nil) != SQLITE_OK {
+                print("Error")
+            }
+            
+           
+            if sqlite3_step(statement) == SQLITE_DONE {
+                    print("Circular actualizada correctamente")
+                }else{
+                    print("Circular no se pudo eliminar")
+                }
+                
+            }
+            
+    }
     
     @IBAction func btnFavoritoClick(_ sender: Any) {
         
         if(tipoCircular != 5){
             if(ConexionRed.isConnectedToNetwork()){
                
-                    self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: self.id)
-               
+              
+                let f = self.getFavorita(idCircular:Int(globalId) ?? 0)
+                print(globalId)
+                if(f==1){
+                 self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono"), for: .normal)
+                    //eliminarla de las fav
+                    self.eliminaFavoritosCirculares(idCircular:Int(globalId) ?? 0,idUsuario:Int(self.idUsuario) ?? 0)
+                    
+                     self.favCircular(direccion: self.urlBase+"elimFavCircular.php", usuario_id: self.idUsuario, circular_id: globalId)
+                    
+                     self.showToast(message:"Se eliminó de las favoritas", font: UIFont(name:"GothamRounded-Bold",size:11.0)!)
+                    
+                }else{
+                 self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono_completo"), for: .normal)
+                   
+                   self.actualizaFavoritosCirculares(idCircular:Int(globalId) ?? 0,idUsuario:Int(self.idUsuario) ?? 0)
+                    
+                     self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: globalId)
+                    
+                     self.showToast(message:"Marcada como favorita", font: UIFont(name:"GothamRounded-Bold",size:11.0)!)
+                    
+                }
+                
             }else{
                 var alert = UIAlertView(title: "No está conectado a Internet", message: "Esta opción solo funciona con una conexión a Internet", delegate: nil, cancelButtonTitle: "Aceptar")
                            alert.show()
@@ -1533,7 +1724,9 @@ class CircularDetalleViewController: UIViewController {
             
             // Create OK button with action handler
             //let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
-                self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: self.id)
+                self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: globalId)
+            self.actualizaFavoritosCirculares(idCircular:Int(globalId) ?? 0,idUsuario:Int(self.idUsuario) ?? 0)
+            
             //})
             
             // Create Cancel button with action handlder
@@ -1555,6 +1748,37 @@ class CircularDetalleViewController: UIViewController {
         
         
         
+    }
+    
+    
+    
+    func actualizaFavoritosCirculares(idCircular:Int,idUsuario:Int){
+        let fileUrl = try!
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd.sqlite")
+        
+        if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
+            print("Error en la base de datos")
+        }else{
+            
+            //La base de datos abrió correctamente
+            var statement:OpaquePointer?
+            
+             //Vaciar la tabla
+            
+            self.circulares.removeAll()
+            let query = "UPDATE appCircularCHMD SET favorita=1 WHERE idCircular=\(idCircular) AND idUsuario=\(idUsuario)"
+            
+            if sqlite3_prepare(db,query,-1,&statement,nil) != SQLITE_OK {
+                print("Error")
+            }
+            if sqlite3_step(statement) == SQLITE_DONE {
+                    print("Circular actualizada correctamente")
+                }else{
+                    print("Circular no se pudo actualizar")
+                }
+                
+            }
+            
     }
     
     @IBAction func btnCompartirClick(_ sender: UIButton) {
@@ -1654,8 +1878,8 @@ class CircularDetalleViewController: UIViewController {
                   
                   // Create OK button with action handler
                   let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
-                      self.delCircularSinDialogo(direccion: self.urlBase+self.delMetodo, usuario_id:self.idUsuario, circular_id: self.id)
-                      
+                    self.delCircularSinDialogo(direccion: self.urlBase+self.delMetodo, usuario_id:self.idUsuario, circular_id: self.globalId)
+                    self.eliminaCircular(idCircular:Int(self.globalId) ?? 0 ,idUsuario:Int(self.idUsuario) ?? 0)
                       //Pasar a la siguiente
                       
                       self.pos = self.pos+1
@@ -1729,8 +1953,8 @@ class CircularDetalleViewController: UIViewController {
             
             // Create OK button with action handler
             let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
-                self.delCircularSinDialogo(direccion: self.urlBase+self.delMetodo, usuario_id:self.idUsuario, circular_id: self.id)
-                
+                self.delCircularSinDialogo(direccion: self.urlBase+self.delMetodo, usuario_id:self.idUsuario, circular_id: self.globalId)
+                 self.eliminaCircular(idCircular:Int(self.globalId) ?? 0 ,idUsuario:Int(self.idUsuario) ?? 0)
                 //Pasar a la siguiente
                 
                 self.pos = self.pos+1
@@ -1825,7 +2049,7 @@ class CircularDetalleViewController: UIViewController {
             switch (response.result) {
             case .success:
                 print(response)
-                self.showToast(message:"Marcada como favorita", font: UIFont(name:"GothamRounded-Bold",size:11.0)!)
+               
                 
             case .failure:
                 print(Error.self)
@@ -2160,6 +2384,47 @@ class CircularDetalleViewController: UIViewController {
 
               sqlite3_finalize(queryStatement)
           }
+    
+    
+    func getFavorita(idCircular:Int)->Int{
+              print("Leer desde la base de datos local")
+              let fileUrl = try!
+                         FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd.sqlite")
+              
+              if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
+                  print("error opening database")
+              }
+              
+              /*
+               idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
+               */
+              
+                 let consulta = "SELECT favorita FROM appCircularCHMD WHERE idCircular=\(idCircular)"
+              var queryStatement: OpaquePointer? = nil
+              var imagen:UIImage
+              imagen = UIImage.init(named: "appmenu05")!
+              
+              if sqlite3_prepare_v2(db, consulta, -1, &queryStatement, nil) == SQLITE_OK {
+             
+                 
+                  
+                   while(sqlite3_step(queryStatement) == SQLITE_ROW) {
+                     let favorita = sqlite3_column_int(queryStatement, 0)
+                    esFavorita = Int(favorita)
+                    }
+                  
+                 
+                   }
+                  else {
+                   print("SELECT statement could not be prepared")
+                 }
+
+                 sqlite3_finalize(queryStatement)
+        
+               return esFavorita
+             }
+    
+    
     
     
     func leerNotificaciones(){
@@ -3558,8 +3823,8 @@ class CircularDetalleViewController: UIViewController {
                
                // Create OK button with action handler
                let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
-                   self.delCircular(direccion: self.urlBase+self.delMetodo, usuario_id:self.idUsuario, circular_id: self.id)
-                   
+                   self.delCircular(direccion: self.urlBase+self.delMetodo, usuario_id:self.idUsuario, circular_id: self.globalId)
+                    self.eliminaCircular(idCircular:Int(self.globalId) ?? 0 ,idUsuario:Int(self.idUsuario) ?? 0)
                    //Pasar a la siguiente
                    
                    self.posicion = self.posicion+1
@@ -3735,7 +4000,19 @@ class CircularDetalleViewController: UIViewController {
     }
     
     
-    
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+           if navigationAction.navigationType == WKNavigationType.linkActivated {
+               print("link")
+               self.btnRecargar.isEnabled=true
+               self.btnRecargar.tintColor = UIColor.white
+               decisionHandler(WKNavigationActionPolicy.allow)
+               return
+           }
+           print("no link")
+            self.btnRecargar.isEnabled=false
+            self.btnRecargar.tintColor = UIColor.clear
+           decisionHandler(WKNavigationActionPolicy.allow)
+    }
     
     
 }

@@ -245,7 +245,14 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         
         
         cell.lblTitulo.text? = c.nombre
-        cell.btnHacerFav.addTarget(self, action: #selector(hacerFavorita), for: .touchUpInside)
+            
+            if c.favorita == 1
+            {
+                let favImage = UIImage(named: "favIconCompleto")! as UIImage
+                cell.btnHacerFav.setImage(favImage, for: UIControl.State.normal)
+            }
+            
+        cell.btnHacerFav.addTarget(self, action: #selector(toggleFavorita), for: .touchUpInside)
         
         cell.chkSeleccionar.addTarget(self, action: #selector(seleccionMultiple), for: .touchUpInside)
        
@@ -307,6 +314,67 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         
     }
     
+    
+    
+    @objc func toggleFavorita(_ sender:UIButton){
+           var superView = sender.superview
+           
+           while !(superView is UITableViewCell) {
+               superView = superView?.superview
+           }
+           let cell = superView as! CircularTableViewCell
+           if let indexpath = tableViewCirculares.indexPath(for: cell){
+               let favImage = UIImage(named: "favIconCompleto")! as UIImage
+               cell.btnHacerFav.setImage(favImage, for: UIControl.State.normal)
+            
+            
+             guard let c = circulares[safe: indexpath.row] else{
+                    return
+                }
+            
+            if c.favorita==1 {
+                
+                              
+                let favImage = UIImage(named: "favIcon")! as UIImage
+                              cell.btnHacerFav.setImage(favImage, for: UIControl.State.normal)
+                
+            }
+            
+            
+                let idCircular = c.id
+                if ConexionRed.isConnectedToNetwork() == true {
+                    /*self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: String(idCircular))*/
+                    if c.favorita==0 {
+                    self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: String(idCircular))
+                        //self.viewDidLoad()
+                        //self.viewWillAppear(true)
+                        
+                        self.actualizaFavoritosCirculares(idCircular: idCircular, idUsuario: Int(self.idUsuario)!)
+                        self.circulares.removeAll()
+                        self.leerCirculares()
+                        
+                    }else{
+                        self.favCircular(direccion: self.urlBase+"elimFavCircular.php", usuario_id: self.idUsuario, circular_id: String(idCircular))
+                            //                   self.viewDidLoad()
+                            //                   self.viewWillAppear(true)
+                        self.eliminaFavoritosCirculares(idCircular: idCircular, idUsuario: Int(self.idUsuario)!)
+                        self.circulares.removeAll()
+                        self.leerCirculares()
+                        
+                    }
+                    
+                    
+                    }else{
+                    var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
+                    alert.show()
+                }
+            
+            
+            }else{
+            
+        }
+        
+    }
     
     //Función para manejar el swipe
     //comentado RCASTRO 08/04/2020
@@ -684,7 +752,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
              idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
              */
             
-               let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto  FROM appCircularCHMD WHERE leida=0 AND favorita=0 AND eliminada=0"
+               let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto  FROM appCircularCHMD WHERE leida=0 AND eliminada=0"
                var queryStatement: OpaquePointer? = nil
             var imagen:UIImage
             imagen = UIImage.init(named: "appmenu05")!

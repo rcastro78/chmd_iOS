@@ -7,576 +7,320 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "52016195-C187-4F5B-A0DA-A85F53D89F09"
+            uuid = "4A5A0F75-E51F-4D32-B63E-996B49451E3D"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "CHMD2/Circulares/CircularDetalleViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "767"
-            endingLineNumber = "767"
-            landmarkName = "btnSiguienteClick(_:)"
+            startingLineNumber = "1684"
+            endingLineNumber = "1684"
+            landmarkName = "btnFavoritoClick(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "156124AD-7BF4-4E2B-9DE3-64BD4598F411"
+            uuid = "AB901E70-D688-4B03-A8CB-8948EB787FAF"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "CHMD2/Circulares/CircularDetalleViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "768"
-            endingLineNumber = "768"
-            landmarkName = "btnSiguienteClick(_:)"
+            startingLineNumber = "1685"
+            endingLineNumber = "1685"
+            landmarkName = "btnFavoritoClick(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "BDC95CBE-33B0-4004-B1FA-42CC3BB67FF6"
+            uuid = "B66805C2-2376-46B0-B76C-FCB76454C66D"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "CHMD2/Circulares/CircularDetalleViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "769"
-            endingLineNumber = "769"
-            landmarkName = "btnSiguienteClick(_:)"
+            startingLineNumber = "1686"
+            endingLineNumber = "1686"
+            landmarkName = "btnFavoritoClick(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "E8860EAF-9973-40E8-9024-DE4CBADCF3DF"
+            uuid = "38D26702-4289-437E-85B3-FEAFF2DCF0DF"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "CHMD2/Circulares/CircularDetalleViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "770"
-            endingLineNumber = "770"
-            landmarkName = "btnSiguienteClick(_:)"
+            startingLineNumber = "1698"
+            endingLineNumber = "1698"
+            landmarkName = "btnFavClick(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "61D49B8B-5E07-4630-AA0C-AC158942CF9F"
+            uuid = "5F55486E-77B3-4EB3-B68B-414CD0DB3213"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "CHMD2/Circulares/CircularDetalleViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "385"
-            endingLineNumber = "385"
-            landmarkName = "viewDidLoad()"
+            startingLineNumber = "1695"
+            endingLineNumber = "1695"
+            landmarkName = "btnFavClick(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "B028BED6-36E3-4228-8808-E79630278E12"
+            uuid = "69AC4998-239E-4B45-AF53-C36ED3F28811"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "CHMD2/Circulares/CircularDetalleViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "386"
-            endingLineNumber = "386"
-            landmarkName = "viewDidLoad()"
+            startingLineNumber = "1696"
+            endingLineNumber = "1696"
+            landmarkName = "btnFavClick(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "A81419EA-E36F-41AF-8153-975A36E2997A"
+            uuid = "068CC105-AA73-44B2-AD0F-6C18C6F868A8"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "CHMD2/Circulares/CircularDetalleViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "387"
-            endingLineNumber = "387"
-            landmarkName = "viewDidLoad()"
+            startingLineNumber = "1769"
+            endingLineNumber = "1769"
+            landmarkName = "btnCompartirClick(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "F9E2758B-16DA-46D2-90A9-3F2932341731"
+            uuid = "F8A000AD-E935-46D8-8AD6-C99DB96D0EB6"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "CHMD2/Circulares/CircularDetalleViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2041"
-            endingLineNumber = "2041"
-            landmarkName = "leerCirculares()"
+            startingLineNumber = "1771"
+            endingLineNumber = "1771"
+            landmarkName = "btnCompartirClick(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "3828154A-C8DE-4B80-8006-AFF4B48E7E19"
+            uuid = "BED237AE-D3E1-4A5F-89C6-12C65CD9E0B2"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "CHMD2/Circulares/CircularDetalleViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2054"
-            endingLineNumber = "2054"
-            landmarkName = "leerCirculares()"
+            startingLineNumber = "1772"
+            endingLineNumber = "1772"
+            landmarkName = "btnCompartirClick(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "3F89A665-A6B0-4C26-90F0-520D1A5BE655"
+            uuid = "FBF0E433-1005-4C57-ABBB-C2DF23AB7743"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "CHMD2/Circulares/CircularDetalleViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2082"
-            endingLineNumber = "2082"
-            landmarkName = "leerCirculares()"
+            startingLineNumber = "1774"
+            endingLineNumber = "1774"
+            landmarkName = "btnCompartirClick(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "ACB86842-4E09-49F9-A823-FFE9F7AC5A44"
+            uuid = "7007482A-2BE1-4FBD-AE4A-605405DE4B3C"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "CHMD2/Circulares/CircularDetalleViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2083"
-            endingLineNumber = "2083"
-            landmarkName = "leerCirculares()"
+            startingLineNumber = "1775"
+            endingLineNumber = "1775"
+            landmarkName = "btnCompartirClick(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "59E115D5-E867-42A3-9958-BEF3C32CD454"
+            uuid = "968A1997-88A4-4715-8F32-FF8355863989"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "CHMD2/Circulares/CircularDetalleViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2084"
-            endingLineNumber = "2084"
-            landmarkName = "leerCirculares()"
+            startingLineNumber = "1776"
+            endingLineNumber = "1776"
+            landmarkName = "btnCompartirClick(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "77C86C1B-E322-4820-849B-92DC020A3A6F"
+            uuid = "91973EC5-FF35-47F0-93AC-EA3AFEB2E118"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "CHMD2/Circulares/CircularDetalleViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2088"
-            endingLineNumber = "2088"
-            landmarkName = "leerCirculares()"
+            startingLineNumber = "1778"
+            endingLineNumber = "1778"
+            landmarkName = "btnCompartirClick(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "567B5796-01D6-4339-A532-BFAAEB7A847E"
+            uuid = "33CD56A0-1615-4FBE-8069-D81ED5FF0C3B"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "CHMD2/Circulares/CircularDetalleViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2089"
-            endingLineNumber = "2089"
-            landmarkName = "leerCirculares()"
+            startingLineNumber = "1777"
+            endingLineNumber = "1777"
+            landmarkName = "btnCompartirClick(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "6F1F7A05-DD1F-406B-B225-18A7CFC407EF"
+            uuid = "95E605CE-0515-4656-ABB8-B846895D87C1"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "CHMD2/Circulares/CircularDetalleViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2090"
-            endingLineNumber = "2090"
-            landmarkName = "leerCirculares()"
+            startingLineNumber = "953"
+            endingLineNumber = "953"
+            landmarkName = "btnNextClick(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "633CB257-B20C-4604-B7A1-8EF52DC98470"
+            uuid = "E5F47011-383C-4B87-9B4D-0A30796E386F"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "CHMD2/Circulares/CircularDetalleViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2091"
-            endingLineNumber = "2091"
-            landmarkName = "leerCirculares()"
+            startingLineNumber = "954"
+            endingLineNumber = "954"
+            landmarkName = "btnNextClick(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "BB0F1B44-CFFB-4774-BD16-6CE9C0D5419D"
+            uuid = "629E6969-3490-4259-93CE-7AA64C47B887"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "CHMD2/Circulares/CircularDetalleViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2092"
-            endingLineNumber = "2092"
-            landmarkName = "leerCirculares()"
+            startingLineNumber = "955"
+            endingLineNumber = "955"
+            landmarkName = "btnNextClick(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "C7949F88-7A9C-471B-9D0A-1FB76B5C8606"
+            uuid = "8DB56492-75FE-4570-A074-217341B7C2CC"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "CHMD2/Circulares/CircularDetalleViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2093"
-            endingLineNumber = "2093"
-            landmarkName = "leerCirculares()"
+            startingLineNumber = "956"
+            endingLineNumber = "956"
+            landmarkName = "btnNextClick(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "5AC96627-05DC-45B8-893D-2D32915E0600"
+            uuid = "EFD97935-A080-4FF9-A1CA-DB16C3A4F411"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "CHMD2/Circulares/CircularDetalleViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2096"
-            endingLineNumber = "2096"
-            landmarkName = "leerCirculares()"
+            startingLineNumber = "957"
+            endingLineNumber = "957"
+            landmarkName = "btnNextClick(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "247E3701-D64F-45AE-A155-FB296AF38947"
+            uuid = "59B34BE9-7DAE-4663-AA9F-D9E6C64856AC"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "CHMD2/Circulares/CircularDetalleViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2097"
-            endingLineNumber = "2097"
-            landmarkName = "leerCirculares()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "86F36B07-BE92-45F9-AE88-0C3CC8142A4F"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "CHMD2/Circulares/CircularDetalleViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2098"
-            endingLineNumber = "2098"
-            landmarkName = "leerCirculares()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "15B6E2F7-41A3-4D9E-8879-8FEEB5F6E2A0"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "CHMD2/Circulares/CircularDetalleViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2099"
-            endingLineNumber = "2099"
-            landmarkName = "leerCirculares()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "ACC94937-70A6-4A65-A442-5F292E6B031F"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "CHMD2/Circulares/CircularDetalleViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2100"
-            endingLineNumber = "2100"
-            landmarkName = "leerCirculares()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "568DDF33-BB7E-4700-98BA-B40F8AAE9913"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "CHMD2/Circulares/CircularDetalleViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2101"
-            endingLineNumber = "2101"
-            landmarkName = "leerCirculares()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "34A321A1-4EBA-4863-B8CF-1A5A070C7D9C"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "CHMD2/Circulares/CircularDetalleViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2104"
-            endingLineNumber = "2104"
-            landmarkName = "leerCirculares()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "7809962B-C684-47BA-B8F4-58C7512FB246"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "CHMD2/Circulares/CircularDetalleViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2105"
-            endingLineNumber = "2105"
-            landmarkName = "leerCirculares()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "B0E8AA70-54AF-4DAA-B57B-1E8AF5F37EB2"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "CHMD2/Circulares/CircularDetalleViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2106"
-            endingLineNumber = "2106"
-            landmarkName = "leerCirculares()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "65945F7B-A795-40EE-BB69-DBEC737A6D5A"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "CHMD2/Circulares/CircularDetalleViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2107"
-            endingLineNumber = "2107"
-            landmarkName = "leerCirculares()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "9AB43DFE-C9A1-4890-B833-D89B3059E80C"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "CHMD2/Circulares/CircularDetalleViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2108"
-            endingLineNumber = "2108"
-            landmarkName = "leerCirculares()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "B80E935A-CC0C-4594-A574-6B443FE5B6BB"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "CHMD2/Circulares/CircularDetalleViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2109"
-            endingLineNumber = "2109"
-            landmarkName = "leerCirculares()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "6DC3C23B-1688-4037-85F1-6921AA9F8584"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "CHMD2/Circulares/TodasCircularesViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1139"
-            endingLineNumber = "1139"
-            landmarkName = "guardarCirculares(idCircular:idUsuario:nombre:textoCircular:no_leida:leida:favorita:compartida:eliminada:fecha:fechaIcs:horaInicioIcs:horaFinIcs:nivel:adjunto:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "3E336F9B-7C6E-4BC7-BADF-1B0E1AD83471"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "CHMD2/Circulares/TodasCircularesViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1140"
-            endingLineNumber = "1140"
-            landmarkName = "guardarCirculares(idCircular:idUsuario:nombre:textoCircular:no_leida:leida:favorita:compartida:eliminada:fecha:fechaIcs:horaInicioIcs:horaFinIcs:nivel:adjunto:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "42B2DEA4-14EE-4524-9CAF-C2A3B51E367C"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "CHMD2/Circulares/TodasCircularesViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1141"
-            endingLineNumber = "1141"
-            landmarkName = "guardarCirculares(idCircular:idUsuario:nombre:textoCircular:no_leida:leida:favorita:compartida:eliminada:fecha:fechaIcs:horaInicioIcs:horaFinIcs:nivel:adjunto:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "642CAD6A-9AE0-4C57-BF7C-C44334F722E4"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "CHMD2/Circulares/TodasCircularesViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1142"
-            endingLineNumber = "1142"
-            landmarkName = "guardarCirculares(idCircular:idUsuario:nombre:textoCircular:no_leida:leida:favorita:compartida:eliminada:fecha:fechaIcs:horaInicioIcs:horaFinIcs:nivel:adjunto:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "6F0C4B71-D59B-4A20-952C-4BAF9F859030"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "CHMD2/Circulares/TodasCircularesViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1143"
-            endingLineNumber = "1143"
-            landmarkName = "guardarCirculares(idCircular:idUsuario:nombre:textoCircular:no_leida:leida:favorita:compartida:eliminada:fecha:fechaIcs:horaInicioIcs:horaFinIcs:nivel:adjunto:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "B0B519DA-E1A5-4ED9-A40C-E23D4E03F910"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "CHMD2/Circulares/TodasCircularesViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1144"
-            endingLineNumber = "1144"
-            landmarkName = "guardarCirculares(idCircular:idUsuario:nombre:textoCircular:no_leida:leida:favorita:compartida:eliminada:fecha:fechaIcs:horaInicioIcs:horaFinIcs:nivel:adjunto:)"
+            startingLineNumber = "958"
+            endingLineNumber = "958"
+            landmarkName = "btnNextClick(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

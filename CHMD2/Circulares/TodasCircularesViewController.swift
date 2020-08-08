@@ -210,12 +210,20 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             return cell
         }
               cell.lblTitulo.text? = c.nombre
-             if c.favorita == 1
+            
+            
+            
+            if c.favorita == 1
              {
                  let favImage = UIImage(named: "favIconCompleto")! as UIImage
                  cell.btnHacerFav.setImage(favImage, for: UIControl.State.normal)
                 
-             }
+            }else{
+                let favImage = UIImage(named: "favIcon")! as UIImage
+                cell.btnHacerFav.setImage(favImage, for: UIControl.State.normal)
+            }
+            
+            
              //Para hacer favoritas con un boton
              cell.btnHacerFav.addTarget(self, action: #selector(toggleFavorita), for: .touchUpInside)
              //cell.btnHacerFav.addTarget(self, action: #selector(makeNoLeida), for: .touchUpInside)
@@ -642,7 +650,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             UserDefaults.standard.set(0, forKey: "viaNotif")
             UserDefaults.standard.set(c.noLeido, forKey: "noLeido")
             UserDefaults.standard.set(1, forKey: "tipoCircular")
-            
+            UserDefaults.standard.set(c.favorita, forKey: "circFav")
             self.actualizaLeidosCirculares(idCircular: c.id, idUsuario: Int(self.idUsuario)!)
                                                            
             
@@ -763,8 +771,14 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                             imagen = UIImage.init(named: "circle")!
                         }
                 
-                        if(Int(favorita)==1){
+                        /*if(Int(favorita)==1){
                            imagen = UIImage.init(named: "circle_white")!
+                        }*/
+                        if(Int(favorita)==1 && Int(leida)==0){
+                          imagen = UIImage.init(named: "circle")!
+                        }
+                        if(Int(favorita)==1 && Int(leida)==1){
+                          imagen = UIImage.init(named: "circle_white")!
                         }
                 
                         /*if(Int(favorita)==1 && Int(leida) == 0){
@@ -1643,7 +1657,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                         self.actualizaFavoritosCirculares(idCircular: idCircular, idUsuario: Int(self.idUsuario)!)
                         self.circulares.removeAll()
                         self.leerCirculares()
-                        
+                    
                     }else{
                         self.favCircular(direccion: self.urlBase+"elimFavCircular.php", usuario_id: self.idUsuario, circular_id: String(idCircular))
                             //                   self.viewDidLoad()
