@@ -274,6 +274,12 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
         webView.configuration.preferences.javaScriptEnabled = true
         webView.navigationDelegate = self
         tipoCircular = UserDefaults.standard.integer(forKey: "tipoCircular")
+
+        if(tipoCircular==5){
+            btnFavorita.isEnabled = false
+            btnFavorita.isHidden = true
+        }
+        
         imbCalendario.isHidden=true
         idUsuario = UserDefaults.standard.string(forKey: "idUsuario") ?? "0"
         viaNotif = UserDefaults.standard.integer(forKey: "viaNotif")
@@ -386,7 +392,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                     if(tipoCircular==5){
                       let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getNotificaciones_iOS.php?usuario_id=\(idUsuario)"
                        let _url = URL(string: address);
-                       self.obtenerCircularesEliminadas(uri:address)
+                        self.obtenerNotificaciones(uri:address)
                     }
                     
                 }
@@ -1874,7 +1880,16 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     var pos = UserDefaults.standard.integer(forKey:"posicion")
     @IBAction func btnEliminaClick(_ sender: Any) {
        if(ConexionRed.isConnectedToNetwork()){
-                  let dialogMessage = UIAlertController(title: "CHMD", message: "¿Deseas eliminar esta circular?", preferredStyle: .alert)
+        
+        var tituloEliminar:String
+        if(self.tipoCircular != 5){
+            tituloEliminar = "¿Deseas eliminar esta circular?"
+        }else{
+            tituloEliminar = "¿Deseas eliminar esta notificación?"
+        }
+        
+        
+                  let dialogMessage = UIAlertController(title: "CHMD", message: tituloEliminar, preferredStyle: .alert)
                   
                   // Create OK button with action handler
                   let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
@@ -1949,7 +1964,17 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     @IBAction func btnEliminarClick(_ sender: UIButton) {
         
         if(ConexionRed.isConnectedToNetwork()){
-            let dialogMessage = UIAlertController(title: "CHMD", message: "¿Deseas eliminar esta circular?", preferredStyle: .alert)
+            
+            
+            var tituloEliminar:String
+                   if(self.tipoCircular != 5){
+                       tituloEliminar = "¿Deseas eliminar esta circular?"
+                   }else{
+                       tituloEliminar = "¿Deseas eliminar esta notificación?"
+                   }
+            
+            
+            let dialogMessage = UIAlertController(title: "CHMD", message: tituloEliminar, preferredStyle: .alert)
             
             // Create OK button with action handler
             let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
@@ -2089,7 +2114,16 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     
     func delCircular(direccion:String, usuario_id:String, circular_id:String){
         
-        let dialogMessage = UIAlertController(title: "CHMD", message: "¿Deseas eliminar esta circular?", preferredStyle: .alert)
+        
+        var tituloEliminar:String
+               if(self.tipoCircular != 5){
+                   tituloEliminar = "¿Deseas eliminar esta circular?"
+               }else{
+                   tituloEliminar = "¿Deseas eliminar esta notificación?"
+               }
+        
+        
+        let dialogMessage = UIAlertController(title: "CHMD", message: tituloEliminar, preferredStyle: .alert)
         
         // Create OK button with action handler
         let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
@@ -3429,6 +3463,78 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
         }
     }
         
+    
+    
+    func obtenerNotificaciones(uri:String){
+               
+               Alamofire.request(uri)
+                   .responseJSON { response in
+                       // check for errors
+                       guard response.result.error == nil else {
+                           // got an error in getting the data, need to handle it
+                           print("error en la consulta")
+                           print(response.result.error!)
+                           return
+                       }
+                       /*
+                        [{"id":"1008","titulo":"\u00a1Felices vacaciones!","estatus":"Enviada","ciclo_escolar_id":"4","created_at":"2019-04-12 13:02:19","updated_at":"2019-04-12 13:02:19","leido":"1","favorito":"1","compartida":"1","eliminado":"1","status_envio":null,"envio_todos":"0"},
+                        */
+                       
+                       if let diccionarios = response.result.value as? [Dictionary<String,AnyObject>]{
+                           for diccionario in diccionarios{
+                               //print(diccionario)
+                               
+                               guard let id = diccionario["id"] as? String else {
+                                   print("No se pudo obtener el id")
+                                   return
+                               }
+                               print(id)
+                               
+                               guard let titulo = diccionario["titulo"] as? String else {
+                                   print("No se pudo obtener el titulo")
+                                   return
+                               }
+                             guard let fecha = diccionario["updated_at"] as? String else {
+                                                                                 print("No se pudo obtener la fecha")
+                                                                                 return
+                                                                             }
+                               guard let fechaIcs = diccionario["fecha_ics"] as? String else {
+                                                       return
+                                                     }
+                                                     guard let horaInicioIcs = diccionario["hora_inicial_ics"] as? String else {
+                                                                              return
+                                                                            }
+                                                     
+                                                    
+                                                     guard let horaFinIcs = diccionario["hora_final_ics"] as? String else {
+                                                                                                     return
+                                                                                                   }
+                                                     
+                                                     //Esto si viene null desde el servicio web
+                                                                       var nv:String?
+                                                                            if (diccionario["nivel"] == nil){
+                                                                                nv=""
+                                                                            }else{
+                                                                                nv=diccionario["nivel"] as? String
+                                                                            }
+                               guard let eliminado = diccionario["eliminado"] as? String else {
+                                                          return
+                                                      }
+                            
+                                self.ids.append(id)
+                                self.titulos.append(titulo)
+                                self.fechas.append(fecha)
+                                self.fechasIcs.append(fechaIcs)
+                                self.horasInicioIcs.append(horaInicioIcs)
+                                self.horasFinIcs.append(horaFinIcs)
+                                self.niveles.append(nv ?? "")
+                            
+                                                                                
+                       }
+                 }
+               
+        }
+    }
       
     func obtenerCircularesFavoritas(uri:String){
                
@@ -3797,29 +3903,32 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                       //let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
                           self.noleerCircular(direccion: self.urlBase+self.noleerMetodo, usuario_id: self.idUsuario, circular_id: self.id)
              self.showToast(message:"Marcada como no leída", font: UIFont(name:"GothamRounded-Bold",size:11.0)!)
-                      //})
-                      
-                      // Create Cancel button with action handlder
-                      //let cancel = UIAlertAction(title: "Cancelar", style: .cancel) { (action) -> Void in
-                          
-                      //}
-                      
-                      //Add OK and Cancel button to dialog message
-                      //dialogMessage.addAction(ok)
-                      //dialogMessage.addAction(cancel)
-                      
-                      // Present dialog message to user
-                      //self.present(dialogMessage, animated: true, completion: nil)
+      
                    }else{
                       var alert = UIAlertView(title: "No está conectado a Internet", message: "Esta opción solo funciona con una conexión a Internet", delegate: nil, cancelButtonTitle: "Aceptar")
                                             alert.show()
                   }
         }
         
+        var tituloEliminar:String
+               if(self.tipoCircular != 5){
+                   tituloEliminar = "Eliminar esta notificación"
+               }else{
+                   tituloEliminar = "Eliminar esta circular"
+               }
         
-        let actionEliminar = UIAlertAction(title: "Eliminar esta circular", style: .destructive) { (action:UIAlertAction) in
+        let actionEliminar = UIAlertAction(title: tituloEliminar, style: .destructive) { (action:UIAlertAction) in
            if(ConexionRed.isConnectedToNetwork()){
-               let dialogMessage = UIAlertController(title: "CHMD", message: "¿Deseas eliminar esta circular?", preferredStyle: .alert)
+            
+            var tituloEliminar:String=""
+            if(self.tipoCircular != 5){
+                tituloEliminar = "¿Deseas eliminar esta circular?"
+            }else{
+               tituloEliminar = "¿Deseas eliminar esta notificación?"
+            }
+            
+            
+               let dialogMessage = UIAlertController(title: "CHMD", message: tituloEliminar, preferredStyle: .alert)
                
                // Create OK button with action handler
                let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
@@ -3852,20 +3961,13 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                        self.circularUrl = self.urlBase+"getCircularId4.php?id=\(nextId)"
                        self.webView.load(request)
                        self.title = "Circular"
-                       //nextTitulo.uppercased()
-                       
-                       /*let anio = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
-                       let mes = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
-                       let dia = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
-                       self.lblFechaCircular.text = "\(dia)/\(mes)/\(anio)"*/
+
                        
                        if(ConexionRed.isConnectedToNetwork()){
-                         //  self.lblTituloParte1.isHidden=true
-                           //self.lblTituloParte1?.visiblity(gone: true, dimension: 0)
+
                        }
                        
-                    //self.lblTituloParte1.text=nextTitulo.capitalized
-                   // self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo)
+
                        self.id = nextId;
                    }else{
                        self.posicion = 0
@@ -3893,7 +3995,15 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
            }
         }
         
-        let actionCompartir = UIAlertAction(title: "Compartir esta circular", style: .default) { (action:UIAlertAction) in
+        
+        var tituloCompartir:String=""
+        if(tipoCircular != 5){
+            tituloCompartir = "Compartir esta circular"
+        }else{
+           tituloCompartir = "Compartir esta notificación"
+        }
+        
+        let actionCompartir = UIAlertAction(title: tituloCompartir, style: .default) { (action:UIAlertAction) in
             
             let circularUrl = "https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularId4.php?id=\(self.id)"
             guard let link = URL(string: circularUrl) else { return }
@@ -3915,7 +4025,11 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                    }
 
                    let shortLink = shortURL
-                   self.compartir(message: "Comparto la circular del colegio", link: "\(shortLink!)")
+                if(self.tipoCircular != 5){
+                    self.compartir(message: "Comparto la circular del colegio", link: "\(shortLink!)")
+                }else{
+                     self.compartir(message: "Comparto la notificación del colegio", link: "\(shortLink!)")
+                }
                }
             
             
@@ -3925,13 +4039,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
         
         let actionCalendario = UIAlertAction(title: "Agregar al calendario", style: .default) { (action:UIAlertAction) in
                    if(ConexionRed.isConnectedToNetwork()){
-                              //let dialogMessage = UIAlertController(title: "CHMD", message: "¿Deseas agregar este evento a tu calendario?", preferredStyle: .alert)
-                              
-                              // Create OK button with action handler
-                              //let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
-                                
-                                  
-                                  
+                           
                                   let eventStore = EKEventStore()
                                              switch EKEventStore.authorizationStatus(for: .event) {
                                              case .authorized:
@@ -3960,19 +4068,6 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                                   
                                   
                                   
-                              //})
-                              
-                              // Create Cancel button with action handlder
-                              //let cancel = UIAlertAction(title: "Cancelar", style: .cancel) { (action) -> Void in
-                                  
-                              //}
-                              
-                              //Add OK and Cancel button to dialog message
-                              //dialogMessage.addAction(ok)
-                              //dialogMessage.addAction(cancel)
-                              
-                              // Present dialog message to user
-                              //self.present(dialogMessage, animated: true, completion: nil)
                           }else{
                               var alert = UIAlertView(title: "No está conectado a Internet", message: "Esta opción solo funciona con una conexión a Internet", delegate: nil, cancelButtonTitle: "Aceptar")
                                          alert.show()
@@ -3983,14 +4078,12 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                  // self.dismiss(animated: true, completion: nil)
               }
         
-        /*
-         let action3 = UIAlertAction(title: "Destructive", style: .destructive) { (action:UIAlertAction) in
-             print("You've pressed the destructive");
-         }
-         */
-      
-        alertController.addAction(actionFav)
-        alertController.addAction(actionNoLeer)
+       
+        if(tipoCircular != 5){
+            alertController.addAction(actionFav)
+            alertController.addAction(actionNoLeer)
+        }
+       
         alertController.addAction(actionCompartir)
         alertController.addAction(actionEliminar)
         alertController.addAction(actionCancelar)
