@@ -4094,7 +4094,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     
     
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-           if navigationAction.navigationType == WKNavigationType.linkActivated {
+        if navigationAction.navigationType == WKNavigationType.linkActivated {
                print("link")
                self.btnRecargar.isEnabled=true
                self.btnRecargar.tintColor = UIColor.white

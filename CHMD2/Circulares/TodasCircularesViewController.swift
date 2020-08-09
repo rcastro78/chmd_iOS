@@ -2021,7 +2021,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     
     let cancel = UIAlertAction(title: "Cancelar", style: .cancel) { (action) -> Void in
-                   
+                self.leerCirculares()
                }
                
                //Add OK and Cancel button to dialog message
