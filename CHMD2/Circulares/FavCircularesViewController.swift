@@ -187,6 +187,8 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
          let address=self.urlBase+self.metodoCirculares+"?usuario_id=\(self.idUsuario)"
           guard let _url = URL(string: address) else { return };
           self.getDataFromURL(url: _url)
+          self.leerCirculares()
+        
       }
     }
     

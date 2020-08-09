@@ -168,8 +168,8 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         let addressN=self.urlBase+self.metodoNotificaciones+"?usuario_id=\(self.idUsuario)"
                    guard let _urlN = URL(string: addressN) else { return };
         self.getDataFromURLNotificaciones(url:_urlN)
-        
-      }
+        self.leerCirculares()
+       }
     }
 
    
