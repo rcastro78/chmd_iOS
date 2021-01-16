@@ -18,9 +18,10 @@ class CredencialViewController: UIViewController {
     @IBOutlet weak var lblResponsable: UILabel!
     @IBOutlet weak var lblVigencia: UILabel!
     @IBOutlet weak var qrImage: UIImageView!
+    @IBOutlet weak var imgFirma: UIImageView!
     
     var urlFotos:String = "http://chmd.chmd.edu.mx:65083/CREDENCIALES/padres/"
-    
+    var urlFirma:String = "https://www.chmd.edu.mx/imagenesapp/img/firma.jpg"
     
     
     override func viewDidLoad() {
@@ -32,14 +33,10 @@ class CredencialViewController: UIViewController {
         var fotoUrl = UserDefaults.standard.string(forKey: "fotoUrl") ?? ""
         var cifrado = UserDefaults.standard.string(forKey: "cifrado") ?? ""
        
-        lblNombre.text=nombre
+        lblNombre.text=nombre.lowercased().capitalized
         lblResponsable.text=responsable
         lblVigencia.text = "Vigente hasta: \(vigencia)"
-        
-       
-        
-        
-            
+         
         if(ConexionRed.isConnectedToNetwork()){
             let imageURL = URL(string: fotoUrl.replacingOccurrences(of: " ", with: "%20"))!
               Alamofire.request(imageURL).responseJSON {
@@ -52,6 +49,8 @@ class CredencialViewController: UIViewController {
                     self.imgFotoPadre.cargar(url: imageURL)
                     self.qrImage.image = imagen
                     UserDefaults.standard.set(self.urlFotos+"sinfoto.png", forKey: "urlfotoQR")
+                    let firmaURL = URL(string:self.urlFirma)
+                    self.imgFirma.cargar(url:firmaURL!)
                 }else{
                     let imagen = self.generarQR(from: cifrado)
                     let imageURL = URL(string: fotoUrl.replacingOccurrences(of: " ", with: "%20"))
@@ -59,6 +58,8 @@ class CredencialViewController: UIViewController {
                     let placeholderImageURL = URL(string: self.urlFotos+"sinfoto.png")!
                     self.imgFotoPadre.cargar(url: imageURL!)
                     self.qrImage.image = imagen
+                    let firmaURL = URL(string:self.urlFirma)
+                    self.imgFirma.cargar(url:firmaURL!)
                 }
 
             }

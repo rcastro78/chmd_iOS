@@ -238,7 +238,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate,GIDSignI
       
           
         let mainStoryboard:UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
-                let circulares = mainStoryboard.instantiateViewController(withIdentifier: "ViewController") as! ViewController
+                let circulares = mainStoryboard.instantiateViewController(withIdentifier: "ViewController") as! TodasCircularesViewController
                 self.window?.rootViewController = circulares
 
         

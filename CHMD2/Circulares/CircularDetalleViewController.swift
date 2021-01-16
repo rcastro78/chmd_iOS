@@ -4026,9 +4026,11 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
 
                    let shortLink = shortURL
                 if(self.tipoCircular != 5){
-                    self.compartir(message: "Comparto la circular del colegio", link: "\(shortLink!)")
+                    let titulo = UserDefaults.standard.string(forKey: "nombre") ?? ""
+                    self.compartir(message:  "Comparto: "+titulo, link: "\(shortLink!)")
                 }else{
-                     self.compartir(message: "Comparto la notificación del colegio", link: "\(shortLink!)")
+                     let titulo = UserDefaults.standard.string(forKey: "nombre") ?? ""
+                     self.compartir(message: "Comparto: "+titulo, link: "\(shortLink!)")
                 }
                }
             
